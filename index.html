@@ -2,20 +2,45 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Vocera — Partner Comunicativo. El sistema Voice convierte voces reales en la voz de tu marca: comunica, conecta y crece, con datos en tiempo real." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#12161C" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="format-detection" content="telephone=no" />
 
   <title>Vocera — Le damos voz a tu marca · Sistema Voice</title>
+  <meta name="description" content="Vocera — Partner Comunicativo. El sistema Voice convierte voces reales en la voz de tu marca: comunica, conecta y crece, con datos en tiempo real." />
+  <link rel="canonical" href="https://mavila-pm.github.io/vocera/" />
 
-  <!-- Favicon de marca -->
-  <link rel="icon" type="image/svg+xml" href="assets/vocera-favicon.svg" />
+  <!-- Favicons (paquete real en /assets) -->
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192x192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512x512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#1F4BD8" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Vocera — Le damos voz a tu marca" />
-  <meta property="og:description" content="Partner Comunicativo. Un sistema que comunica, conecta y crece, con datos en tiempo real." />
+  <!-- Open Graph (WhatsApp, LinkedIn, Facebook, Slack, Teams…) -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="es_PE" />
+  <meta property="og:site_name" content="Vocera" />
+  <meta property="og:title" content="Vocera — Le damos voz a tu marca" />
+  <meta property="og:description" content="Partner Comunicativo. Un sistema que comunica, conecta y crece, con datos en tiempo real." />
+  <meta property="og:url" content="https://mavila-pm.github.io/vocera/" />
+  <meta property="og:image" content="https://mavila-pm.github.io/vocera/assets/og-preview.jpg" />
+  <meta property="og:image:secure_url" content="https://mavila-pm.github.io/vocera/assets/og-preview.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Vocera — Conectar para crecer" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Vocera — Le damos voz a tu marca" />
+  <meta name="twitter:description" content="Partner Comunicativo. Un sistema que comunica, conecta y crece, con datos en tiempo real." />
+  <meta name="twitter:image" content="https://mavila-pm.github.io/vocera/assets/og-preview.jpg" />
+  <meta name="twitter:image:alt" content="Vocera — Conectar para crecer" />
 
   <style>
 /* =====================================================================
@@ -26,22 +51,12 @@
    de logo — Manual de marca, "Sistema cromático").
    ===================================================================== */
 
-/* ---------- Fuentes de marca (self-host) ---------- */
-@font-face {
-  font-family: 'Archivo';
-  src: url('css/fonts/Archivo-Variable.ttf') format('truetype-variations');
-  font-weight: 100 900;
-  font-stretch: 62% 125%;
-  font-display: swap;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'IBM Plex Mono';
-  src: url('css/fonts/IBMPlexMono-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-display: swap;
-  font-style: normal;
-}
+/* ---------- Fuentes ----------
+   Los .ttf de marca no existen en el repositorio (solo /assets), por lo que
+   las declaraciones @font-face se retiran para no generar peticiones 404.
+   La pila tipográfica de --font-sans / --font-mono ya prioriza Archivo e
+   IBM Plex Mono si algún día se instalan o se suben al repositorio.
+   ------------------------------------------------------------------ */
 
 /* ---------- Tokens ---------- */
 :root {
@@ -124,6 +139,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 a { text-decoration: none; color: inherit; }
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--senal); outline-offset: 3px; border-radius: 2px; }
 ul, ol { list-style: none; }
 img, svg { display: block; max-width: 100%; }
 button { font-family: inherit; }
@@ -269,7 +285,7 @@ strong { font-weight: 600; }
 /* ---------- Toast ---------- */
 .toast {
   position: fixed;
-  bottom: clamp(80px, 10vh, 104px);
+  bottom: calc(clamp(80px, 10vh, 104px) + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%) translateY(16px);
   background: var(--tinta);
@@ -285,13 +301,25 @@ strong { font-weight: 600; }
   opacity: 0;
   pointer-events: none;
   transition: opacity .3s, transform .3s var(--ease);
-  white-space: nowrap;
   max-width: min(90vw, 420px);
   white-space: normal;
   text-align: center;
+  line-height: 1.5;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.show.has-action { pointer-events: auto; }
 .toast.toast-error { background: var(--neg); border-color: var(--neg); }
+.toast-action {
+  display: inline-block;
+  margin-left: 10px;
+  color: var(--senal-300);
+  text-decoration: underline;
+  font-weight: 600;
+}
+.toast-error .toast-action { color: var(--papel); }
+
+/* Utilidad accesible */
+[hidden] { display: none !important; }
 
 /* ---------- Preferencias de movimiento ---------- */
 @media (prefers-reduced-motion: reduce) {
@@ -370,7 +398,15 @@ strong { font-weight: 600; }
 .site-header:not(.scrolled) .btn-ghost:hover { border-color: var(--papel); background: rgba(236, 238, 240, .06); }
 
 /* Hamburguesa */
-.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; border-radius: var(--r-xs); }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  padding: 10px; margin-right: -6px;
+  border-radius: var(--r-xs);
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.hamburger:focus-visible { outline: 2px solid var(--senal); outline-offset: 2px; }
 .hamburger span { display: block; width: 22px; height: 2px; background: currentColor; transition: transform .3s var(--ease), opacity .2s; }
 .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
@@ -378,7 +414,7 @@ strong { font-weight: 600; }
 
 /* Navegación móvil */
 .mobile-nav {
-  display: none;
+  display: flex;
   flex-direction: column;
   position: fixed;
   top: var(--header-h); left: 0; right: 0; bottom: 0;
@@ -386,13 +422,27 @@ strong { font-weight: 600; }
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   color: var(--papel);
-  padding: clamp(20px, 5vw, 40px) clamp(20px, 5vw, 40px) 48px;
+  padding: clamp(20px, 5vw, 40px) clamp(20px, 5vw, 40px)
+           calc(48px + env(safe-area-inset-bottom, 0px));
   z-index: 99;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  /* visibility (en vez de display) para que la transicion se vea al abrir
+     y al cerrar, y para que los enlaces no sean enfocables estando oculto */
+  visibility: hidden;
+  opacity: 0;
   transform: translateX(100%);
-  transition: transform .38s var(--ease-out);
+  transition: transform .38s var(--ease-out), opacity .28s ease, visibility 0s linear .38s;
 }
-.mobile-nav.open { display: flex; transform: translateX(0); }
+.mobile-nav.open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(0);
+  transition: transform .38s var(--ease-out), opacity .2s ease, visibility 0s;
+}
+/* En escritorio nunca debe existir, aunque quedara la clase .open */
+@media (min-width: 861px) { .mobile-nav { display: none; } }
 .mobile-nav a {
   padding: 18px 0;
   border-bottom: 1px solid var(--linea-dark);
@@ -414,24 +464,62 @@ strong { font-weight: 600; }
   transition: width .1s linear;
 }
 
-/* WhatsApp flotante */
+/* WhatsApp flotante
+   Circulo perfecto + glifo blanco completo y centrado. El SVG lleva medida
+   propia y flex:none para que ninguna regla global (img, svg { max-width })
+   pueda encogerlo o recortarlo, y el contenedor no recorta (overflow visible)
+   para no cortar el rabito de la burbuja. */
 .wa-fab {
   position: fixed;
-  bottom: 26px; right: 26px;
+  right: calc(20px + env(safe-area-inset-right, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   z-index: 200;
   width: 56px; height: 56px;
+  flex: none;
   border-radius: 50%;
   background: #25D366;
-  display: flex; align-items: center; justify-content: center;
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
   box-shadow: 0 6px 24px rgba(37, 211, 102, .42);
-  transition: transform .3s var(--ease), box-shadow .3s;
+  transition: transform .3s var(--ease), box-shadow .3s, opacity .25s;
   animation: fab-pulse 3s ease-in-out infinite;
 }
-.wa-fab:hover { transform: scale(1.1); animation: none; box-shadow: 0 10px 34px rgba(37, 211, 102, .55); }
-.wa-fab svg { width: 28px; height: 28px; fill: #fff; }
+.wa-fab svg {
+  display: block;
+  width: 28px; height: 28px;
+  min-width: 28px; min-height: 28px;
+  max-width: none;
+  flex: none;
+  fill: #fff;
+  overflow: visible;
+  pointer-events: none;
+}
+.wa-fab:hover { transform: scale(1.08); animation: none; box-shadow: 0 10px 34px rgba(37, 211, 102, .55); }
+.wa-fab:active { transform: scale(.96); }
+.wa-fab:focus-visible { outline: 3px solid var(--papel); outline-offset: 3px; animation: none; }
 @keyframes fab-pulse {
   0%, 100% { box-shadow: 0 6px 24px rgba(37, 211, 102, .42), 0 0 0 0 rgba(37, 211, 102, .34); }
   50%      { box-shadow: 0 6px 24px rgba(37, 211, 102, .42), 0 0 0 12px rgba(37, 211, 102, 0); }
+}
+/* Con el menu movil abierto no debe flotar por encima del overlay */
+body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
+/* Pantallas estrechas (320–400px): algo mas compacto y pegado al borde */
+@media (max-width: 400px) {
+  .wa-fab {
+    width: 52px; height: 52px;
+    right: calc(14px + env(safe-area-inset-right, 0px));
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  }
+  .wa-fab svg { width: 26px; height: 26px; min-width: 26px; min-height: 26px; }
+}
+/* En dispositivos tactiles el hover no aplica: sin escala residual */
+@media (hover: none) {
+  .wa-fab:hover { transform: none; animation: fab-pulse 3s ease-in-out infinite; }
 }
 
 /* Responsive */
@@ -448,6 +536,7 @@ strong { font-weight: 600; }
 
 .hero {
   position: relative;
+  min-height: 100vh;      /* fallback navegadores sin svh */
   min-height: 100svh;
   display: flex;
   align-items: center;
@@ -574,6 +663,7 @@ strong { font-weight: 600; }
   box-shadow: 0 8px 26px rgba(0, 0, 0, .28);
   white-space: nowrap;
   will-change: transform;
+  z-index: 3;
   transition: border-color .3s, box-shadow .3s;
 }
 .float-chip:hover { border-color: rgba(31, 75, 216, .5); }
@@ -582,13 +672,17 @@ strong { font-weight: 600; }
 .dot-papel { background: var(--papel); }
 .dot-gris  { background: var(--gris); }
 
-.fc-1 { top: 4%;  left: 6%; }
-.fc-2 { top: 15%; right: 2%; }
-.fc-3 { top: 40%; left: -2%; }
-.fc-4 { top: 62%; left: 20%; }
-.fc-5 { top: 48%; right: -4%; }
-.fc-6 { bottom: 6%; right: 10%; }
-.fc-7 { bottom: 16%; left: 4%; }
+/* Los chips flotan POR DELANTE de la tarjeta central (z-index 3): antes
+   quedaban por detrás (la tarjeta usa z-index 2) y tres de ellos se veían
+   cortados a media palabra. Las posiciones se reparten alrededor de la
+   tarjeta para que el solape quede solo en los bordes. */
+.fc-1 { top: 2%;  left: 4%; }
+.fc-2 { top: 13%; right: 0; }
+.fc-3 { top: 40%; left: -3%; }
+.fc-4 { bottom: 17%; left: 0; }
+.fc-5 { bottom: 0;  right: 0; }
+.fc-6 { bottom: 17%; right: 0; }
+.fc-7 { top: 1%; left: 36%; }
 
 /* Responsive */
 @media (max-width: 980px) {
@@ -679,6 +773,7 @@ strong { font-weight: 600; }
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-top: clamp(36px, 5vh, 56px);
+  perspective: 1000px;   /* el tilt por hover necesita perspectiva */
 }
 .cap-card {
   background: var(--blanco);
@@ -1039,6 +1134,7 @@ strong { font-weight: 600; }
   transition: background .28s, color .28s, box-shadow .28s;
 }
 .form-toggle-btn.active { background: var(--tinta); color: var(--papel); box-shadow: var(--sh-sm); }
+.form-toggle-btn:hover:not(.active) { color: var(--tinta); }
 .form-toggle-btn:focus-visible { outline: 2px solid var(--senal); outline-offset: 2px; }
 
 .form-panel { display: none; }
@@ -1056,9 +1152,17 @@ strong { font-weight: 600; }
   border: 1.5px solid var(--linea);
   border-radius: var(--r-sm);
   padding: 12px 14px;
+  width: 100%;
+  max-width: 100%;
   outline: none;
+  -webkit-appearance: none;
   appearance: none;
   transition: border-color .2s, box-shadow .2s;
+}
+/* iOS hace zoom automatico al enfocar un campo de menos de 16px */
+@media (max-width: 767px) {
+  .field input, .field select, .field textarea { font-size: 16px; padding: 13px 14px; }
+  .field select { padding-right: 38px; }
 }
 .field select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%2379828E' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
@@ -1072,7 +1176,9 @@ strong { font-weight: 600; }
 .field input:invalid:not(:placeholder-shown) { border-color: var(--neg); }
 
 .form-submit { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 30px; }
-.form-submit .btn { padding: 15px 36px; }
+.form-submit .btn { padding: 15px 36px; max-width: 100%; white-space: normal; text-align: center; }
+.voice-form[aria-busy="true"] { cursor: progress; }
+.form-direct { text-align: center; }
 .form-direct {
   font-family: var(--font-mono);
   font-size: .78rem;
@@ -1118,7 +1224,9 @@ strong { font-weight: 600; }
 .site-footer {
   background: var(--tinta);
   color: var(--papel);
-  padding: clamp(52px, 7vh, 76px) 0 40px;
+  /* El pie reserva abajo el alto del botón flotante de WhatsApp para que
+     este nunca tape la firma "comunica // conecta // crece". */
+  padding: clamp(52px, 7vh, 76px) 0 calc(84px + env(safe-area-inset-bottom, 0px));
 }
 .site-footer .container,
 .footer-inner { max-width: var(--maxw); margin-inline: auto; padding-inline: clamp(20px, 4vw, 48px); }
@@ -1175,6 +1283,7 @@ strong { font-weight: 600; }
 }
 .footer-copyright { font-size: .78rem; color: var(--papel-mute); }
 .footer-tagline-mono { font-family: var(--font-mono); letter-spacing: .1em; }
+@media (min-width: 521px) { .footer-tagline-mono { padding-right: 62px; } }
 
 @media (max-width: 860px) {
   .footer-inner { grid-template-columns: 1fr 1fr; }
@@ -1194,7 +1303,7 @@ strong { font-weight: 600; }
   <!-- WhatsApp flotante (contacto directo) -->
   <a href="https://wa.me/51972315091?text=Hola%20Vocera%2C%20me%20gustar%C3%ADa%20conocer%20el%20sistema%20Voice."
      target="_blank" rel="noopener" class="wa-fab" aria-label="Escríbenos por WhatsApp">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35m-5.42 7.4h-.01a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37A9.86 9.86 0 01.16 11.9C.16 6.44 4.6 2 10.05 2a9.87 9.87 0 016.99 2.9 9.83 9.83 0 012.89 7c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0012.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 005.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89a11.82 11.82 0 00-3.48-8.41z"/></svg>
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28" preserveAspectRatio="xMidYMid meet" fill="#FFFFFF" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
   </a>
 
   <!-- ============ HEADER ============ -->
@@ -1320,7 +1429,7 @@ strong { font-weight: 600; }
             <p class="section-body reveal d3">No trabajamos por piezas aisladas. Implementamos un sistema completo que ordena qué se dice, a quién y con qué resultado.</p>
           </div>
 
-          <ul class="pilares reveal-right d2" aria-label="Lo que sostiene la marca">
+          <ul class="pilares reveal-right d2" role="list" aria-label="Lo que sostiene la marca">
             <li class="pilar">
               <span class="pilar-label">Cercanía</span>
               <p class="pilar-text">Hablamos como las personas, no como una corporación distante.</p>
@@ -1368,7 +1477,7 @@ strong { font-weight: 600; }
             <div class="fase-head"><span class="fase-code">C1</span><h3 class="fase-name">Comunica</h3></div>
             <p class="fase-claim">Le damos voz a tu marca.</p>
             <p class="fase-text">Construimos el mensaje y lo expresamos con voces reales que el mercado reconoce como propias: qué se dice, quién lo dice y con qué tono.</p>
-            <ul class="fase-metrics" aria-label="Qué medimos en Comunica">
+            <ul class="fase-metrics" role="list" aria-label="Qué medimos en Comunica">
               <li>Alcance</li><li>Impresiones</li><li>CPM</li>
             </ul>
           </li>
@@ -1376,7 +1485,7 @@ strong { font-weight: 600; }
             <div class="fase-head"><span class="fase-code">C2</span><h3 class="fase-name">Conecta</h3></div>
             <p class="fase-claim">Llegamos a las personas.</p>
             <p class="fase-text">Diseñamos cómo y dónde tu voz encuentra a su público objetivo. El mensaje correcto, frente a las personas correctas, en el momento correcto.</p>
-            <ul class="fase-metrics" aria-label="Qué medimos en Conecta">
+            <ul class="fase-metrics" role="list" aria-label="Qué medimos en Conecta">
               <li>CTR</li><li>Engagement</li><li>Retención</li>
             </ul>
           </li>
@@ -1384,7 +1493,7 @@ strong { font-weight: 600; }
             <div class="fase-head"><span class="fase-code">C3</span><h3 class="fase-name">Crece</h3></div>
             <p class="fase-claim">Escalamos lo que funciona.</p>
             <p class="fase-text">Medimos cada señal con escrutinio de datos avanzado y dashboards en tiempo real. La decisión deja de ser intuición y pasa a ser información.</p>
-            <ul class="fase-metrics" aria-label="Qué medimos en Crece">
+            <ul class="fase-metrics" role="list" aria-label="Qué medimos en Crece">
               <li>CPA</li><li>Conversión</li><li>ROAS</li>
             </ul>
           </li>
@@ -1526,20 +1635,20 @@ strong { font-weight: 600; }
 
         <div class="form-wrapper reveal d2">
           <div class="form-toggle" role="tablist" aria-label="Tipo de contacto">
-            <button class="form-toggle-btn active" id="toggle-marca" role="tab" aria-selected="true" aria-controls="form-marca" data-form="marca">Soy una marca</button>
-            <button class="form-toggle-btn" id="toggle-creador" role="tab" aria-selected="false" aria-controls="form-creador" data-form="creador">Soy creador</button>
+            <button type="button" class="form-toggle-btn active" id="toggle-marca" role="tab" aria-selected="true" aria-controls="form-marca" tabindex="0" data-form="marca">Soy una marca</button>
+            <button type="button" class="form-toggle-btn" id="toggle-creador" role="tab" aria-selected="false" aria-controls="form-creador" tabindex="-1" data-form="creador">Soy creador</button>
           </div>
 
           <!-- Panel Marca (corporativo) -->
           <div class="form-panel active" id="form-marca" role="tabpanel" aria-labelledby="toggle-marca">
             <form class="voice-form" data-profile="marca" novalidate>
               <div class="form-grid">
-                <div class="field"><label for="m-nombre">Nombre de la marca</label><input type="text" id="m-nombre" name="marca" placeholder="Tu marca" required maxlength="200" /></div>
+                <div class="field"><label for="m-nombre">Nombre de la marca</label><input type="text" id="m-nombre" name="marca" placeholder="Tu marca" required maxlength="200" autocomplete="organization" /></div>
                 <div class="field"><label for="m-sector">Sector</label><select id="m-sector" name="sector"><option value="">Selecciona tu sector</option><option>Corporativo / B2B</option><option>Retail / E-commerce</option><option>Tecnología</option><option>Salud y bienestar</option><option>Educación</option><option>Finanzas</option><option>Inmobiliaria</option><option>Consumo masivo</option><option>Servicios</option><option>Otro</option></select></div>
-                <div class="field field-full"><label for="m-web">Web o redes sociales</label><input type="text" id="m-web" name="web" placeholder="https://tumarca.com o @tumarca" maxlength="200" /></div>
+                <div class="field field-full"><label for="m-web">Web o redes sociales</label><input type="text" id="m-web" name="web" placeholder="https://tumarca.com o @tumarca" maxlength="200" autocomplete="url" /></div>
                 <div class="field"><label for="m-objetivo">Objetivo principal</label><select id="m-objetivo" name="objetivo"><option value="">Selecciona un objetivo</option><option>Dar voz a la marca</option><option>Conectar con un público</option><option>Aumentar conversión / ventas</option><option>Lanzar un producto o servicio</option><option>Ordenar la comunicación</option><option>Crecer con datos</option><option>Otro</option></select></div>
                 <div class="field"><label for="m-publico">Público que quieres alcanzar</label><input type="text" id="m-publico" name="publico" placeholder="Ej. gerentes, jóvenes profesionales…" maxlength="200" /></div>
-                <div class="field field-full"><label for="m-email">Correo de contacto</label><input type="email" id="m-email" name="email" placeholder="hola@tumarca.com" required maxlength="200" /></div>
+                <div class="field field-full"><label for="m-email">Correo de contacto</label><input type="email" id="m-email" name="email" placeholder="hola@tumarca.com" required maxlength="200" autocomplete="email" inputmode="email" spellcheck="false" /></div>
                 <div class="field field-full"><label for="m-mensaje">Mensaje adicional</label><textarea id="m-mensaje" name="mensaje" placeholder="Cuéntanos qué quieres lograr con tu marca…" maxlength="2000"></textarea></div>
               </div>
               <div class="form-submit">
@@ -1553,12 +1662,12 @@ strong { font-weight: 600; }
           <div class="form-panel" id="form-creador" role="tabpanel" aria-labelledby="toggle-creador" hidden>
             <form class="voice-form" data-profile="creador" novalidate>
               <div class="form-grid">
-                <div class="field"><label for="c-nombre">Nombre</label><input type="text" id="c-nombre" name="nombre" placeholder="Tu nombre" required maxlength="200" /></div>
+                <div class="field"><label for="c-nombre">Nombre</label><input type="text" id="c-nombre" name="nombre" placeholder="Tu nombre" required maxlength="200" autocomplete="name" /></div>
                 <div class="field"><label for="c-redes">Redes sociales</label><input type="text" id="c-redes" name="redes" placeholder="@tuusuario" maxlength="200" /></div>
-                <div class="field"><label for="c-ciudad">Ciudad / País</label><input type="text" id="c-ciudad" name="ciudad" placeholder="Lima, Perú" maxlength="200" /></div>
+                <div class="field"><label for="c-ciudad">Ciudad / País</label><input type="text" id="c-ciudad" name="ciudad" placeholder="Lima, Perú" maxlength="200" autocomplete="address-level2" /></div>
                 <div class="field"><label for="c-tipo">Tipo de contenido</label><select id="c-tipo" name="tipo"><option value="">Selecciona un tipo</option><option>Video corto (Reels, TikTok)</option><option>Fotografía</option><option>Video largo (YouTube)</option><option>Podcast / Audio</option><option>Locución / Voz</option><option>Mixto</option></select></div>
                 <div class="field field-full"><label for="c-nicho">Nichos o categorías</label><input type="text" id="c-nicho" name="nicho" placeholder="Ej. corporativo, lifestyle, tecnología…" maxlength="200" /></div>
-                <div class="field field-full"><label for="c-email">Correo de contacto</label><input type="email" id="c-email" name="email" placeholder="hola@tuemail.com" required maxlength="200" /></div>
+                <div class="field field-full"><label for="c-email">Correo de contacto</label><input type="email" id="c-email" name="email" placeholder="hola@tuemail.com" required maxlength="200" autocomplete="email" inputmode="email" spellcheck="false" /></div>
                 <div class="field field-full"><label for="c-mensaje">Cuéntanos sobre ti</label><textarea id="c-mensaje" name="mensaje" placeholder="Qué te hace una voz con criterio…" maxlength="2000"></textarea></div>
               </div>
               <div class="form-submit">
@@ -1595,7 +1704,7 @@ strong { font-weight: 600; }
         </div>
         <p class="footer-firma">Conectar para crecer</p>
         <p class="footer-desc">Partner Comunicativo. Convertimos voces reales en la voz de tu marca para comunicar, conectar y crecer con datos.</p>
-        <ul class="footer-social" aria-label="Redes sociales">
+        <ul class="footer-social" role="list" aria-label="Redes sociales">
           <li><a href="https://www.instagram.com/vocera.peru?igsh=MWpydzRjOGtvMHBvZw%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 01-1.38-.9 3.72 3.72 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.5.01-4.74.07-1.14.05-1.76.24-2.17.4-.55.21-.94.47-1.35.88-.41.41-.67.8-.88 1.35-.16.41-.35 1.03-.4 2.17-.06 1.24-.07 1.59-.07 4.74s.01 3.5.07 4.74c.05 1.14.24 1.76.4 2.17.21.55.47.94.88 1.35.41.41.8.67 1.35.88.41.16 1.03.35 2.17.4 1.24.06 1.59.07 4.74.07s3.5-.01 4.74-.07c1.14-.05 1.76-.24 2.17-.4.55-.21.94-.47 1.35-.88.41-.41.67-.8.88-1.35.16-.41.35-1.03.4-2.17.06-1.24.07-1.59.07-4.74s-.01-3.5-.07-4.74c-.05-1.14-.24-1.76-.4-2.17a3.63 3.63 0 00-.88-1.35 3.63 3.63 0 00-1.35-.88c-.41-.16-1.03-.35-2.17-.4-1.24-.06-1.59-.07-4.74-.07zm0 2.76a5.3 5.3 0 110 10.6 5.3 5.3 0 010-10.6zm0 8.74a3.44 3.44 0 100-6.88 3.44 3.44 0 000 6.88zm6.75-8.94a1.24 1.24 0 11-2.48 0 1.24 1.24 0 012.48 0z"/></svg>
           </a></li>
@@ -1646,10 +1755,10 @@ strong { font-weight: 600; }
   <script>
   /* =====================================================================
      CONFIGURACIÓN DEL BACKEND (Google Apps Script)
-     Pega aquí la URL del Web App que obtienes al desplegar Code.gs.
-     Ejemplo: https://script.google.com/macros/s/AKfycbx.../exec
+     Única fuente de verdad: TODOS los formularios de la página envían a
+     esta constante. No repitas la URL en ningún otro punto del archivo.
      ===================================================================== */
-  const GOOGLE_SCRIPT_URL = "PEGAR_AQUI_URL_DEL_WEB_APP";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNjBn4udDbWUTIcDjfD3ThmJVMUTFh1isf4gq8zegulG5Xwqd6g7ij7XYFny9Ns-I6/exec";
 
   /* =====================================================================
      VOCERA · nav.js
@@ -1663,48 +1772,80 @@ strong { font-weight: 600; }
     var hamburger = document.getElementById('hamburger');
     var mobileNav = document.getElementById('mobile-nav');
 
+    /* Altura real de la cabecera (no un valor fijo: cambia con el viewport) */
+    function headerH() {
+      return header && header.offsetHeight ? header.offsetHeight : 72;
+    }
+
     /* ---- Scroll: cabecera sólida + barra de progreso ---- */
     function onScroll() {
-      var y = window.scrollY || window.pageYOffset;
+      var y = window.scrollY || window.pageYOffset || 0;
       if (header) header.classList.toggle('scrolled', y > 24);
       if (progress) {
         var h = document.documentElement.scrollHeight - window.innerHeight;
-        progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+        var pct = h > 0 ? Math.min(100, Math.max(0, (y / h) * 100)) : 0;
+        progress.style.width = pct + '%';
       }
     }
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
     onScroll();
 
     /* ---- Menú móvil ---- */
-    function closeNav() {
+    function setNav(open) {
       if (!mobileNav) return;
-      mobileNav.classList.remove('open');
-      if (hamburger) { hamburger.classList.remove('open'); hamburger.setAttribute('aria-expanded', 'false'); }
-      document.body.style.overflow = '';
-    }
-    if (hamburger && mobileNav) {
-      hamburger.addEventListener('click', function () {
-        var open = mobileNav.classList.toggle('open');
+      mobileNav.classList.toggle('open', open);
+      mobileNav.setAttribute('aria-hidden', String(!open));
+      if (hamburger) {
         hamburger.classList.toggle('open', open);
         hamburger.setAttribute('aria-expanded', String(open));
-        document.body.style.overflow = open ? 'hidden' : '';
+        hamburger.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      }
+      document.body.classList.toggle('nav-open', open);
+      /* El scroll del body SIEMPRE se libera al cerrar */
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    function closeNav() { setNav(false); }
+
+    if (mobileNav) mobileNav.setAttribute('aria-hidden', 'true');
+    closeNav(); // estado inicial limpio (por si se recarga con el menú abierto)
+
+    if (hamburger && mobileNav) {
+      hamburger.addEventListener('click', function () {
+        setNav(!mobileNav.classList.contains('open'));
       });
     }
     document.querySelectorAll('[data-close-nav]').forEach(function (el) {
       el.addEventListener('click', closeNav);
     });
+    /* Escape cierra el menú y devuelve el foco a la hamburguesa */
+    document.addEventListener('keydown', function (e) {
+      if ((e.key === 'Escape' || e.key === 'Esc') && mobileNav && mobileNav.classList.contains('open')) {
+        closeNav();
+        if (hamburger) hamburger.focus();
+      }
+    });
+    /* Al pasar a escritorio (o rotar) el menú se cierra y el body se libera */
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 860 && mobileNav && mobileNav.classList.contains('open')) closeNav();
+    }, { passive: true });
+    window.addEventListener('pageshow', closeNav);
 
     /* ---- Scroll suave con compensación de la cabecera ---- */
-    var headerH = 72;
     document.querySelectorAll('a[href^="#"]').forEach(function (link) {
       link.addEventListener('click', function (e) {
         var id = link.getAttribute('href');
-        if (id === '#' || id.length < 2) return;
-        var target = document.querySelector(id);
+        if (!id || id === '#' || id.length < 2) return;
+        var target;
+        try { target = document.querySelector(id); } catch (err) { return; }
         if (!target) return;
         e.preventDefault();
-        var top = target.getBoundingClientRect().top + window.scrollY - headerH + 1;
-        window.scrollTo({ top: top, behavior: 'smooth' });
+        if (mobileNav && mobileNav.classList.contains('open')) closeNav();
+        var top = target.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0) - headerH() + 1;
+        if (typeof window.scrollTo === 'function') {
+          try { window.scrollTo({ top: top, behavior: 'smooth' }); }
+          catch (err) { window.scrollTo(0, top); }
+        }
         if (history.replaceState) history.replaceState(null, '', id);
       });
     });
@@ -1770,7 +1911,7 @@ strong { font-weight: 600; }
       }, { passive: true });
     }
 
-    if (reduce || !visual || !chips.length) return;
+    if (reduce || !hero || !visual || !chips.length) return;
     var wide = window.matchMedia('(min-width: 981px)');
     if (!wide.matches) return;
 
@@ -1852,6 +1993,7 @@ strong { font-weight: 600; }
         var on = btn.dataset.form === profile;
         btn.classList.toggle('active', on);
         btn.setAttribute('aria-selected', String(on));
+        btn.setAttribute('tabindex', on ? '0' : '-1');
       });
       Object.keys(panels).forEach(function (key) {
         var panel = panels[key];
@@ -1861,20 +2003,46 @@ strong { font-weight: 600; }
         if (on) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
       });
     }
-    toggles.forEach(function (btn) {
+    toggles.forEach(function (btn, i) {
       btn.addEventListener('click', function () { switchForm(btn.dataset.form); });
+      /* Navegación por teclado del tablist (patrón WAI-ARIA) */
+      btn.addEventListener('keydown', function (e) {
+        var k = e.key, last = toggles.length - 1, next = null;
+        if (k === 'ArrowRight' || k === 'ArrowDown') next = i === last ? 0 : i + 1;
+        else if (k === 'ArrowLeft' || k === 'ArrowUp') next = i === 0 ? last : i - 1;
+        else if (k === 'Home') next = 0;
+        else if (k === 'End') next = last;
+        if (next === null) return;
+        e.preventDefault();
+        switchForm(toggles[next].dataset.form);
+        toggles[next].focus();
+      });
     });
 
     /* ---- Toast ---- */
     var toast = document.getElementById('toast');
     var toastTimer;
-    function showToast(msg, isError) {
+    function showToast(msg, isError, action) {
       if (!toast) return;
-      toast.textContent = msg;
+      toast.textContent = '';
+      toast.appendChild(document.createTextNode(action && action.url ? msg + ' ' : msg));
+      if (action && action.url) {
+        var a = document.createElement('a');
+        a.href = action.url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'toast-action';
+        a.textContent = action.label || 'Abrir';
+        toast.appendChild(a);
+      }
       toast.classList.toggle('toast-error', !!isError);
+      toast.classList.toggle('has-action', !!(action && action.url));
       toast.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 4200);
+      toastTimer = setTimeout(function () {
+        toast.classList.remove('show');
+        toast.classList.remove('has-action');
+      }, action && action.url ? 10000 : 4200);
     }
 
     /* ---- Utilidades ---- */
@@ -1882,9 +2050,12 @@ strong { font-weight: 600; }
       var el = form.querySelector('[name="' + name + '"]');
       return el && el.value ? el.value.trim() : '';
     }
-    function line(label, value) { return value ? '%0A*' + label + ':* ' + encodeURIComponent(value) : ''; }
+    /* El mensaje se compone en texto plano y se codifica UNA sola vez al
+       final (antes se mezclaba texto sin codificar con trozos codificados,
+       lo que dejaba espacios y asteriscos crudos dentro de la URL). */
+    function line(label, value) { return value ? '\n*' + label + ':* ' + value : ''; }
 
-    function openWhatsApp(profile, data) {
+    function waUrl(profile, data) {
       var msg;
       if (profile === 'marca') {
         msg = 'Hola Vocera, soy una *MARCA* y quiero implementar el sistema Voice:'
@@ -1905,7 +2076,17 @@ strong { font-weight: 600; }
           + line('Correo', data.email)
           + line('Mensaje', data.mensaje);
       }
-      window.open('https://wa.me/' + PHONE + '?text=' + msg, '_blank', 'noopener');
+      return 'https://wa.me/' + PHONE + '?text=' + encodeURIComponent(msg);
+    }
+
+    /* Abre WhatsApp tras guardar en Sheets. La apertura ocurre dentro de una
+       promesa (fuera del gesto del usuario), así que algunos navegadores la
+       bloquean: en ese caso no se pierde el contacto, se ofrece el enlace. */
+    function openWhatsApp(profile, data) {
+      var url = waUrl(profile, data);
+      var win = null;
+      try { win = window.open(url, '_blank', 'noopener'); } catch (err) { win = null; }
+      return { opened: !!win, url: url };
     }
 
     /* ---- Envío a Google Sheets vía Google Apps Script ---- */
@@ -1913,13 +2094,32 @@ strong { font-weight: 600; }
       // Content-Type se omite a propósito: un body string sin cabecera
       // explícita viaja como "text/plain", lo que evita el preflight OPTIONS
       // que los Web Apps de Apps Script no manejan de forma nativa.
-      return fetch(GOOGLE_SCRIPT_URL, {
+      var options = {
         method: 'POST',
+        redirect: 'follow',
         body: JSON.stringify(payload)
-      }).then(function (res) {
-        if (!res.ok) throw new Error('Respuesta HTTP ' + res.status);
-        return res.json();
-      });
+      };
+
+      // Tiempo límite: si la red se cuelga, el botón no queda inutilizado.
+      var controller = null, timer = null;
+      if (typeof AbortController === 'function') {
+        controller = new AbortController();
+        options.signal = controller.signal;
+        timer = setTimeout(function () { controller.abort(); }, 20000);
+      }
+
+      return fetch(GOOGLE_SCRIPT_URL, options)
+        .then(function (res) {
+          if (!res.ok) throw new Error('Respuesta HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (result) {
+          if (timer) clearTimeout(timer);
+          return result;
+        }, function (err) {
+          if (timer) clearTimeout(timer);
+          throw err;
+        });
     }
 
     /* ---- Envío de formularios ---- */
@@ -1933,12 +2133,6 @@ strong { font-weight: 600; }
         if (submitting[profile]) return; // ya hay un envío en curso
 
         if (!form.checkValidity()) { form.reportValidity(); return; }
-
-        if (GOOGLE_SCRIPT_URL.indexOf('PEGAR_AQUI') !== -1) {
-          console.error('Vocera: falta configurar GOOGLE_SCRIPT_URL con la URL del Web App de Apps Script.');
-          showToast('Formulario no configurado todavía. Escríbenos por WhatsApp.', true);
-          return;
-        }
 
         var payload = profile === 'marca'
           ? {
@@ -1965,25 +2159,44 @@ strong { font-weight: 600; }
         var button = form.querySelector('button[type="submit"]');
         var originalText = button ? button.textContent : '';
 
+        /* Bloqueo de doble envío: bandera + botón deshabilitado + aria-busy */
         submitting[profile] = true;
+        form.setAttribute('aria-busy', 'true');
         if (button) { button.disabled = true; button.textContent = 'Enviando…'; }
+
+        function release() {
+          submitting[profile] = false;
+          form.removeAttribute('aria-busy');
+          if (button) { button.disabled = false; button.textContent = originalText; }
+        }
 
         submitToSheet(payload)
           .then(function (result) {
             if (!result || !result.success) {
               throw new Error(result && result.error ? result.error : 'No se pudo guardar el registro.');
             }
-            showToast('¡Gracias! Te contactaremos pronto. Abriendo WhatsApp…');
-            openWhatsApp(profile, payload);
+            /* 1) Guardado en Google Sheets  →  2) confirmación  →  3) WhatsApp */
+            var wa = openWhatsApp(profile, payload);
+            if (wa.opened) {
+              showToast('¡Gracias! Te contactaremos pronto. Abriendo WhatsApp…');
+            } else {
+              showToast('¡Gracias! Ya registramos tus datos.', false,
+                        { url: wa.url, label: 'Abrir WhatsApp' });
+            }
             form.reset();
+            release();
           })
           .catch(function (err) {
             console.error('Vocera: error al enviar el formulario.', err);
-            showToast('Hubo un problema al enviar. Intenta nuevamente o escríbenos por WhatsApp.', true);
-          })
-          .finally(function () {
-            submitting[profile] = false;
-            if (button) { button.disabled = false; button.textContent = originalText; }
+            var aborted = err && (err.name === 'AbortError');
+            showToast(
+              aborted
+                ? 'El envío tardó demasiado. Vuelve a intentarlo o escríbenos por WhatsApp.'
+                : 'Hubo un problema al enviar. Intenta nuevamente o escríbenos por WhatsApp.',
+              true,
+              { url: waUrl(profile, payload), label: 'Escribir por WhatsApp' }
+            );
+            release();
           });
       });
     });
