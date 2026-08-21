@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vocera — Partner Comunicativo. El sistema Voice convierte voces reales en la voz de tu marca: comunica, conecta y crece, con datos en tiempo real." />
+  <meta name="theme-color" content="#12161C" />
+
+  <title>Vocera — Le damos voz a tu marca · Sistema Voice</title>
+
+  <!-- Favicon de marca -->
+  <link rel="icon" type="image/svg+xml" href="assets/vocera-favicon.svg" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Vocera — Le damos voz a tu marca" />
+  <meta property="og:description" content="Partner Comunicativo. Un sistema que comunica, conecta y crece, con datos en tiempo real." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_PE" />
+
+  <style>
+/* =====================================================================
+   VOCERA · base.css
+   Reset · tokens de marca (:root) · tipografía global · componentes base
+   Sistema cromático: duotono estricto (tinta + papel) + señal como acento
+   (la señal nunca domina una superficie: se usa < 10% y jamás como fondo
+   de logo — Manual de marca, "Sistema cromático").
+   ===================================================================== */
+
+/* ---------- Fuentes de marca (self-host) ---------- */
+@font-face {
+  font-family: 'Archivo';
+  src: url('css/fonts/Archivo-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('css/fonts/IBMPlexMono-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+
+/* ---------- Tokens ---------- */
+:root {
+  /* Colores de marca */
+  --tinta: #12161C;
+  --tinta-2: #171C24;   /* superficie oscura elevada */
+  --tinta-3: #1E242E;   /* tarjeta sobre fondo oscuro */
+  --senal: #1F4BD8;
+  --senal-600: #1A3EB0; /* hover */
+  --senal-300: #6D8CEC; /* señal sobre fondo oscuro */
+  --papel: #ECEEF0;
+  --papel-2: #F4F6F8;   /* papel más claro */
+  --blanco: #FFFFFF;
+  --gris: #79828E;      /* gris dato */
+  --gris-2: #9AA2AC;
+  --linea: #DCE0E5;     /* borde sobre claro */
+  --linea-2: #E6E9ED;
+
+  /* Bordes / textos sobre oscuro */
+  --linea-dark: rgba(236, 238, 240, .12);
+  --papel-soft: rgba(236, 238, 240, .60);
+  --papel-mute: rgba(236, 238, 240, .40);
+
+  /* Señal como acento translúcido */
+  --senal-tint: rgba(31, 75, 216, .08);
+  --senal-tint-2: rgba(31, 75, 216, .14);
+
+  /* Variación en datos (solo en contexto de datos) */
+  --pos: #1FA971;
+  --neg: #E5484D;
+
+  /* Tipografía */
+  --font-sans: 'Archivo', 'Helvetica Neue', Arial, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Espaciado */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+
+  /* Radios (identidad angular → radios contenidos) */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  /* Sombras (tinte frío desde la tinta) */
+  --sh-sm: 0 2px 10px rgba(18, 22, 28, .06);
+  --sh-md: 0 12px 32px rgba(18, 22, 28, .10);
+  --sh-lg: 0 26px 64px rgba(18, 22, 28, .16);
+  --sh-senal: 0 10px 30px rgba(31, 75, 216, .26);
+
+  /* Movimiento */
+  --ease: cubic-bezier(.22, .68, 0, 1.2);
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --slant: -19.8deg;   /* inclinación del isotipo (Manual de marca) */
+
+  /* Layout */
+  --maxw: 1200px;
+  --header-h: 72px;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 8px); }
+body {
+  font-family: var(--font-sans);
+  background: var(--papel);
+  color: var(--tinta);
+  line-height: 1.62;
+  font-weight: 400;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a { text-decoration: none; color: inherit; }
+ul, ol { list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button { font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+::selection { background: var(--senal); color: var(--papel); }
+
+/* ---------- Isotipo // ---------- */
+.iso { width: 26px; height: auto; color: var(--tinta); flex-shrink: 0; }
+
+/* ---------- Tipografía ---------- */
+h1, h2, h3, h4 { line-height: 1.05; letter-spacing: -.02em; font-weight: 800; }
+strong { font-weight: 600; }
+.accent { color: var(--senal); }
+.mono { font-family: var(--font-mono); font-weight: 500; }
+
+/* ---------- Layout helpers ---------- */
+.container { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: clamp(20px, 4vw, 48px); }
+
+.section { padding: clamp(72px, 10vh, 128px) 0; position: relative; }
+.section-dark { background: var(--tinta); color: var(--papel); }
+.section-dark .section-body { color: var(--papel-soft); }
+
+.section-title {
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  line-height: 1.06;
+  letter-spacing: -.028em;
+  font-weight: 800;
+  margin-bottom: var(--space-md);
+}
+.section-body {
+  font-size: clamp(.98rem, 1.15vw, 1.08rem);
+  color: var(--gris);
+  line-height: 1.72;
+  max-width: 56ch;
+}
+.section-dark .section-title { color: var(--papel); }
+
+/* ---------- Eyebrow (mono señal + marca //) ---------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--senal);
+  margin-bottom: var(--space-md);
+}
+.eyebrow-mark {
+  width: 16px; height: 3px;
+  background: var(--senal);
+  transform: skewX(var(--slant));
+  flex-shrink: 0;
+}
+.eyebrow-light { color: var(--senal-300); }
+
+/* ---------- Botones ---------- */
+.btn {
+  --btn-bg: var(--tinta);
+  --btn-fg: var(--papel);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border-radius: var(--r-sm);
+  font-family: var(--font-sans);
+  font-size: .9rem;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s var(--ease), box-shadow .25s var(--ease-out),
+              background .2s, color .2s, border-color .2s;
+}
+.btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(255, 255, 255, .12);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.btn:hover::after { opacity: 1; }
+.btn:hover { transform: translateY(-3px); }
+.btn:active { transform: translateY(-1px); }
+.btn:focus-visible { outline: 2px solid var(--senal); outline-offset: 3px; }
+.btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.btn:disabled:hover { transform: none; }
+
+.btn-tinta  { --btn-bg: var(--tinta); --btn-fg: var(--papel); box-shadow: 0 6px 20px rgba(18, 22, 28, .22); }
+.btn-tinta:hover { box-shadow: 0 12px 30px rgba(18, 22, 28, .30); }
+.btn-senal  { --btn-bg: var(--senal); --btn-fg: var(--papel); box-shadow: var(--sh-senal); }
+.btn-senal:hover { --btn-bg: var(--senal-600); }
+.btn-papel  { --btn-bg: var(--papel); --btn-fg: var(--tinta); }
+.btn-ghost  { --btn-bg: transparent; --btn-fg: var(--tinta); border-color: var(--linea); }
+.btn-ghost:hover { border-color: var(--tinta); background: var(--papel-2); }
+.btn-ghost::after { display: none; }
+.btn-outline-light { --btn-bg: transparent; --btn-fg: var(--papel); border-color: var(--linea-dark); }
+.btn-outline-light:hover { border-color: var(--papel); background: rgba(236, 238, 240, .06); }
+
+.btn-lg { padding: 16px 32px; font-size: .96rem; }
+.btn-sm { padding: 10px 18px; font-size: .82rem; }
+
+/* ---------- Voice callout (componente firma del manual) ---------- */
+.voice-callout {
+  background: var(--tinta);
+  color: var(--papel);
+  border-left: 3px solid var(--senal);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: 18px 22px;
+  margin-top: var(--space-lg);
+}
+.voice-callout-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--senal-300);
+  margin-bottom: 8px;
+}
+.voice-callout p { font-size: 1.02rem; line-height: 1.5; font-weight: 500; }
+.voice-callout strong { color: var(--papel); font-weight: 700; }
+
+/* ---------- Reveal on scroll ---------- */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-right { opacity: 0; transform: translateX(40px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.reveal-right.visible { opacity: 1; transform: none; }
+.d1 { transition-delay: .09s; }
+.d2 { transition-delay: .18s; }
+.d3 { transition-delay: .27s; }
+.d4 { transition-delay: .36s; }
+.d5 { transition-delay: .45s; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: clamp(80px, 10vh, 104px);
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--tinta);
+  color: var(--papel);
+  padding: 13px 24px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--linea-dark);
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  letter-spacing: .02em;
+  box-shadow: var(--sh-lg);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s, transform .3s var(--ease);
+  white-space: nowrap;
+  max-width: min(90vw, 420px);
+  white-space: normal;
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.toast-error { background: var(--neg); border-color: var(--neg); }
+
+/* ---------- Preferencias de movimiento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  .reveal, .reveal-right { opacity: 1 !important; transform: none !important; }
+}
+
+/* =====================================================================
+   VOCERA · header.css
+   Cabecera fija + navegación móvil + barra de progreso + WhatsApp flotante
+   La cabecera nace transparente sobre el hero oscuro (texto papel) y al
+   hacer scroll se vuelve sólida en papel (texto tinta).
+   ===================================================================== */
+
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding-inline: clamp(16px, 3vw, 40px);
+  color: var(--papel);
+  transition: background .35s var(--ease-out), box-shadow .35s, color .35s;
+}
+.site-header.scrolled {
+  background: rgba(236, 238, 240, .88);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 1px 0 var(--linea);
+  color: var(--tinta);
+}
+.header-inner {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Marca */
+.brand { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; color: inherit; }
+.brand .iso { width: 24px; color: inherit; transition: transform .4s var(--ease); }
+.brand:hover .iso { transform: skewX(calc(var(--slant) * -0.4)) scale(1.06); }
+.brand-name {
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+/* Navegación */
+.nav-links { display: flex; align-items: center; gap: clamp(18px, 2.4vw, 34px); }
+.nav-links a {
+  font-size: .86rem;
+  font-weight: 500;
+  color: inherit;
+  opacity: .82;
+  position: relative;
+  transition: opacity .2s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: -6px;
+  height: 2px; background: var(--senal);
+  transform: scaleX(0); transform-origin: right;
+  transition: transform .3s var(--ease-out);
+}
+.nav-links a:hover { opacity: 1; }
+.nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.header-ctas { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+/* En el tope (sobre hero oscuro) el botón fantasma usa borde claro */
+.site-header:not(.scrolled) .btn-ghost { color: var(--papel); border-color: var(--linea-dark); }
+.site-header:not(.scrolled) .btn-ghost:hover { border-color: var(--papel); background: rgba(236, 238, 240, .06); }
+
+/* Hamburguesa */
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; border-radius: var(--r-xs); }
+.hamburger span { display: block; width: 22px; height: 2px; background: currentColor; transition: transform .3s var(--ease), opacity .2s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Navegación móvil */
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: var(--header-h); left: 0; right: 0; bottom: 0;
+  background: rgba(18, 22, 28, .98);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  color: var(--papel);
+  padding: clamp(20px, 5vw, 40px) clamp(20px, 5vw, 40px) 48px;
+  z-index: 99;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform .38s var(--ease-out);
+}
+.mobile-nav.open { display: flex; transform: translateX(0); }
+.mobile-nav a {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--linea-dark);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--papel);
+  transition: color .2s, padding-left .2s;
+}
+.mobile-nav a:hover { color: var(--senal-300); padding-left: 8px; }
+.mobile-ctas { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+.mobile-ctas .btn { justify-content: center; padding: 15px; }
+
+/* Barra de progreso de scroll */
+.progress-bar {
+  position: fixed; top: 0; left: 0;
+  height: 3px; width: 0%;
+  z-index: 201;
+  background: linear-gradient(90deg, var(--senal), var(--senal-300));
+  transition: width .1s linear;
+}
+
+/* WhatsApp flotante */
+.wa-fab {
+  position: fixed;
+  bottom: 26px; right: 26px;
+  z-index: 200;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 24px rgba(37, 211, 102, .42);
+  transition: transform .3s var(--ease), box-shadow .3s;
+  animation: fab-pulse 3s ease-in-out infinite;
+}
+.wa-fab:hover { transform: scale(1.1); animation: none; box-shadow: 0 10px 34px rgba(37, 211, 102, .55); }
+.wa-fab svg { width: 28px; height: 28px; fill: #fff; }
+@keyframes fab-pulse {
+  0%, 100% { box-shadow: 0 6px 24px rgba(37, 211, 102, .42), 0 0 0 0 rgba(37, 211, 102, .34); }
+  50%      { box-shadow: 0 6px 24px rgba(37, 211, 102, .42), 0 0 0 12px rgba(37, 211, 102, 0); }
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .nav-links, .header-ctas { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* =====================================================================
+   VOCERA · hero.css
+   Hero oscuro con el motivo // de marca, tarjeta central con isotipo +
+   onda de voz (ecualizador), chips flotantes con parallax y orbes señal.
+   ===================================================================== */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  background: var(--tinta);
+  color: var(--papel);
+  overflow: hidden;
+  padding: calc(var(--header-h) + clamp(32px, 6vh, 72px)) 0 clamp(56px, 8vh, 96px);
+}
+
+/* ---- Fondo animado ---- */
+.hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+.ambient-orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+.orb-1 {
+  width: 620px; height: 620px; top: -12%; right: -8%;
+  background: radial-gradient(circle, rgba(31, 75, 216, .38), transparent 70%);
+  animation: drift-1 15s ease-in-out infinite;
+}
+.orb-2 {
+  width: 480px; height: 480px; bottom: -18%; left: -10%;
+  background: radial-gradient(circle, rgba(31, 75, 216, .16), transparent 70%);
+  animation: drift-2 19s ease-in-out infinite;
+}
+@keyframes drift-1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-44px, 30px) scale(1.12); } }
+@keyframes drift-2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(36px, -26px) scale(1.08); } }
+
+/* Motivo // gigante (marca de agua, como la portada del manual) */
+.hero-slashes { position: absolute; inset: 0; width: 100%; height: 100%; }
+.slash { transform-box: fill-box; transform-origin: center; }
+.slash-a { fill: rgba(236, 238, 240, .035); animation: slash-drift-a 22s ease-in-out infinite; }
+.slash-b { fill: rgba(31, 75, 216, .07); animation: slash-drift-b 26s ease-in-out infinite; }
+@keyframes slash-drift-a { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(14px); } }
+@keyframes slash-drift-b { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+
+/* ---- Contenido ---- */
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  align-items: center;
+  gap: clamp(40px, 6vw, 84px);
+}
+
+.hero-title {
+  font-size: clamp(2.7rem, 6.4vw, 5rem);
+  line-height: .98;
+  letter-spacing: -.035em;
+  font-weight: 800;
+  color: var(--papel);
+  margin-bottom: clamp(18px, 2.6vh, 28px);
+}
+.hero-body {
+  font-size: clamp(1rem, 1.25vw, 1.12rem);
+  color: var(--papel-soft);
+  max-width: 46ch;
+  line-height: 1.72;
+}
+.hero-body strong { color: var(--papel); font-weight: 600; }
+.hero-ctas { display: flex; align-items: center; gap: 12px; margin-top: clamp(22px, 3vh, 32px); flex-wrap: wrap; }
+.hero-sub { font-size: .82rem; color: var(--papel-mute); margin-top: 16px; font-family: var(--font-mono); letter-spacing: .01em; }
+.hero .voice-callout { background: var(--tinta-2); max-width: 44ch; }
+
+/* ---- Visual ---- */
+.hero-visual { position: relative; height: clamp(400px, 52vh, 540px); perspective: 900px; }
+
+.hero-card {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: clamp(230px, 24vw, 280px);
+  background: linear-gradient(160deg, var(--tinta-3), var(--tinta-2));
+  border: 1px solid var(--linea-dark);
+  border-radius: var(--r-xl);
+  padding: clamp(30px, 3.2vw, 42px) clamp(26px, 3vw, 36px);
+  text-align: center;
+  box-shadow: var(--sh-lg);
+  will-change: transform;
+}
+.hero-card-iso { width: 60px; margin: 0 auto; color: var(--papel); animation: iso-pulse 3.6s ease-in-out infinite; }
+@keyframes iso-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .78; transform: scale(1.04); } }
+
+/* Onda de voz / ecualizador */
+.waveform { display: flex; align-items: flex-end; justify-content: center; gap: 4px; height: 34px; margin: 20px auto 0; }
+.waveform span {
+  width: 4px; border-radius: 2px;
+  background: var(--papel-soft);
+  animation: wave 1.25s ease-in-out infinite;
+}
+.waveform span:nth-child(3n) { background: var(--senal-300); }
+.waveform span:nth-child(1) { animation-delay: -1.1s; }
+.waveform span:nth-child(2) { animation-delay: -0.9s; }
+.waveform span:nth-child(3) { animation-delay: -0.7s; }
+.waveform span:nth-child(4) { animation-delay: -0.5s; }
+.waveform span:nth-child(5) { animation-delay: -0.3s; }
+.waveform span:nth-child(6) { animation-delay: -0.15s; }
+.waveform span:nth-child(7) { animation-delay: -0.35s; }
+.waveform span:nth-child(8) { animation-delay: -0.6s; }
+.waveform span:nth-child(9) { animation-delay: -0.85s; }
+@keyframes wave { 0%, 100% { height: 8px; } 50% { height: 32px; } }
+
+.hero-card-divider { width: 30px; height: 2px; background: var(--senal); margin: 20px auto 12px; }
+.hero-card-tag { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--papel-mute); }
+
+/* Chips flotantes */
+.float-chip {
+  position: absolute;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 15px;
+  background: rgba(23, 28, 36, .72);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--linea-dark);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  letter-spacing: .01em;
+  color: var(--papel);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, .28);
+  white-space: nowrap;
+  will-change: transform;
+  transition: border-color .3s, box-shadow .3s;
+}
+.float-chip:hover { border-color: rgba(31, 75, 216, .5); }
+.chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot-senal { background: var(--senal); }
+.dot-papel { background: var(--papel); }
+.dot-gris  { background: var(--gris); }
+
+.fc-1 { top: 4%;  left: 6%; }
+.fc-2 { top: 15%; right: 2%; }
+.fc-3 { top: 40%; left: -2%; }
+.fc-4 { top: 62%; left: 20%; }
+.fc-5 { top: 48%; right: -4%; }
+.fc-6 { bottom: 6%; right: 10%; }
+.fc-7 { bottom: 16%; left: 4%; }
+
+/* Responsive */
+@media (max-width: 980px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .hero-body, .hero .voice-callout { max-width: 100%; }
+}
+
+/* =====================================================================
+   VOCERA · marquee.css · Cinta de vocabulario de marca (mono, en bucle)
+   ===================================================================== */
+
+.marquee-bar {
+  background: var(--tinta);
+  color: var(--papel);
+  border-block: 1px solid var(--linea-dark);
+  padding: 16px 0;
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+}
+.marquee-bar:hover .marquee-track { animation-play-state: paused; }
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: 34px;
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--papel-soft);
+  border-right: 1px solid var(--linea-dark);
+}
+.marquee-sep { color: var(--senal-300); margin-inline: 10px; letter-spacing: 0; }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* =====================================================================
+   VOCERA · esencia.css · "Qué es Vocera" + los 3 pilares de marca
+   ===================================================================== */
+
+.esencia { background: var(--papel); }
+.esencia-grid {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: clamp(40px, 6vw, 80px);
+  align-items: center;
+}
+
+.pilares { display: flex; flex-direction: column; gap: 14px; }
+.pilar {
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+  border-left: 3px solid var(--linea);
+  border-radius: var(--r-md);
+  padding: 22px 24px;
+  transition: transform .3s var(--ease), box-shadow .3s, border-color .3s;
+}
+.pilar:hover { transform: translateX(6px); box-shadow: var(--sh-md); border-left-color: var(--senal); }
+.pilar-accent { border-left-color: var(--senal); background: linear-gradient(100deg, var(--senal-tint), var(--blanco) 60%); }
+.pilar-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--senal);
+  margin-bottom: 8px;
+}
+.pilar-text { font-size: .98rem; color: var(--tinta); line-height: 1.5; font-weight: 500; }
+
+@media (max-width: 900px) {
+  .esencia-grid { grid-template-columns: 1fr; gap: 36px; }
+}
+
+/* =====================================================================
+   VOCERA · capacidades.css · Grid "Qué hacemos" (tarjetas de capacidad)
+   ===================================================================== */
+
+.capacidades { background: var(--papel-2); }
+
+.cap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: clamp(36px, 5vh, 56px);
+}
+.cap-card {
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: var(--r-md);
+  padding: clamp(24px, 2.6vw, 32px);
+  position: relative;
+  overflow: hidden;
+  transition: transform .35s var(--ease), box-shadow .35s;
+}
+.cap-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--senal);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .35s var(--ease);
+}
+.cap-card:hover { transform: translateY(-6px); box-shadow: var(--sh-md); }
+.cap-card:hover::before { transform: scaleX(1); }
+.cap-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: var(--r-sm);
+  background: var(--senal-tint);
+  color: var(--senal);
+  font-family: var(--font-mono);
+  font-size: 1.1rem; font-weight: 500;
+  margin-bottom: 18px;
+  transition: background .3s, color .3s, transform .3s;
+}
+.cap-card:hover .cap-icon { background: var(--senal); color: var(--papel); transform: skewX(var(--slant)); }
+.cap-card h3 { font-size: 1.05rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: 8px; color: var(--tinta); }
+.cap-card p { font-size: .92rem; color: var(--gris); line-height: 1.55; }
+
+@media (max-width: 900px) { .cap-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .cap-grid { grid-template-columns: 1fr; } }
+
+/* =====================================================================
+   VOCERA · triple-c.css · Las tres fases del sistema Voice
+   Comunica // Conecta // Crece — con conector y pulso de señal.
+   ===================================================================== */
+
+.triple-c .section-body { max-width: 60ch; }
+
+.fases {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: clamp(44px, 6vh, 68px);
+  position: relative;
+}
+/* Línea conectora + pulso viajando por las fases */
+.fases::before {
+  content: '';
+  position: absolute;
+  top: 30px; left: 8%; right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--linea-dark) 12%, var(--linea-dark) 88%, transparent);
+}
+.fases::after {
+  content: '';
+  position: absolute;
+  top: 27px; left: 8%;
+  width: 60px; height: 8px;
+  border-radius: 8px;
+  background: radial-gradient(closest-side, var(--senal), transparent);
+  filter: blur(1px);
+  animation: pulse-travel 5s ease-in-out infinite;
+}
+@keyframes pulse-travel {
+  0% { left: 8%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { left: calc(92% - 60px); opacity: 0; }
+}
+
+.fase {
+  position: relative;
+  background: var(--tinta-2);
+  border: 1px solid var(--linea-dark);
+  border-radius: var(--r-lg);
+  padding: clamp(24px, 2.5vw, 30px);
+  transition: transform .35s var(--ease), border-color .35s, box-shadow .35s;
+}
+.fase:hover { transform: translateY(-6px); border-color: rgba(31, 75, 216, .45); box-shadow: 0 20px 44px rgba(0, 0, 0, .32); }
+
+.fase-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.fase-code {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--tinta);
+  border: 1px solid var(--senal);
+  color: var(--senal-300);
+  font-family: var(--font-mono);
+  font-size: .82rem; font-weight: 500;
+  position: relative; z-index: 1;
+  flex-shrink: 0;
+  transition: background .3s, color .3s, transform .3s;
+}
+.fase:hover .fase-code { background: var(--senal); color: var(--papel); transform: scale(1.06); }
+.fase-name { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; color: var(--papel); }
+.fase-claim { font-size: 1rem; font-weight: 600; color: var(--senal-300); margin-bottom: 10px; }
+.fase-text { font-size: .92rem; color: var(--papel-soft); line-height: 1.62; }
+
+.fase-metrics { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--linea-dark); }
+.fase-metrics li {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--papel-soft);
+  padding: 5px 10px;
+  border: 1px solid var(--linea-dark);
+  border-radius: var(--r-xs);
+}
+
+@media (max-width: 900px) {
+  .fases { grid-template-columns: 1fr; gap: 14px; }
+  .fases::before, .fases::after { display: none; }
+}
+
+/* =====================================================================
+   VOCERA · diferenciales.css · Por qué Vocera (grid 2×2)
+   ===================================================================== */
+
+.diferenciales { background: var(--papel); }
+
+.dif-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: clamp(36px, 5vh, 52px);
+}
+.dif-card {
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+  border-top: 3px solid var(--senal);
+  border-radius: var(--r-md);
+  padding: clamp(26px, 2.8vw, 34px);
+  transition: transform .3s var(--ease), box-shadow .3s;
+}
+.dif-card:hover { transform: translateY(-5px); box-shadow: var(--sh-md); }
+.dif-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--senal);
+  margin-bottom: 12px;
+}
+.dif-card h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -.015em; margin-bottom: 10px; color: var(--tinta); }
+.dif-card p { font-size: .94rem; color: var(--gris); line-height: 1.6; }
+
+@media (max-width: 760px) { .dif-grid { grid-template-columns: 1fr; } }
+
+/* =====================================================================
+   VOCERA · publicos.css · Split "Para marcas" / "Para creadores"
+   ===================================================================== */
+
+.split { display: grid; grid-template-columns: 1fr 1fr; }
+.split-panel {
+  padding: clamp(60px, 8vw, 100px) clamp(28px, 5vw, 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.panel-marcas { background: var(--blanco); border-right: 1px solid var(--linea); }
+.panel-creadores { background: linear-gradient(160deg, var(--senal-tint-2), var(--papel) 70%); }
+
+.split-title {
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.split-panel .section-body { margin-bottom: 6px; }
+
+.check-list { display: flex; flex-direction: column; gap: 12px; margin: 24px 0 32px; }
+.check-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: .96rem; color: var(--tinta); line-height: 1.5; font-weight: 500;
+}
+.check-icon {
+  position: relative;
+  width: 22px; height: 22px; flex-shrink: 0;
+  border-radius: var(--r-xs);
+  background: var(--senal-tint);
+  border: 1px solid var(--senal);
+  margin-top: 1px;
+  transition: background .2s;
+}
+.check-icon::after {
+  content: '';
+  position: absolute; left: 7px; top: 3px;
+  width: 5px; height: 10px;
+  border: solid var(--senal);
+  border-width: 0 2px 2px 0;
+  transform: rotate(42deg);
+}
+.check-item:hover .check-icon { background: var(--senal); }
+.check-item:hover .check-icon::after { border-color: var(--papel); }
+
+@media (max-width: 860px) {
+  .split { grid-template-columns: 1fr; }
+  .panel-marcas { border-right: none; border-bottom: 1px solid var(--linea); }
+}
+
+/* =====================================================================
+   VOCERA · datos.css · Sistema de datos: qué medimos por fase
+   (nombres de métrica reales del sistema; sin cifras de ejemplo, que en
+   el manual son marcadores de posición).
+   ===================================================================== */
+
+.datos-head { max-width: 62ch; }
+.datos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: clamp(40px, 5vh, 56px);
+}
+.metric-card {
+  background: var(--tinta-2);
+  border: 1px solid var(--linea-dark);
+  border-top: 3px solid var(--senal);   /* filete señal superior (anatomía KPI) */
+  border-radius: var(--r-md);
+  padding: clamp(22px, 2.4vw, 28px);
+  transition: transform .3s var(--ease), box-shadow .3s;
+}
+.metric-card:hover { transform: translateY(-5px); box-shadow: 0 20px 44px rgba(0, 0, 0, .32); }
+.metric-phase {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--senal-300);
+  margin-bottom: 18px;
+}
+.metric-list { display: flex; flex-direction: column; gap: 14px; }
+.metric-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--linea-dark);
+}
+.metric-list li:last-child { padding-bottom: 0; border-bottom: none; }
+.metric-name {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--papel);
+  letter-spacing: .02em;
+}
+.metric-ref { font-size: .78rem; color: var(--papel-mute); text-align: right; }
+
+.datos-note {
+  margin-top: 28px;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  letter-spacing: .02em;
+  color: var(--papel-soft);
+}
+
+@media (max-width: 860px) { .datos-grid { grid-template-columns: 1fr; } }
+
+/* =====================================================================
+   VOCERA · colaboracion.css · Banda "El registro" + "Cómo trabajamos"
+   ===================================================================== */
+
+/* ---- Registro (banda declarativa) ---- */
+.registro {
+  background: var(--papel-2);
+  padding: clamp(64px, 9vh, 110px) 0;
+  position: relative;
+  overflow: hidden;
+}
+.registro::before {
+  content: '//';
+  position: absolute;
+  right: -2%; top: 50%;
+  transform: translateY(-50%) skewX(var(--slant));
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(12rem, 30vw, 30rem);
+  line-height: 1;
+  color: var(--senal);
+  opacity: .05;
+  pointer-events: none;
+}
+.registro-inner { max-width: 760px; margin-inline: auto; text-align: center; position: relative; z-index: 1; }
+.registro-inner .section-body { margin-inline: auto; }
+
+/* ---- Colaboración ---- */
+.colaboracion .section-body { margin-inline: auto; text-align: center; }
+.colab-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  margin: clamp(40px, 5vh, 56px) auto 0;
+}
+.colab-card {
+  background: var(--tinta-2);
+  border: 1px solid var(--linea-dark);
+  border-radius: var(--r-md);
+  padding: clamp(26px, 2.8vw, 34px);
+  transition: transform .3s var(--ease), border-color .3s;
+}
+.colab-card:hover { transform: translateY(-5px); border-color: rgba(31, 75, 216, .45); }
+.colab-role {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--senal-300);
+  margin-bottom: 12px;
+}
+.colab-card p { font-size: .95rem; color: var(--papel-soft); line-height: 1.62; }
+
+@media (max-width: 860px) { .colab-cards { grid-template-columns: 1fr; } }
+
+/* =====================================================================
+   VOCERA · form.css · Formulario de contacto (toggle marca / creador)
+   ===================================================================== */
+
+.contacto { background: var(--papel); }
+.contacto-head { text-align: center; margin-bottom: clamp(36px, 5vh, 52px); }
+.contacto-head .eyebrow { justify-content: center; }
+
+.form-wrapper { max-width: 760px; margin-inline: auto; }
+
+.form-toggle {
+  display: flex;
+  gap: 5px;
+  background: var(--papel-2);
+  border: 1px solid var(--linea);
+  border-radius: var(--r-md);
+  padding: 5px;
+  width: fit-content;
+  margin: 0 auto 40px;
+}
+.form-toggle-btn {
+  padding: 11px 26px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--gris);
+  cursor: pointer;
+  transition: background .28s, color .28s, box-shadow .28s;
+}
+.form-toggle-btn.active { background: var(--tinta); color: var(--papel); box-shadow: var(--sh-sm); }
+.form-toggle-btn:focus-visible { outline: 2px solid var(--senal); outline-offset: 2px; }
+
+.form-panel { display: none; }
+.form-panel.active { display: block; animation: form-fade .35s var(--ease-out); }
+@keyframes form-fade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 20px); }
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field-full { grid-column: 1 / -1; }
+.field label { font-size: .8rem; font-weight: 600; color: var(--tinta); letter-spacing: .01em; }
+.field input, .field select, .field textarea {
+  font-size: .9rem;
+  color: var(--tinta);
+  background: var(--blanco);
+  border: 1.5px solid var(--linea);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  outline: none;
+  appearance: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%2379828E' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+}
+.field textarea { resize: vertical; min-height: 104px; }
+.field input:hover, .field select:hover, .field textarea:hover { border-color: var(--gris-2); }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--senal); box-shadow: 0 0 0 3px var(--senal-tint-2); }
+.field input:invalid:not(:placeholder-shown) { border-color: var(--neg); }
+
+.form-submit { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 30px; }
+.form-submit .btn { padding: 15px 36px; }
+.form-direct {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  color: var(--gris);
+  letter-spacing: .01em;
+  transition: color .2s;
+}
+.form-direct:hover { color: var(--senal); }
+
+@media (max-width: 620px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .field-full { grid-column: 1; }
+  .form-toggle { width: 100%; }
+  .form-toggle-btn { flex: 1; }
+}
+
+/* =====================================================================
+   VOCERA · cta.css · Llamado a la acción final
+   ===================================================================== */
+
+.cta-final {
+  background: var(--papel-2);
+  text-align: center;
+  padding: clamp(80px, 12vh, 140px) 0;
+  position: relative;
+  overflow: hidden;
+}
+.cta-final .container { position: relative; z-index: 1; }
+.cta-final .eyebrow { justify-content: center; }
+.cta-final .section-title { font-size: clamp(2rem, 4.4vw, 3.4rem); max-width: 16ch; margin-inline: auto; }
+.cta-final .section-body { max-width: 52ch; margin: 0 auto 36px; }
+.cta-btns { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+
+@media (max-width: 520px) {
+  .cta-btns { flex-direction: column; }
+  .cta-btns .btn { width: 100%; max-width: 320px; }
+}
+
+/* =====================================================================
+   VOCERA · footer.css · Pie con marca, firma, navegación, contacto y redes
+   ===================================================================== */
+
+.site-footer {
+  background: var(--tinta);
+  color: var(--papel);
+  padding: clamp(52px, 7vh, 76px) 0 40px;
+}
+.site-footer .container,
+.footer-inner { max-width: var(--maxw); margin-inline: auto; padding-inline: clamp(20px, 4vw, 48px); }
+
+.footer-inner {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: clamp(36px, 5vw, 64px);
+}
+
+.brand-footer { color: var(--papel); }
+.brand-footer .iso { width: 24px; color: var(--papel); }
+.footer-firma {
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  letter-spacing: .08em;
+  color: var(--senal-300);
+  margin: 14px 0 12px;
+}
+.footer-desc { font-size: .88rem; color: var(--papel-soft); line-height: 1.7; max-width: 340px; }
+
+.footer-social { display: flex; gap: 10px; margin-top: 22px; }
+.footer-social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border: 1px solid var(--linea-dark);
+  border-radius: var(--r-sm);
+  color: var(--papel-soft);
+  transition: background .25s, color .25s, border-color .25s, transform .25s var(--ease);
+}
+.footer-social a:hover { background: var(--senal); color: var(--papel); border-color: var(--senal); transform: translateY(-3px); }
+.footer-social svg { width: 18px; height: 18px; }
+
+.footer-col-title {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--papel-mute);
+  margin-bottom: 18px;
+}
+.footer-links { display: flex; flex-direction: column; gap: 11px; }
+.footer-links a { font-size: .88rem; color: var(--papel-soft); transition: color .2s, padding-left .2s; }
+.footer-links a:hover { color: var(--papel); padding-left: 6px; }
+
+.footer-bottom {
+  max-width: var(--maxw);
+  margin: 44px auto 0;
+  padding: 22px clamp(20px, 4vw, 48px) 0;
+  border-top: 1px solid var(--linea-dark);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-copyright { font-size: .78rem; color: var(--papel-mute); }
+.footer-tagline-mono { font-family: var(--font-mono); letter-spacing: .1em; }
+
+@media (max-width: 860px) {
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+  </style>
+</head>
+<body>
+
+  <!-- Barra de progreso de scroll -->
+  <div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
+
+  <!-- WhatsApp flotante (contacto directo) -->
+  <a href="https://wa.me/51972315091?text=Hola%20Vocera%2C%20me%20gustar%C3%ADa%20conocer%20el%20sistema%20Voice."
+     target="_blank" rel="noopener" class="wa-fab" aria-label="Escríbenos por WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35m-5.42 7.4h-.01a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37A9.86 9.86 0 01.16 11.9C.16 6.44 4.6 2 10.05 2a9.87 9.87 0 016.99 2.9 9.83 9.83 0 012.89 7c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0012.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 005.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89a11.82 11.82 0 00-3.48-8.41z"/></svg>
+  </a>
+
+  <!-- ============ HEADER ============ -->
+  <header id="header" class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="#inicio" class="brand" aria-label="Vocera — inicio">
+        <svg class="iso" viewBox="0 0 121 100" fill="currentColor" aria-hidden="true"><polygon points="36,0 68,0 32,100 0,100"/><polygon points="89,0 121,0 85,100 53,100"/></svg>
+        <span class="brand-name">VOCERA</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="#sistema-voice">Sistema Voice</a>
+        <a href="#triple-c">La Triple C</a>
+        <a href="#para-marcas">Para marcas</a>
+        <a href="#para-creadores">Para creadores</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+
+      <div class="header-ctas">
+        <a href="#contacto" class="btn btn-ghost btn-sm">Soy una marca</a>
+        <a href="https://wa.link/32wjyz" target="_blank" rel="noopener" class="btn btn-senal btn-sm">Soy creador</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-controls="mobile-nav" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Navegación móvil -->
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Menú móvil">
+    <a href="#sistema-voice" data-close-nav>Sistema Voice</a>
+    <a href="#triple-c" data-close-nav>La Triple C</a>
+    <a href="#diferenciales" data-close-nav>Diferenciales</a>
+    <a href="#para-marcas" data-close-nav>Para marcas</a>
+    <a href="#para-creadores" data-close-nav>Para creadores</a>
+    <a href="#contacto" data-close-nav>Contacto</a>
+    <div class="mobile-ctas">
+      <a href="#contacto" class="btn btn-ghost" data-close-nav>Soy una marca</a>
+      <a href="https://wa.link/32wjyz" target="_blank" rel="noopener" class="btn btn-senal" data-close-nav>Soy creador</a>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- ============ HERO ============ -->
+    <section id="inicio" class="hero" aria-labelledby="hero-title">
+      <!-- Motivo // de marca, en gran escala, derivando de fondo -->
+      <div class="hero-bg" aria-hidden="true">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <svg class="hero-slashes" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
+          <polygon class="slash slash-a" points="150,-20 230,-20 110,320 30,320"/>
+          <polygon class="slash slash-b" points="290,-20 370,-20 250,320 170,320"/>
+        </svg>
+      </div>
+
+      <div class="hero-inner">
+        <div class="hero-text">
+          <p class="eyebrow reveal"><span class="eyebrow-mark"></span>Partner Comunicativo</p>
+          <h1 class="hero-title reveal d1" id="hero-title">Le damos <span class="accent">voz</span><br />a tu marca.</h1>
+          <p class="hero-body reveal d2">Vocera convierte <strong>voces reales</strong> en la voz de tu marca para construir una comunicación asertiva con el mercado. No vendemos servicios sueltos: implementamos un <strong>sistema</strong>.</p>
+
+          <div class="voice-callout reveal d2">
+            <span class="voice-callout-label">El sistema Voice</span>
+            <p>Un sistema que <strong>comunica, conecta y crece</strong>, con escrutinio de datos en tiempo real.</p>
+          </div>
+
+          <div class="hero-ctas reveal d3">
+            <a href="#contacto" class="btn btn-tinta btn-lg">Soy una marca</a>
+            <a href="https://wa.link/32wjyz" target="_blank" rel="noopener" class="btn btn-senal btn-lg">Soy creador</a>
+          </div>
+          <p class="hero-sub reveal d4">Cuéntanos qué quieres lograr y te mostramos cómo suena tu marca con Vocera.</p>
+        </div>
+
+        <!-- Visual animado del hero -->
+        <div class="hero-visual" id="hero-visual" aria-hidden="true">
+          <div class="hero-card" id="hero-card">
+            <svg class="hero-card-iso" viewBox="0 0 121 100" fill="currentColor" aria-hidden="true"><polygon points="36,0 68,0 32,100 0,100"/><polygon points="89,0 121,0 85,100 53,100"/></svg>
+            <!-- Ecualizador / onda de voz -->
+            <div class="waveform" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="hero-card-divider"></div>
+            <p class="hero-card-tag">conectar para crecer</p>
+          </div>
+
+          <div class="float-chip fc-1" data-depth="0.3"><span class="chip-dot dot-senal"></span>Comunica</div>
+          <div class="float-chip fc-2" data-depth="0.5"><span class="chip-dot dot-papel"></span>Conecta</div>
+          <div class="float-chip fc-3" data-depth="0.2"><span class="chip-dot dot-senal"></span>Crece</div>
+          <div class="float-chip fc-4" data-depth="0.45"><span class="chip-dot dot-gris"></span>Voces reales</div>
+          <div class="float-chip fc-5" data-depth="0.6"><span class="chip-dot dot-senal"></span>Datos en tiempo real</div>
+          <div class="float-chip fc-6" data-depth="0.35"><span class="chip-dot dot-papel"></span>Voz de marca</div>
+          <div class="float-chip fc-7" data-depth="0.25"><span class="chip-dot dot-senal"></span>Conexión real</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee-bar" aria-hidden="true">
+      <div class="marquee-track">
+        <span class="marquee-item">Comunica<span class="marquee-sep">//</span>Conecta<span class="marquee-sep">//</span>Crece</span>
+        <span class="marquee-item">Voces reales en la voz de tu marca</span>
+        <span class="marquee-item">Conectar para crecer</span>
+        <span class="marquee-item">Escrutinio de datos en tiempo real</span>
+        <span class="marquee-item">Un sistema, no servicios sueltos</span>
+        <span class="marquee-item">Comunica<span class="marquee-sep">//</span>Conecta<span class="marquee-sep">//</span>Crece</span>
+        <span class="marquee-item">Voces reales en la voz de tu marca</span>
+        <span class="marquee-item">Conectar para crecer</span>
+        <span class="marquee-item">Escrutinio de datos en tiempo real</span>
+        <span class="marquee-item">Un sistema, no servicios sueltos</span>
+      </div>
+    </div>
+
+    <!-- ============ SISTEMA VOICE / ESENCIA ============ -->
+    <section id="sistema-voice" class="section esencia" aria-labelledby="esencia-title">
+      <div class="container">
+        <div class="esencia-grid">
+          <div class="esencia-lead">
+            <p class="eyebrow reveal"><span class="eyebrow-mark"></span>Qué es Vocera</p>
+            <h2 class="section-title reveal d1" id="esencia-title">Un Partner Comunicativo,<br /><span class="accent">no una agencia más.</span></h2>
+            <p class="section-body reveal d2">Vocera es un Partner Comunicativo del sector corporativo. Su diferencial es el sistema Voice: un método cercano y altamente efectivo que convierte voces reales en la voz de tu marca.</p>
+            <p class="section-body reveal d3">No trabajamos por piezas aisladas. Implementamos un sistema completo que ordena qué se dice, a quién y con qué resultado.</p>
+          </div>
+
+          <ul class="pilares reveal-right d2" aria-label="Lo que sostiene la marca">
+            <li class="pilar">
+              <span class="pilar-label">Cercanía</span>
+              <p class="pilar-text">Hablamos como las personas, no como una corporación distante.</p>
+            </li>
+            <li class="pilar pilar-accent">
+              <span class="pilar-label">Efectividad</span>
+              <p class="pilar-text">Cada acción persigue un resultado que se puede medir.</p>
+            </li>
+            <li class="pilar">
+              <span class="pilar-label">Datos</span>
+              <p class="pilar-text">Decidimos con escrutinio de datos avanzado, en tiempo real.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CAPACIDADES / QUÉ HACEMOS ============ -->
+    <section id="capacidades" class="section capacidades" aria-labelledby="capacidades-title">
+      <div class="container">
+        <p class="eyebrow reveal"><span class="eyebrow-mark"></span>Qué hacemos</p>
+        <h2 class="section-title reveal d1" id="capacidades-title">Le damos forma al<br /><span class="accent">mensaje de tu marca.</span></h2>
+        <p class="section-body reveal d2">Un sistema pensado para que tu marca comunique con claridad, conecte con las personas correctas y crezca sobre lo que da resultado.</p>
+
+        <div class="cap-grid">
+          <article class="cap-card reveal"><span class="cap-icon" aria-hidden="true">//</span><h3>Voz propia y reconocible</h3><p>Un mensaje que el mercado reconoce como tuyo.</p></article>
+          <article class="cap-card reveal d1"><span class="cap-icon" aria-hidden="true">◎</span><h3>El público correcto</h3><p>Tu voz frente a las personas correctas, en el momento correcto.</p></article>
+          <article class="cap-card reveal d2"><span class="cap-icon" aria-hidden="true">▲</span><h3>Contenido con voces reales</h3><p>Creadores que comunican con criterio y naturalidad.</p></article>
+          <article class="cap-card reveal"><span class="cap-icon" aria-hidden="true">◇</span><h3>Presencia coherente</h3><p>Una marca que suena igual de sólida en cada canal.</p></article>
+          <article class="cap-card reveal d1"><span class="cap-icon" aria-hidden="true">▟</span><h3>Decisiones con datos</h3><p>Escrutinio en tiempo real: menos intuición, más información.</p></article>
+          <article class="cap-card reveal d2"><span class="cap-icon" aria-hidden="true">✦</span><h3>Resultados que escalan</h3><p>Crecemos sobre lo que ya está funcionando.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LA TRIPLE C ============ -->
+    <section id="triple-c" class="section section-dark triple-c" aria-labelledby="triplec-title">
+      <div class="container">
+        <p class="eyebrow eyebrow-light reveal"><span class="eyebrow-mark"></span>El sistema Voice</p>
+        <h2 class="section-title reveal d1" id="triplec-title">La Triple&nbsp;C:<br /><span class="accent">comunica, conecta y crece.</span></h2>
+        <p class="section-body reveal d2">Los tres pilares de la marca y, a la vez, las tres fases de ejecución del sistema Voice. Primero comunica, luego conecta, después crece.</p>
+
+        <ol class="fases">
+          <li class="fase reveal">
+            <div class="fase-head"><span class="fase-code">C1</span><h3 class="fase-name">Comunica</h3></div>
+            <p class="fase-claim">Le damos voz a tu marca.</p>
+            <p class="fase-text">Construimos el mensaje y lo expresamos con voces reales que el mercado reconoce como propias: qué se dice, quién lo dice y con qué tono.</p>
+            <ul class="fase-metrics" aria-label="Qué medimos en Comunica">
+              <li>Alcance</li><li>Impresiones</li><li>CPM</li>
+            </ul>
+          </li>
+          <li class="fase reveal d1">
+            <div class="fase-head"><span class="fase-code">C2</span><h3 class="fase-name">Conecta</h3></div>
+            <p class="fase-claim">Llegamos a las personas.</p>
+            <p class="fase-text">Diseñamos cómo y dónde tu voz encuentra a su público objetivo. El mensaje correcto, frente a las personas correctas, en el momento correcto.</p>
+            <ul class="fase-metrics" aria-label="Qué medimos en Conecta">
+              <li>CTR</li><li>Engagement</li><li>Retención</li>
+            </ul>
+          </li>
+          <li class="fase reveal d2">
+            <div class="fase-head"><span class="fase-code">C3</span><h3 class="fase-name">Crece</h3></div>
+            <p class="fase-claim">Escalamos lo que funciona.</p>
+            <p class="fase-text">Medimos cada señal con escrutinio de datos avanzado y dashboards en tiempo real. La decisión deja de ser intuición y pasa a ser información.</p>
+            <ul class="fase-metrics" aria-label="Qué medimos en Crece">
+              <li>CPA</li><li>Conversión</li><li>ROAS</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ DIFERENCIALES ============ -->
+    <section id="diferenciales" class="section diferenciales" aria-labelledby="dif-title">
+      <div class="container">
+        <p class="eyebrow reveal"><span class="eyebrow-mark"></span>Por qué Vocera</p>
+        <h2 class="section-title reveal d1" id="dif-title">Un método propio,<br /><span class="accent">no un servicio suelto.</span></h2>
+
+        <div class="dif-grid">
+          <article class="dif-card reveal">
+            <span class="dif-label">Sistema propio</span>
+            <h3>Un método, no partes sueltas</h3>
+            <p>Voice es un sistema propietario de punta a punta. No se improvisa ni se contrata por partes: se implementa completo.</p>
+          </article>
+          <article class="dif-card reveal d1">
+            <span class="dif-label">Escalable</span>
+            <h3>Resultados que crecen</h3>
+            <p>Escrutinio de datos avanzado y reportes en tiempo real. Cada decisión se sostiene en información, no en intuición.</p>
+          </article>
+          <article class="dif-card reveal">
+            <span class="dif-label">Accesible</span>
+            <h3>Corporativo, a tu alcance</h3>
+            <p>Nivel de agencia grande al alcance de una empresa mediana, y alto valor para las grandes. El mismo sistema, a la medida del presupuesto.</p>
+          </article>
+          <article class="dif-card reveal d1">
+            <span class="dif-label">Velocidad</span>
+            <h3>Del mensaje al resultado</h3>
+            <p>Un proceso pulido que lleva la comunicación al mercado en tiempo récord, sin sacrificar la calidad ni la lectura de datos.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PÚBLICOS (SPLIT) ============ -->
+    <div class="split">
+      <section class="split-panel panel-marcas" id="para-marcas" aria-labelledby="marcas-title">
+        <p class="eyebrow reveal"><span class="eyebrow-mark"></span>Para marcas</p>
+        <h2 class="split-title reveal d1" id="marcas-title">Nivel de agencia grande, <span class="accent">a la medida de tu presupuesto.</span></h2>
+        <p class="section-body reveal d2">Si eres una marca, Vocera implementa el sistema Voice completo para que comuniques con claridad, conectes con tu público y crezcas con datos.</p>
+        <ul class="check-list reveal d2">
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Definimos qué quiere comunicar tu marca</li>
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Identificamos a qué público quieres llegar</li>
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Le damos voz con creadores alineados a tu mensaje</li>
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Llevamos la comunicación al mercado con velocidad</li>
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Medimos y crecemos sobre lo que da resultado</li>
+        </ul>
+        <a href="#contacto" class="btn btn-tinta reveal d3">Quiero el sistema Voice</a>
+      </section>
+
+      <section class="split-panel panel-creadores" id="para-creadores" aria-labelledby="creadores-title">
+        <p class="eyebrow reveal"><span class="eyebrow-mark"></span>Para creadores</p>
+        <h2 class="split-title reveal d1" id="creadores-title">Tu voz puede volverse <span class="accent">la voz de una marca.</span></h2>
+        <p class="section-body reveal d2">Trabajamos con voces reales. No buscamos perfiles perfectos: buscamos criterio, voz propia y compromiso para comunicar con naturalidad.</p>
+        <ul class="check-list reveal d2">
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Comunicas con claridad y criterio</li>
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Cuidas la calidad de cada pieza</li>
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Entiendes el mensaje de una marca</li>
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Eres responsable con tiempos y entregas</li>
+          <li class="check-item"><span class="check-icon" aria-hidden="true"></span>Adaptas tu voz a distintos públicos</li>
+        </ul>
+        <a href="https://wa.link/32wjyz" target="_blank" rel="noopener" class="btn btn-senal reveal d3">Quiero ser una voz Vocera</a>
+      </section>
+    </div>
+
+    <!-- ============ SISTEMA DE DATOS ============ -->
+    <section id="datos" class="section section-dark datos" aria-labelledby="datos-title">
+      <div class="container">
+        <div class="datos-head">
+          <p class="eyebrow eyebrow-light reveal"><span class="eyebrow-mark"></span>Sistema de datos</p>
+          <h2 class="section-title reveal d1" id="datos-title">La decisión deja de ser intuición<br /><span class="accent">y pasa a ser información.</span></h2>
+          <p class="section-body reveal d2">Cada fase de la Triple C tiene su propia lectura. Un número sin contexto es una métrica de vanidad; por eso toda cifra viaja con su referencia.</p>
+        </div>
+
+        <div class="datos-grid">
+          <article class="metric-card reveal">
+            <span class="metric-phase">C1 · Comunica</span>
+            <ul class="metric-list">
+              <li><span class="metric-name">Alcance</span><span class="metric-ref">personas únicas</span></li>
+              <li><span class="metric-name">Impresiones</span><span class="metric-ref">volumen de exposición</span></li>
+              <li><span class="metric-name">CPM</span><span class="metric-ref">costo por mil</span></li>
+            </ul>
+          </article>
+          <article class="metric-card reveal d1">
+            <span class="metric-phase">C2 · Conecta</span>
+            <ul class="metric-list">
+              <li><span class="metric-name">CTR</span><span class="metric-ref">vs. promedio</span></li>
+              <li><span class="metric-name">Engagement</span><span class="metric-ref">interacción real</span></li>
+              <li><span class="metric-name">Retención</span><span class="metric-ref">atención sostenida</span></li>
+            </ul>
+          </article>
+          <article class="metric-card reveal d2">
+            <span class="metric-phase">C3 · Crece</span>
+            <ul class="metric-list">
+              <li><span class="metric-name">CPA</span><span class="metric-ref">costo por adquisición</span></li>
+              <li><span class="metric-name">Conversión</span><span class="metric-ref">contra objetivo</span></li>
+              <li><span class="metric-name">ROAS</span><span class="metric-ref">retorno de inversión</span></li>
+            </ul>
+          </article>
+        </div>
+        <p class="datos-note reveal d2">Reportes claros, en tiempo real. Cada cifra con su meta, su objetivo o su promedio al lado.</p>
+      </div>
+    </section>
+
+    <!-- ============ REGISTRO (BANDA) ============ -->
+    <section id="registro" class="registro" aria-labelledby="registro-title">
+      <div class="container registro-inner">
+        <p class="eyebrow reveal" style="justify-content:center"><span class="eyebrow-mark"></span>El registro de Vocera</p>
+        <h2 class="section-title reveal d1" id="registro-title">Directa, confiable, moderna<br />y <span class="accent">sin humo.</span></h2>
+        <p class="section-body reveal d2">El socio comunicativo que un gerente quisiera tener: seguro de sí mismo pero cercano, ambicioso pero honesto con los números. No decimos cómo se hace; decimos qué logra.</p>
+      </div>
+    </section>
+
+    <!-- ============ COLABORACIÓN ============ -->
+    <section id="colaboracion" class="section section-dark colaboracion" aria-labelledby="colab-title">
+      <div class="container">
+        <p class="eyebrow eyebrow-light reveal" style="justify-content:center"><span class="eyebrow-mark"></span>Cómo trabajamos</p>
+        <h2 class="section-title reveal d1" id="colab-title" style="text-align:center">Marca, voces y sistema<br /><span class="accent">con un mismo propósito.</span></h2>
+        <div class="colab-cards">
+          <article class="colab-card reveal"><span class="colab-role">La marca</span><p>Trae el mensaje, la visión y la identidad que quiere proyectar al mercado.</p></article>
+          <article class="colab-card reveal d1"><span class="colab-role">Las voces</span><p>Creadores reales que aportan criterio, naturalidad y la capacidad de conectar.</p></article>
+          <article class="colab-card reveal d2"><span class="colab-role">Vocera</span><p>Ordena, conecta y mide con el sistema Voice para que todo comunique, conecte y crezca.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FORMULARIO / CONTACTO ============ -->
+    <section id="contacto" class="section contacto" aria-labelledby="contacto-title">
+      <div class="container">
+        <div class="contacto-head">
+          <p class="eyebrow reveal" style="justify-content:center"><span class="eyebrow-mark"></span>Empecemos</p>
+          <h2 class="section-title reveal d1" id="contacto-title">Cuéntanos qué quieres lograr.</h2>
+          <p class="section-body reveal d2" style="margin-inline:auto">Elige tu perfil y completa el formulario. Te respondemos por WhatsApp.</p>
+        </div>
+
+        <div class="form-wrapper reveal d2">
+          <div class="form-toggle" role="tablist" aria-label="Tipo de contacto">
+            <button class="form-toggle-btn active" id="toggle-marca" role="tab" aria-selected="true" aria-controls="form-marca" data-form="marca">Soy una marca</button>
+            <button class="form-toggle-btn" id="toggle-creador" role="tab" aria-selected="false" aria-controls="form-creador" data-form="creador">Soy creador</button>
+          </div>
+
+          <!-- Panel Marca (corporativo) -->
+          <div class="form-panel active" id="form-marca" role="tabpanel" aria-labelledby="toggle-marca">
+            <form class="voice-form" data-profile="marca" novalidate>
+              <div class="form-grid">
+                <div class="field"><label for="m-nombre">Nombre de la marca</label><input type="text" id="m-nombre" name="marca" placeholder="Tu marca" required maxlength="200" /></div>
+                <div class="field"><label for="m-sector">Sector</label><select id="m-sector" name="sector"><option value="">Selecciona tu sector</option><option>Corporativo / B2B</option><option>Retail / E-commerce</option><option>Tecnología</option><option>Salud y bienestar</option><option>Educación</option><option>Finanzas</option><option>Inmobiliaria</option><option>Consumo masivo</option><option>Servicios</option><option>Otro</option></select></div>
+                <div class="field field-full"><label for="m-web">Web o redes sociales</label><input type="text" id="m-web" name="web" placeholder="https://tumarca.com o @tumarca" maxlength="200" /></div>
+                <div class="field"><label for="m-objetivo">Objetivo principal</label><select id="m-objetivo" name="objetivo"><option value="">Selecciona un objetivo</option><option>Dar voz a la marca</option><option>Conectar con un público</option><option>Aumentar conversión / ventas</option><option>Lanzar un producto o servicio</option><option>Ordenar la comunicación</option><option>Crecer con datos</option><option>Otro</option></select></div>
+                <div class="field"><label for="m-publico">Público que quieres alcanzar</label><input type="text" id="m-publico" name="publico" placeholder="Ej. gerentes, jóvenes profesionales…" maxlength="200" /></div>
+                <div class="field field-full"><label for="m-email">Correo de contacto</label><input type="email" id="m-email" name="email" placeholder="hola@tumarca.com" required maxlength="200" /></div>
+                <div class="field field-full"><label for="m-mensaje">Mensaje adicional</label><textarea id="m-mensaje" name="mensaje" placeholder="Cuéntanos qué quieres lograr con tu marca…" maxlength="2000"></textarea></div>
+              </div>
+              <div class="form-submit">
+                <button type="submit" class="btn btn-tinta btn-lg">Enviar y hablar por WhatsApp</button>
+                <a href="https://wa.link/o3mibk" target="_blank" rel="noopener" class="form-direct">o escríbenos directo por WhatsApp corporativo →</a>
+              </div>
+            </form>
+          </div>
+
+          <!-- Panel Creador -->
+          <div class="form-panel" id="form-creador" role="tabpanel" aria-labelledby="toggle-creador" hidden>
+            <form class="voice-form" data-profile="creador" novalidate>
+              <div class="form-grid">
+                <div class="field"><label for="c-nombre">Nombre</label><input type="text" id="c-nombre" name="nombre" placeholder="Tu nombre" required maxlength="200" /></div>
+                <div class="field"><label for="c-redes">Redes sociales</label><input type="text" id="c-redes" name="redes" placeholder="@tuusuario" maxlength="200" /></div>
+                <div class="field"><label for="c-ciudad">Ciudad / País</label><input type="text" id="c-ciudad" name="ciudad" placeholder="Lima, Perú" maxlength="200" /></div>
+                <div class="field"><label for="c-tipo">Tipo de contenido</label><select id="c-tipo" name="tipo"><option value="">Selecciona un tipo</option><option>Video corto (Reels, TikTok)</option><option>Fotografía</option><option>Video largo (YouTube)</option><option>Podcast / Audio</option><option>Locución / Voz</option><option>Mixto</option></select></div>
+                <div class="field field-full"><label for="c-nicho">Nichos o categorías</label><input type="text" id="c-nicho" name="nicho" placeholder="Ej. corporativo, lifestyle, tecnología…" maxlength="200" /></div>
+                <div class="field field-full"><label for="c-email">Correo de contacto</label><input type="email" id="c-email" name="email" placeholder="hola@tuemail.com" required maxlength="200" /></div>
+                <div class="field field-full"><label for="c-mensaje">Cuéntanos sobre ti</label><textarea id="c-mensaje" name="mensaje" placeholder="Qué te hace una voz con criterio…" maxlength="2000"></textarea></div>
+              </div>
+              <div class="form-submit">
+                <button type="submit" class="btn btn-senal btn-lg">Postular como voz Vocera</button>
+                <a href="https://wa.link/32wjyz" target="_blank" rel="noopener" class="form-direct">o escríbenos directo por WhatsApp →</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA FINAL ============ -->
+    <section id="cta-final" class="cta-final" aria-labelledby="cta-title">
+      <div class="container">
+        <p class="eyebrow reveal" style="justify-content:center"><span class="eyebrow-mark"></span>Siguiente paso</p>
+        <h2 class="section-title reveal d1" id="cta-title">¿Listo para que tu marca<br /><span class="accent">tenga voz?</span></h2>
+        <p class="section-body reveal d2">Implementamos el sistema Voice: comunica, conecta y crece. Cuéntanos quién eres y damos el primer paso.</p>
+        <div class="cta-btns reveal d3">
+          <a href="#contacto" class="btn btn-tinta btn-lg">Soy una marca</a>
+          <a href="https://wa.link/32wjyz" target="_blank" rel="noopener" class="btn btn-senal btn-lg">Soy creador</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer id="footer" class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="brand brand-footer">
+          <svg class="iso" viewBox="0 0 121 100" fill="currentColor" aria-hidden="true"><polygon points="36,0 68,0 32,100 0,100"/><polygon points="89,0 121,0 85,100 53,100"/></svg>
+          <span class="brand-name">VOCERA</span>
+        </div>
+        <p class="footer-firma">Conectar para crecer</p>
+        <p class="footer-desc">Partner Comunicativo. Convertimos voces reales en la voz de tu marca para comunicar, conectar y crecer con datos.</p>
+        <ul class="footer-social" aria-label="Redes sociales">
+          <li><a href="https://www.instagram.com/vocera.peru?igsh=MWpydzRjOGtvMHBvZw%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 01-1.38-.9 3.72 3.72 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.5.01-4.74.07-1.14.05-1.76.24-2.17.4-.55.21-.94.47-1.35.88-.41.41-.67.8-.88 1.35-.16.41-.35 1.03-.4 2.17-.06 1.24-.07 1.59-.07 4.74s.01 3.5.07 4.74c.05 1.14.24 1.76.4 2.17.21.55.47.94.88 1.35.41.41.8.67 1.35.88.41.16 1.03.35 2.17.4 1.24.06 1.59.07 4.74.07s3.5-.01 4.74-.07c1.14-.05 1.76-.24 2.17-.4.55-.21.94-.47 1.35-.88.41-.41.67-.8.88-1.35.16-.41.35-1.03.4-2.17.06-1.24.07-1.59.07-4.74s-.01-3.5-.07-4.74c-.05-1.14-.24-1.76-.4-2.17a3.63 3.63 0 00-.88-1.35 3.63 3.63 0 00-1.35-.88c-.41-.16-1.03-.35-2.17-.4-1.24-.06-1.59-.07-4.74-.07zm0 2.76a5.3 5.3 0 110 10.6 5.3 5.3 0 010-10.6zm0 8.74a3.44 3.44 0 100-6.88 3.44 3.44 0 000 6.88zm6.75-8.94a1.24 1.24 0 11-2.48 0 1.24 1.24 0 012.48 0z"/></svg>
+          </a></li>
+          <li><a href="https://www.facebook.com/profile.php?id=100091700103082" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
+          </a></li>
+          <li><a href="https://www.tiktok.com/@vocera.peru?_r=1&_t=ZS-98V08tGpq33" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82a4.28 4.28 0 01-1.05-2.82h-3.2v12.86a2.59 2.59 0 01-2.59 2.5 2.59 2.59 0 01-2.6-2.59 2.59 2.59 0 012.6-2.59c.27 0 .53.04.77.12v-3.28a5.85 5.85 0 00-.77-.05A5.87 5.87 0 003.5 15.77a5.87 5.87 0 005.86 5.86 5.87 5.87 0 005.86-5.86V9.4a7.44 7.44 0 004.35 1.39V7.6a4.28 4.28 0 01-2.83-1.78z"/></svg>
+          </a></li>
+          <li><a href="https://www.linkedin.com/company/vocera-peru/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 110-4.14 2.07 2.07 0 010 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/></svg>
+          </a></li>
+        </ul>
+      </div>
+
+      <nav class="footer-col" aria-label="Navegación del pie">
+        <h3 class="footer-col-title">Navegación</h3>
+        <ul class="footer-links">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#sistema-voice">Sistema Voice</a></li>
+          <li><a href="#triple-c">La Triple C</a></li>
+          <li><a href="#para-marcas">Para marcas</a></li>
+          <li><a href="#para-creadores">Para creadores</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer-col">
+        <h3 class="footer-col-title">Contacto directo</h3>
+        <ul class="footer-links">
+          <li><a href="mailto:hola@vocera.lat">hola@vocera.lat</a></li>
+          <li><a href="https://wa.me/51972315091" target="_blank" rel="noopener">WhatsApp: +51 972 315 091</a></li>
+          <li><a href="https://wa.link/o3mibk" target="_blank" rel="noopener">Contacto de marcas</a></li>
+          <li><a href="https://wa.link/32wjyz" target="_blank" rel="noopener">Contacto de creadores</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copyright">© 2026 Vocera. Todos los derechos reservados.</span>
+      <span class="footer-copyright footer-tagline-mono">comunica // conecta // crece</span>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  /* =====================================================================
+     CONFIGURACIÓN DEL BACKEND (Google Apps Script)
+     Pega aquí la URL del Web App que obtienes al desplegar Code.gs.
+     Ejemplo: https://script.google.com/macros/s/AKfycbx.../exec
+     ===================================================================== */
+  const GOOGLE_SCRIPT_URL = "PEGAR_AQUI_URL_DEL_WEB_APP";
+
+  /* =====================================================================
+     VOCERA · nav.js
+     Cabecera al hacer scroll · barra de progreso · menú móvil · scroll suave
+     ===================================================================== */
+  (function () {
+    'use strict';
+
+    var header = document.getElementById('header');
+    var progress = document.getElementById('progress-bar');
+    var hamburger = document.getElementById('hamburger');
+    var mobileNav = document.getElementById('mobile-nav');
+
+    /* ---- Scroll: cabecera sólida + barra de progreso ---- */
+    function onScroll() {
+      var y = window.scrollY || window.pageYOffset;
+      if (header) header.classList.toggle('scrolled', y > 24);
+      if (progress) {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ---- Menú móvil ---- */
+    function closeNav() {
+      if (!mobileNav) return;
+      mobileNav.classList.remove('open');
+      if (hamburger) { hamburger.classList.remove('open'); hamburger.setAttribute('aria-expanded', 'false'); }
+      document.body.style.overflow = '';
+    }
+    if (hamburger && mobileNav) {
+      hamburger.addEventListener('click', function () {
+        var open = mobileNav.classList.toggle('open');
+        hamburger.classList.toggle('open', open);
+        hamburger.setAttribute('aria-expanded', String(open));
+        document.body.style.overflow = open ? 'hidden' : '';
+      });
+    }
+    document.querySelectorAll('[data-close-nav]').forEach(function (el) {
+      el.addEventListener('click', closeNav);
+    });
+
+    /* ---- Scroll suave con compensación de la cabecera ---- */
+    var headerH = 72;
+    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        var id = link.getAttribute('href');
+        if (id === '#' || id.length < 2) return;
+        var target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        var top = target.getBoundingClientRect().top + window.scrollY - headerH + 1;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+        if (history.replaceState) history.replaceState(null, '', id);
+      });
+    });
+  })();
+
+  /* =====================================================================
+     VOCERA · reveal.js · Aparición progresiva al hacer scroll
+     ===================================================================== */
+  (function () {
+    'use strict';
+
+    var items = document.querySelectorAll('.reveal, .reveal-right');
+    if (!items.length) return;
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('visible'); });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+    items.forEach(function (el) { observer.observe(el); });
+
+    /* Secuencia de entrada del hero al cargar (no espera al scroll) */
+    window.addEventListener('load', function () {
+      var heroItems = document.querySelectorAll('#inicio .reveal, #inicio .reveal-right');
+      heroItems.forEach(function (el) {
+        var m = el.className.match(/\bd(\d)\b/);
+        var delay = 90 + (m ? parseInt(m[1], 10) : 0) * 110;
+        setTimeout(function () { el.classList.add('visible'); }, delay);
+      });
+    });
+  })();
+
+  /* =====================================================================
+     VOCERA · hero.js
+     Deriva suave de los chips flotantes + parallax con el cursor +
+     inclinación de la tarjeta central + desvanecido de orbes al hacer scroll.
+     ===================================================================== */
+  (function () {
+    'use strict';
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var hero = document.getElementById('inicio');
+    var visual = document.getElementById('hero-visual');
+    var card = document.getElementById('hero-card');
+    var chips = Array.prototype.slice.call(document.querySelectorAll('.float-chip'));
+    var orbs = document.querySelectorAll('.ambient-orb');
+
+    /* ---- Orbes: se atenúan al bajar ---- */
+    if (orbs.length) {
+      window.addEventListener('scroll', function () {
+        var r = Math.max(0, 1 - (window.scrollY / window.innerHeight) * 1.1);
+        orbs.forEach(function (o) { o.style.opacity = r; });
+      }, { passive: true });
+    }
+
+    if (reduce || !visual || !chips.length) return;
+    var wide = window.matchMedia('(min-width: 981px)');
+    if (!wide.matches) return;
+
+    /* ---- Deriva sinusoidal continua ---- */
+    var params = chips.map(function (_, i) {
+      return { period: 3400 + i * 620, amp: 5 + i * 1.7, phase: i * 0.95, mx: 0, my: 0, fx: 0, fy: 0 };
+    });
+
+    function tick(ts) {
+      for (var i = 0; i < chips.length; i++) {
+        var p = params[i];
+        var t = ts / p.period;
+        p.fy = Math.sin(t * Math.PI * 2 + p.phase) * p.amp;
+        p.fx = Math.cos(t * Math.PI * 2 + p.phase * 1.4) * (p.amp * 0.42);
+        chips[i].style.transform = 'translate(' + (p.fx + p.mx) + 'px,' + (p.fy + p.my) + 'px)';
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    var raf = requestAnimationFrame(tick);
+
+    /* ---- Parallax con el cursor ---- */
+    hero.addEventListener('mousemove', function (e) {
+      var r = visual.getBoundingClientRect();
+      var dx = (e.clientX - r.left - r.width / 2) / r.width;
+      var dy = (e.clientY - r.top - r.height / 2) / r.height;
+      chips.forEach(function (chip, i) {
+        var depth = parseFloat(chip.dataset.depth || '0.3');
+        params[i].mx = dx * 30 * depth;
+        params[i].my = dy * 22 * depth;
+      });
+      if (card) card.style.transform = 'translate(-50%,-50%) rotateX(' + (-dy * 6) + 'deg) rotateY(' + (dx * 8) + 'deg)';
+    }, { passive: true });
+
+    hero.addEventListener('mouseleave', function () {
+      chips.forEach(function (_, i) { params[i].mx = 0; params[i].my = 0; });
+      if (card) card.style.transform = 'translate(-50%,-50%)';
+    }, { passive: true });
+  })();
+
+  /* =====================================================================
+     VOCERA · tilt.js · Inclinación magnética sutil en tarjetas (hover)
+     ===================================================================== */
+  (function () {
+    'use strict';
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (reduce || !fine) return;
+
+    var cards = document.querySelectorAll('.cap-card, .dif-card, .metric-card, .colab-card');
+
+    cards.forEach(function (card) {
+      card.addEventListener('mousemove', function (e) {
+        var r = card.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - 0.5;
+        var y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = 'translateY(-6px) rotateX(' + (-y * 5) + 'deg) rotateY(' + (x * 5) + 'deg)';
+      });
+      card.addEventListener('mouseleave', function () { card.style.transform = ''; });
+    });
+  })();
+
+  /* =====================================================================
+     VOCERA · form.js
+     Cambio de perfil (marca / creador) + envío a Google Sheets (Apps
+     Script) + apertura de WhatsApp con los datos ya redactados.
+     ===================================================================== */
+  (function () {
+    'use strict';
+
+    var PHONE = '51972315091'; // +51 972 315 091
+
+    /* ---- Toggle de perfil ---- */
+    var toggles = document.querySelectorAll('.form-toggle-btn');
+    var panels = { marca: document.getElementById('form-marca'), creador: document.getElementById('form-creador') };
+
+    function switchForm(profile) {
+      toggles.forEach(function (btn) {
+        var on = btn.dataset.form === profile;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-selected', String(on));
+      });
+      Object.keys(panels).forEach(function (key) {
+        var panel = panels[key];
+        if (!panel) return;
+        var on = key === profile;
+        panel.classList.toggle('active', on);
+        if (on) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+      });
+    }
+    toggles.forEach(function (btn) {
+      btn.addEventListener('click', function () { switchForm(btn.dataset.form); });
+    });
+
+    /* ---- Toast ---- */
+    var toast = document.getElementById('toast');
+    var toastTimer;
+    function showToast(msg, isError) {
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.toggle('toast-error', !!isError);
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 4200);
+    }
+
+    /* ---- Utilidades ---- */
+    function val(form, name) {
+      var el = form.querySelector('[name="' + name + '"]');
+      return el && el.value ? el.value.trim() : '';
+    }
+    function line(label, value) { return value ? '%0A*' + label + ':* ' + encodeURIComponent(value) : ''; }
+
+    function openWhatsApp(profile, data) {
+      var msg;
+      if (profile === 'marca') {
+        msg = 'Hola Vocera, soy una *MARCA* y quiero implementar el sistema Voice:'
+          + line('Marca', data.marca)
+          + line('Sector', data.sector)
+          + line('Web / redes', data.web)
+          + line('Objetivo', data.objetivo)
+          + line('Público', data.publico)
+          + line('Correo', data.email)
+          + line('Mensaje', data.mensaje);
+      } else {
+        msg = 'Hola Vocera, soy *CREADOR* y quiero ser una voz Vocera:'
+          + line('Nombre', data.nombre)
+          + line('Redes', data.redes)
+          + line('Ciudad', data.ciudad)
+          + line('Tipo de contenido', data.tipo)
+          + line('Nichos', data.nicho)
+          + line('Correo', data.email)
+          + line('Mensaje', data.mensaje);
+      }
+      window.open('https://wa.me/' + PHONE + '?text=' + msg, '_blank', 'noopener');
+    }
+
+    /* ---- Envío a Google Sheets vía Google Apps Script ---- */
+    function submitToSheet(payload) {
+      // Content-Type se omite a propósito: un body string sin cabecera
+      // explícita viaja como "text/plain", lo que evita el preflight OPTIONS
+      // que los Web Apps de Apps Script no manejan de forma nativa.
+      return fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (!res.ok) throw new Error('Respuesta HTTP ' + res.status);
+        return res.json();
+      });
+    }
+
+    /* ---- Envío de formularios ---- */
+    var submitting = {}; // evita doble envío por formulario
+
+    document.querySelectorAll('.voice-form').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var profile = form.dataset.profile;
+        if (submitting[profile]) return; // ya hay un envío en curso
+
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+
+        if (GOOGLE_SCRIPT_URL.indexOf('PEGAR_AQUI') !== -1) {
+          console.error('Vocera: falta configurar GOOGLE_SCRIPT_URL con la URL del Web App de Apps Script.');
+          showToast('Formulario no configurado todavía. Escríbenos por WhatsApp.', true);
+          return;
+        }
+
+        var payload = profile === 'marca'
+          ? {
+              formType: 'marca',
+              marca: val(form, 'marca'),
+              sector: val(form, 'sector'),
+              web: val(form, 'web'),
+              objetivo: val(form, 'objetivo'),
+              publico: val(form, 'publico'),
+              email: val(form, 'email'),
+              mensaje: val(form, 'mensaje')
+            }
+          : {
+              formType: 'creador',
+              nombre: val(form, 'nombre'),
+              redes: val(form, 'redes'),
+              ciudad: val(form, 'ciudad'),
+              tipo: val(form, 'tipo'),
+              nicho: val(form, 'nicho'),
+              email: val(form, 'email'),
+              mensaje: val(form, 'mensaje')
+            };
+
+        var button = form.querySelector('button[type="submit"]');
+        var originalText = button ? button.textContent : '';
+
+        submitting[profile] = true;
+        if (button) { button.disabled = true; button.textContent = 'Enviando…'; }
+
+        submitToSheet(payload)
+          .then(function (result) {
+            if (!result || !result.success) {
+              throw new Error(result && result.error ? result.error : 'No se pudo guardar el registro.');
+            }
+            showToast('¡Gracias! Te contactaremos pronto. Abriendo WhatsApp…');
+            openWhatsApp(profile, payload);
+            form.reset();
+          })
+          .catch(function (err) {
+            console.error('Vocera: error al enviar el formulario.', err);
+            showToast('Hubo un problema al enviar. Intenta nuevamente o escríbenos por WhatsApp.', true);
+          })
+          .finally(function () {
+            submitting[profile] = false;
+            if (button) { button.disabled = false; button.textContent = originalText; }
+          });
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
