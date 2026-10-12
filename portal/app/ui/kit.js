@@ -98,7 +98,7 @@ export function ErrorBox({ message, retry }) {
   return html`<div class="notice error" role="alert"><div><strong>No pudimos cargar esta información</strong>${message}
     ${retry && html`<div style="margin-top:10px"><${Button} size="sm" onClick=${retry}>Reintentar</${Button}></div>`}</div></div>`;
 }
-export const Progress = ({ value, ok }) => html`<div class=${'progress' + (ok ? ' ok' : '')} role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow=${Math.round(value)}><span style=${{ width: Math.min(100, value) + '%' }}></span></div>`;
+export const Progress = ({ value, ok, label: lab }) => html`<div class=${'progress' + (ok ? ' ok' : '')} role="progressbar" aria-label=${lab || 'Progreso'} aria-valuemin="0" aria-valuemax="100" aria-valuenow=${Math.round(value)}><span style=${{ width: Math.min(100, value) + '%' }}></span></div>`;
 
 export function Avatar({ name, path, lg }) {
   const [url, setUrl] = useState(null);
@@ -112,7 +112,7 @@ export function toast(msg, kind = 'ok') { pushToast({ msg, kind, id: Math.random
 export function Toasts() {
   const [items, setItems] = useState([]);
   const ref = useRef();
-  useEffect(() => { pushToast = t => { setItems(x => [...x, t]); setTimeout(() => setItems(x => x.filter(i => i.id !== t.id)), t.kind === 'error' ? 7000 : 4000); }; }, []);
+  useEffect(() => { pushToast = t => { setItems(x => [...x, t].slice(-2)); setTimeout(() => setItems(x => x.filter(i => i.id !== t.id)), t.kind === 'error' ? 7000 : 4000); }; }, []);
   // popover="manual" lleva los avisos a la capa superior: se ven incluso sobre un modal abierto
   useEffect(() => {
     const el = ref.current; if (!el || !el.showPopover) return;

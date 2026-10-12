@@ -16,7 +16,7 @@ export function AdminHome() {
   return html`<div>
     <div class="page-head"><div><h1>Resumen</h1><p>Lo que necesita una decisión de Vocera hoy.</p></div>
       <a class="btn btn-primary" href=${href('/admin/campanas/nueva')}><${Icon} name="plus" size="18" />Nueva campaña</a></div>
-    <div class="kpis" role="list">
+    <div class="kpis cols-4" role="list">
       ${K(data.creators, 'Creadores registrados', '/admin/creadores')}
       ${K(data.profiles_in_review, 'Perfiles por revisar', '/admin/creadores?status=in_review')}
       ${K(data.active_campaigns, 'Campañas activas', '/admin/campanas')}

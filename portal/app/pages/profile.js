@@ -68,7 +68,7 @@ export function Profile({ session }) {
 
     <div class="panel panel-pad" style="margin-bottom:20px">
       <div class="row between"><strong>Perfil completado</strong><span class="num">${comp.percent} %</span></div>
-      <div style="margin:10px 0 12px"><${Progress} value=${comp.percent} ok=${comp.percent === 100} /></div>
+      <div style="margin:10px 0 12px"><${Progress} label="Perfil completado" value=${comp.percent} ok=${comp.percent === 100} /></div>
       ${comp.percent < 100 && html`<p class="small muted">Te falta: ${comp.items.filter(i => !i.done).map(i => i.label).join(' · ')}</p>`}
     </div>
 

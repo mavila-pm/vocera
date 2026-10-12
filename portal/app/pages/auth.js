@@ -20,7 +20,7 @@ function AuthLayout({ children }) {
         ${[[60,174,72],[96,152,115],[132,124,173],[168,142,137],[204,98,223],[240,66,288],[276,30,360],[312,30,360],[348,84,252],[384,113,194],[420,102,216],[456,138,144],[492,161,97],[528,181,58]]
           .map(([x, y, h], i) => html`<rect x=${x} y=${y} width="22" height=${h} fill=${i === 6 || i === 7 ? '#ECEEF0' : i === 4 || i === 9 ? '#7D98F0' : undefined} />`)}
       </g></svg>
-      <p class="small" style="opacity:.6">© Vocera</p>
+      <p class="small" style="color:rgba(236,238,240,.72)">© Vocera</p>
     </aside>
     <main class="auth-main" id="main"><div class="auth-card">${children}</div></main>
   </div>`;

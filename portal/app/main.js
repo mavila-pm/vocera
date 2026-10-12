@@ -15,6 +15,7 @@ const CREATOR_NAV = [['/', 'Inicio', 'home'], ['/campanas', 'Mis campañas', 'me
 const CREATOR_EXTRA = [['/notificaciones', 'Notificaciones', 'bell'], ['/cuenta', 'Cuenta y seguridad', 'shield']];
 const ADMIN_NAV = [['/admin', 'Resumen', 'home'], ['/admin/creadores', 'Creadores', 'users'], ['/admin/campanas', 'Campañas', 'megaphone'],
   ['/admin/pagos', 'Pagos', 'wallet'], ['/admin/auditoria', 'Auditoría', 'list']];
+const SHORT = { 'Mis campañas': 'Campañas', 'Mis pagos': 'Pagos', 'Mi perfil': 'Perfil' };
 const ADMIN_EXTRA = [['/notificaciones', 'Notificaciones', 'bell'], ['/cuenta', 'Cuenta y seguridad', 'shield']];
 
 function routes(isAdmin) {
@@ -88,7 +89,7 @@ function Shell({ session, path }) {
       <main class="content" id="main" tabindex="-1">${page || html`<${Empty} title="Página no encontrada" action=${html`<a class="btn" href=${href(isAdmin ? '/admin' : '/')}>Ir al inicio</a>`}>Revisa el enlace o vuelve al inicio.</${Empty}>`}</main>
     </div>
     <nav class="tabbar" aria-label="Navegación">
-      ${nav.slice(0, 4).map(([to, l, ic]) => html`<a href=${href(to)} aria-current=${active(to)}><${Icon} name=${ic} />${l.replace('Mis ', '').replace('Mi ', '')}</a>`)}
+      ${nav.map(([to, l, ic]) => html`<a href=${href(to)} aria-current=${active(to)}><${Icon} name=${ic} />${SHORT[l] || l}</a>`)}
     </nav>
   </div>`;
 }
@@ -115,7 +116,7 @@ function App() {
   else if (!isAdmin && path.startsWith('/admin')) to = '/';
   else if (!isAdmin && !session.profile.welcome_seen_at && path !== '/bienvenida') to = '/bienvenida';
   if (to) { setTimeout(() => navigate(to, { replace: true }), 0); return null; }
-  if (path === '/bienvenida') return html`<div class="content"><${Welcome} session=${session} /></div>`;
+  if (path === '/bienvenida') return html`<div class="content"><a class="brand" style="color:var(--tinta);padding:0"><${Iso} /><span>VOCERA</span></a><${Welcome} session=${session} /></div>`;
   return html`<${Shell} session=${session} path=${path} />`;
 }
 

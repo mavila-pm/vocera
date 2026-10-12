@@ -320,6 +320,23 @@ try {
     }
     await A.screenshot({ path: OUT + '/20-movil-admin-asignacion.png', fullPage: true });
   });
+  await step('Extra: accesibilidad WCAG 2.1 AA (axe) en pantallas clave', async () => {
+    const axe = require('axe-core');
+    const check = async (p, route, who) => {
+      await p.goto(SITE + route); await p.reload(); await sleep(1000);
+      await p.addScriptTag({ content: axe.source });
+      const r = await p.evaluate(() => axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21aa'] }));
+      const bad = r.violations.filter(v => ['serious', 'critical'].includes(v.impact));
+      assert(!bad.length, `${who} ${route}: ` + bad.map(v => v.id + ' (' + v.nodes.length + ')').join(', '));
+    };
+    await C.setViewportSize({ width: 1280, height: 900 });
+    for (const r of ['#/', '#/campanas', `#/campanas/${assignmentId}`, '#/pagos', '#/pagos/datos', '#/perfil', '#/cuenta', '#/notificaciones']) await check(C, r, 'creador');
+    await A.setViewportSize({ width: 1280, height: 900 });
+    for (const r of ['#/admin', '#/admin/creadores', '#/admin/campanas', `#/admin/asignaciones/${assignmentId}?tab=pago`, '#/admin/pagos', '#/admin/auditoria']) await check(A, r, 'admin');
+    const anon = await browser.newPage();
+    for (const r of ['#/entrar', '#/registro', '#/recuperar']) await check(anon, r, 'público');
+    await anon.close();
+  });
   await step('Extra: auditoría y notificaciones registradas', async () => {
     const n = Number(psql("select count(*) from public.audit_logs where action = 'assignment_status'"));
     assert(n >= 12, 'pocos cambios de estado auditados: ' + n);

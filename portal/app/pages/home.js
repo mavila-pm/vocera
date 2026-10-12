@@ -159,7 +159,7 @@ export function Account({ session }) {
       <div class="panel panel-pad stack">
         <h2>Sesiones</h2>
         <p class="muted small">Último ingreso: ${dateTime(u.last_sign_in_at)}. Si usaste el portal en otro dispositivo, puedes cerrar esas sesiones.</p>
-        <div class="row"><${Button} onClick=${() => setConfirm('others')}>Cerrar otras sesiones</${Button}><${Button} variant="dark" onClick=${() => setConfirm('global')}>Cerrar todas</${Button}></div>
+        <div class="row"><${Button} variant="dark" loading=${busy} onClick=${() => signOut('local')}>Cerrar sesión aquí</${Button}><${Button} onClick=${() => setConfirm('others')}>Cerrar otras sesiones</${Button}><${Button} onClick=${() => setConfirm('global')}>Cerrar todas</${Button}></div>
         <p class="muted small">¿Quieres eliminar tu cuenta o descargar tus datos? Escríbenos a <a href="mailto:hola@vocera.lat">hola@vocera.lat</a>.</p>
       </div>
     </div>

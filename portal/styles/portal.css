@@ -173,19 +173,16 @@ p { text-wrap: pretty; }
 .cols { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; align-items: start; }
 @media (max-width: 1000px) { .cols { grid-template-columns: 1fr; } }
 
-/* KPI: una sola franja con divisores, no tarjetas repetidas */
-.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); background: var(--blanco); border: 1px solid var(--linea-2); border-radius: var(--r-panel); }
-.kpi { padding: 16px 18px; border-left: 1px solid var(--linea-2); min-width: 0; text-decoration: none; color: inherit; }
-.kpi:first-child { border-left: 0; }
-.kpi .v { display: block; font-size: 1.6rem; font-weight: 700; font-stretch: 108%; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.2; }
+/* KPI: una sola franja con divisores, no tarjetas repetidas.
+   Los divisores son sombras de 1px recortadas por el contenedor, así
+   funcionan con cualquier número de filas y columnas. */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); background: var(--blanco); border: 1px solid var(--linea-2); border-radius: var(--r-panel); overflow: hidden; }
+.kpis.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.kpi { padding: 16px 18px; min-width: 0; text-decoration: none; color: inherit; box-shadow: -1px 0 0 var(--linea-2), 0 -1px 0 var(--linea-2); }
+.kpi .v { display: block; font-size: 1.6rem; font-weight: 700; font-stretch: 108%; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.2; overflow-wrap: anywhere; }
 .kpi .l { display: block; font-size: .825rem; color: var(--texto-2); margin-top: 2px; }
 a.kpi:hover .v { color: var(--senal); }
-@media (max-width: 640px) {
-  .kpis { grid-template-columns: 1fr 1fr; }
-  .kpi { border-left: 0; border-top: 1px solid var(--linea-2); }
-  .kpi:nth-child(-n+2) { border-top: 0; }
-  .kpi:nth-child(even) { border-left: 1px solid var(--linea-2); }
-}
+@media (max-width: 640px) { .kpis, .kpis.cols-4 { grid-template-columns: 1fr 1fr; } .kpi .v { font-size: 1.3rem; } }
 
 /* Listas de filas (tabla en escritorio, bloques en móvil) */
 .list { background: var(--blanco); border: 1px solid var(--linea-2); border-radius: var(--r-panel); overflow: hidden; }
