@@ -4,3 +4,4 @@ node_modules/
 !.env.example
 dev/local-supabase/.data/
 portal/config.local.js
+tests/e2e/.out/
