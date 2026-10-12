@@ -18,7 +18,7 @@
     "htm": "3.1.1",
     "jsonwebtoken": "9.0.2",
     "pg": "8.16.3",
-    "preact": "10.27.2",
+    "preact": "10.29.8",
     "tus-js-client": "4.3.1"
   }
 }

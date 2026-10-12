@@ -6,6 +6,7 @@
 window.VOCERA_CONFIG = {
   supabaseUrl: '',          // p. ej. https://xxxxxxxx.supabase.co  (pendiente: proyecto no creado)
   supabaseAnonKey: '',      // anon key del proyecto
+  supportEmail: 'soporte@vocera.lat',
   termsVersion: '2026-10-borrador',
   resumableThresholdBytes: 50 * 1024 * 1024
 };

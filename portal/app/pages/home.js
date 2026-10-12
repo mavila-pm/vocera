@@ -160,7 +160,7 @@ export function Account({ session }) {
         <h2>Sesiones</h2>
         <p class="muted small">Último ingreso: ${dateTime(u.last_sign_in_at)}. Si usaste el portal en otro dispositivo, puedes cerrar esas sesiones.</p>
         <div class="row"><${Button} variant="dark" loading=${busy} onClick=${() => signOut('local')}>Cerrar sesión aquí</${Button}><${Button} onClick=${() => setConfirm('others')}>Cerrar otras sesiones</${Button}><${Button} onClick=${() => setConfirm('global')}>Cerrar todas</${Button}></div>
-        <p class="muted small">¿Quieres eliminar tu cuenta o descargar tus datos? Escríbenos a <a href="mailto:hola@vocera.lat">hola@vocera.lat</a>.</p>
+        <p class="muted small">¿Quieres eliminar tu cuenta o descargar tus datos? Escríbenos a <a href="mailto:soporte@vocera.lat">soporte@vocera.lat</a>.</p>
       </div>
     </div>
     <${Confirm} open=${!!confirm} title=${confirm === 'others' ? 'Cerrar otras sesiones' : 'Cerrar todas las sesiones'} busy=${busy}

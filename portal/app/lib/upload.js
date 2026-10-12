@@ -32,6 +32,27 @@ export function validateFile(file, kind) {
   return null;
 }
 
+// Firma binaria ("magic bytes"): evita archivos disfrazados con otra extensión,
+// por ejemplo un ejecutable renombrado a .mp4. Complementa la validación del servidor.
+const SIGNATURES = {
+  'image/png': b => b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47,
+  'image/jpeg': b => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff,
+  'image/webp': b => String.fromCharCode(...b.slice(0, 4)) === 'RIFF' && String.fromCharCode(...b.slice(8, 12)) === 'WEBP',
+  'application/pdf': b => String.fromCharCode(...b.slice(0, 5)) === '%PDF-',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': b => b[0] === 0x50 && b[1] === 0x4b && b[2] === 0x03 && b[3] === 0x04,
+  'video/mp4': b => String.fromCharCode(...b.slice(4, 8)) === 'ftyp',
+  'video/quicktime': b => ['ftyp', 'moov', 'mdat', 'wide', 'free', 'skip'].includes(String.fromCharCode(...b.slice(4, 8))),
+  'video/x-m4v': b => String.fromCharCode(...b.slice(4, 8)) === 'ftyp',
+  'video/webm': b => b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3
+};
+export async function checkSignature(file) {
+  const mime = detectMime(file);
+  const test = SIGNATURES[mime];
+  if (!test) return 'Formato no permitido.';
+  const head = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  return test(head) ? null : 'El contenido del archivo no corresponde a un ' + (mime.split('/')[1] || 'archivo').toUpperCase() + ' válido. No se subió.';
+}
+
 const safe = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-').slice(-60);
 
 // ownerId: carpeta del creador (las políticas exigen que la ruta empiece por su id)
@@ -42,7 +63,7 @@ export function buildPath(ownerId, folder, file, kind) {
 }
 
 export async function uploadFile({ file, kind, ownerId, folder, onProgress }) {
-  const err = validateFile(file, kind);
+  const err = validateFile(file, kind) || await checkSignature(file);
   if (err) throw new Error(err);
   const { bucket } = RULES[kind];
   const path = buildPath(ownerId, folder, file, kind);

@@ -64,6 +64,7 @@ export function Login() {
     </form>
     <p class="auth-foot"><a href=${href('/recuperar')}>¿Olvidaste tu contraseña?</a></p>
     <p class="auth-foot">¿Eres creador y aún no tienes cuenta? <a href=${href('/registro')}>Crea tu cuenta</a></p>
+    <p class="auth-foot small">¿Problemas para entrar? Escríbenos a <a href=${'mailto:' + (config.supportEmail || 'soporte@vocera.lat')}>${config.supportEmail || 'soporte@vocera.lat'}</a></p>
   </${AuthLayout}>`;
 }
 
@@ -195,7 +196,7 @@ export function Legal({ doc }) {
   return html`<${AuthLayout}>
     <h1>${doc === 'privacidad' ? 'Política de privacidad' : 'Términos de uso'}</h1>
     <div class="notice warn" style="margin:16px 0"><div><strong>Documento pendiente</strong>Vocera publicará aquí el texto legal revisado por un profesional. Este portal no debe abrirse al público hasta entonces.</div></div>
-    <p class="muted">Mientras tanto, los datos que registras se usan solo para gestionar tu participación en campañas de Vocera. Puedes pedir la eliminación de tu cuenta escribiendo a hola@vocera.lat.</p>
+    <p class="muted">Mientras tanto, los datos que registras se usan solo para gestionar tu participación en campañas de Vocera. Puedes pedir la eliminación de tu cuenta escribiendo a soporte@vocera.lat.</p>
     <p class="auth-foot"><a href=${href('/registro')}>Volver</a></p>
   </${AuthLayout}>`;
 }

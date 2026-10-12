@@ -213,8 +213,11 @@ try {
     await A.click('text=Agregar entregable');
     await A.getByLabel('Título').fill('Video vertical 30 s'); await A.click('button:has-text("Crear")'); await toastSeen(A, 'Entregable creado');
     await C.reload(); await tab(C, 'Entregas');
-    await C.locator('input[type=file]').setInputFiles({ name: 'virus.exe', mimeType: 'application/x-msdownload', buffer: Buffer.from('MZ') });
+    await C.locator('input[type=file]').setInputFiles({ name: 'archivo-no-permitido.exe', mimeType: 'application/x-msdownload', buffer: Buffer.from('MZ') });
     await C.getByText('Formato no permitido').waitFor();
+    // Ejecutable disfrazado de .mp4: lo detecta la firma binaria del archivo
+    await C.locator('input[type=file]').setInputFiles({ name: 'disfrazado.mp4', mimeType: 'video/mp4', buffer: Buffer.concat([Buffer.from('MZ'), Buffer.alloc(64)]) });
+    await C.getByText('no corresponde a un').waitFor();
     await C.locator('input[type=file]').setInputFiles(files.mp4('receta-v1.mp4'));
     await toastSeen(C, 'Entrega registrada');
     await C.getByText('receta-v1.mp4').waitFor();
