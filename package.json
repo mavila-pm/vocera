@@ -1,0 +1,23 @@
+{
+  "name": "vocera",
+  "private": true,
+  "description": "Web pública de Vocera + Portal de creadores y Panel Vocera (Supabase).",
+  "type": "module",
+  "scripts": {
+    "vendor": "node dev/build-vendor.mjs",
+    "db:reset": "bash dev/local-supabase/reset-db.sh",
+    "db:test": "bash dev/local-supabase/reset-db.sh && psql -h ${PGHOST:-/tmp} -p ${PGPORT:-54329} -U postgres -d vocera_dev -v ON_ERROR_STOP=1 -f supabase/tests/01_flow_and_security.sql",
+    "dev:api": "node dev/local-supabase/server.mjs",
+    "test:e2e": "node tests/e2e/run.mjs"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "2.117.1",
+    "busboy": "1.6.0",
+    "esbuild": "0.25.10",
+    "htm": "3.1.1",
+    "jsonwebtoken": "9.0.2",
+    "pg": "8.16.3",
+    "preact": "10.27.2",
+    "tus-js-client": "4.3.1"
+  }
+}
