@@ -30,6 +30,7 @@ export async function startSession() {
 }
 
 export function clearRecovery() { state.recovery = false; emit(); }
+export function markRecovery() { state.recovery = true; emit(); }
 export function getState() { return { ...state }; }
 export function useSession() {
   const [s, set] = useState({ ...state });

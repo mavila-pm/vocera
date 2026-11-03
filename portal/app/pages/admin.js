@@ -1,10 +1,10 @@
 // Panel Vocera (rol admin). Todas las RPC admin_* validan el rol en el servidor.
 import { html, useState } from '../../vendor/preact.js';
-import { supabase, rpc, q } from '../lib/sb.js';
+import { supabase, rpc, q, config } from '../lib/sb.js';
 import { href, navigate } from '../lib/router.js';
-import { ASSIGNMENT_STATUS, ADMIN_TONE, PROFILE_STATUS, CAMPAIGN_STATUS, PAYMENT_STATUS, PLATFORMS, RATE_TYPES, AVAILABILITY,
+import { ASSIGNMENT_STATUS, ADMIN_TONE, ADMIN_LABEL, PROFILE_STATUS, CAMPAIGN_STATUS, PAYMENT_STATUS, PLATFORMS, RATE_TYPES, AVAILABILITY,
   CATEGORIES, COUNTRIES, CURRENCIES, money, date, dateTime, compact, label } from '../lib/format.js';
-import { Badge, Button, Empty, Loading, ErrorBox, Field, Input, Select, Textarea, ChipSelect, Avatar, Icon, FileLink, Modal, Progress, useAction, toast } from '../ui/kit.js';
+import { Badge, Button, Empty, Loading, ErrorBox, Field, Input, Select, Textarea, ChipSelect, Avatar, Icon, FileLink, Modal, Progress, useAction, toast, ask } from '../ui/kit.js';
 import { useLoad, Calendar } from './home.js';
 
 // ===================== Resumen ejecutivo =====================
@@ -12,25 +12,30 @@ export function AdminHome() {
   const { data, error, reload } = useLoad(() => rpc('admin_overview'));
   if (error) return html`<${ErrorBox} message=${error} retry=${reload} />`;
   if (!data) return html`<${Loading} rows=${4} />`;
-  const K = (v, l, to) => html`<a class="kpi" role="listitem" href=${href(to)}><span class="v">${v}</span><span class="l">${l}</span></a>`;
+  const K = (v, l, to, attn) => html`<a class=${'kpi' + (attn && v > 0 ? ' attn' : '')} role="listitem" href=${href(to)}><span class="v">${v}</span><span class="l">${l}</span></a>`;
+  const toDecide = data.profiles_in_review + data.pending_deliverables + data.pending_scripts + data.payments_to_authorize + data.incidents;
   return html`<div>
-    <div class="page-head"><div><h1>Resumen</h1><p>Lo que necesita una decisión de Vocera hoy.</p></div>
+    <div class="page-head"><div><h1>Resumen</h1><p>${toDecide ? `Hay ${toDecide} decisiones esperando al equipo.` : 'No hay decisiones pendientes del equipo.'}</p></div>
       <a class="btn btn-primary" href=${href('/admin/campanas/nueva')}><${Icon} name="plus" size="18" />Nueva campaña</a></div>
+    <p class="kpis-label">Por decidir</p>
+    <div class="kpis cols-4" role="list" style="margin-bottom:20px">
+      ${K(data.profiles_in_review, 'Perfiles por revisar', '/admin/creadores?status=in_review', true)}
+      ${K(data.pending_deliverables + data.pending_scripts, 'Guiones y videos por revisar', '/admin', true)}
+      ${K(data.payments_to_authorize, 'Pagos por autorizar', '/admin/pagos', true)}
+      ${K(data.incidents, 'Incidencias abiertas', '/admin/pagos', true)}
+    </div>
+    <p class="kpis-label">Panorama</p>
     <div class="kpis cols-4" role="list">
       ${K(data.creators, 'Creadores registrados', '/admin/creadores')}
-      ${K(data.profiles_in_review, 'Perfiles por revisar', '/admin/creadores?status=in_review')}
       ${K(data.active_campaigns, 'Campañas activas', '/admin/campanas')}
-      ${K(data.pending_deliverables + data.pending_scripts, 'Guiones y entregables por revisar', '/admin')}
       ${K(data.contracts_to_sign, 'Contratos por firmar', '/admin/campanas')}
-      ${K(data.payments_to_authorize, 'Pagos por autorizar', '/admin/pagos')}
       ${K(data.payments_to_transfer, 'Transferencias pendientes', '/admin/pagos')}
-      ${K(data.incidents, 'Incidencias abiertas', '/admin/pagos')}
     </div>
     <div class="cols section">
       <div><div class="section-head"><h2>Cola de trabajo</h2></div>
         ${data.queue.length ? html`<div class="list">${data.queue.map(x => html`<a class="list-row campaign-row" href=${href('/admin/asignaciones/' + x.assignment_id)}>
           <span><span class="t">${x.creator}</span><span class="s" style="display:block">${x.campaign}</span></span>
-          <span><${Badge} map=${ASSIGNMENT_STATUS} value=${x.status} toneOverride=${ADMIN_TONE[x.status]} /></span>
+          <span><${Badge} map=${ASSIGNMENT_STATUS} value=${x.status} toneOverride=${ADMIN_TONE[x.status]} text=${ADMIN_LABEL[x.status]} /></span>
           <span class="c3 small muted">${dateTime(x.updated_at)}</span><span class="c3"></span></a>`)}</div>`
         : html`<div class="panel"><${Empty} title="Nada pendiente de revisión">Guiones, videos, publicaciones y pagos por decidir aparecerán aquí.</${Empty}></div>`}</div>
       <div><div class="section-head"><h2>Vencimientos (14 días)</h2></div><${Calendar} admin /></div>
@@ -120,7 +125,7 @@ export function AdminCreatorDetail({ id }) {
       </div>
       <div class="stack" style="--stack:20px">
         <div class="panel"><div class="panel-head"><h2>Campañas</h2></div>${data.assignments.length ? html`<div class="list" style="border:0">${data.assignments.map(x => html`<a class="list-row" href=${href('/admin/asignaciones/' + x.id)} style="grid-template-columns:1fr auto">
-          <span class="t">${x.campaign}</span><${Badge} map=${ASSIGNMENT_STATUS} value=${x.status} toneOverride=${ADMIN_TONE[x.status]} /></a>`)}</div>` : html`<p class="panel-pad muted small">Aún no participa en campañas.</p>`}</div>
+          <span class="t">${x.campaign}</span><${Badge} map=${ASSIGNMENT_STATUS} value=${x.status} toneOverride=${ADMIN_TONE[x.status]} text=${ADMIN_LABEL[x.status]} /></a>`)}</div>` : html`<p class="panel-pad muted small">Aún no participa en campañas.</p>`}</div>
         <div class="panel panel-pad stack"><h2>Notas internas</h2><p class="small muted">Solo las ve el equipo de Vocera.</p>
           <${Textarea} rows="3" value=${note} onInput=${e => setNote(e.target.value)} aria-label="Nueva nota" />
           <div><${Button} size="sm" variant="dark" loading=${busy} disabled=${!note.trim()} onClick=${() => run(async () => { await q(supabase.from('creator_notes').insert({ creator_id: id, author_id: (await supabase.auth.getUser()).data.user.id, body: note.trim() })); setNote(''); await reload(); }, { success: 'Nota guardada.' })}>Agregar nota</${Button}></div>
@@ -268,12 +273,12 @@ export function AdminCampaignDetail({ id }) {
     <div class="page-head"><div><h1>${c.name}</h1><p>${data.brand?.name || 'Sin marca'} · ${date(c.starts_on)}${c.ends_on ? ' al ' + date(c.ends_on) : ''} · Honorario base ${money(c.default_fee, c.currency)}</p></div>
       <div class="row"><${Badge} map=${CAMPAIGN_STATUS} value=${c.status} /><a class="btn btn-sm" href=${href('/admin/campanas/' + id + '/editar')}>Editar</a>
         ${c.status === 'draft' && html`<${Button} size="sm" variant="primary" loading=${busy} onClick=${() => run(async () => { await rpc('admin_set_campaign_status', { p_campaign: id, p_status: 'active' }); await reload(); }, { success: 'Campaña activa.' })}>Activar</${Button}>`}
-        ${c.status === 'active' && html`<${Button} size="sm" onClick=${() => { const r = prompt('Motivo del cierre'); if (r !== null) run(async () => { await rpc('admin_set_campaign_status', { p_campaign: id, p_status: 'closed', p_reason: r }); await reload(); }); }}>Cerrar</${Button}>`}
+        ${c.status === 'active' && html`<${Button} size="sm" onClick=${async () => { const r = await ask('Motivo del cierre', { optional: true, title: 'Cerrar campaña', confirmLabel: 'Cerrar campaña' }); if (r !== null) run(async () => { await rpc('admin_set_campaign_status', { p_campaign: id, p_status: 'closed', p_reason: r }); await reload(); }); }}>Cerrar</${Button}>`}
       </div></div>
     <div class="section-head"><h2>Creadores asignados</h2>${c.status !== 'closed' && c.status !== 'cancelled' && html`<${Button} variant="primary" onClick=${() => setAssign({ query: '', fee: c.default_fee ?? '', results: null })}><${Icon} name="plus" size="18" />Asignar creador</${Button}>`}</div>
     ${data.assignments.length ? html`<div class="list">${data.assignments.map(x => html`<a class="list-row campaign-row" href=${href('/admin/asignaciones/' + x.id)}>
       <span><span class="t">${x.creator}</span><span class="s" style="display:block">${x.artistic_name || ''}</span></span>
-      <span><${Badge} map=${ASSIGNMENT_STATUS} value=${x.status} toneOverride=${ADMIN_TONE[x.status]} /></span>
+      <span><${Badge} map=${ASSIGNMENT_STATUS} value=${x.status} toneOverride=${ADMIN_TONE[x.status]} text=${ADMIN_LABEL[x.status]} /></span>
       <span class="c3 num small">${money(x.fee, x.currency)}</span><span class="c3 small muted">${dateTime(x.updated_at)}</span></a>`)}</div>`
       : html`<div class="panel"><${Empty} title="Sin creadores asignados">Asigna creadores con perfil aprobado. Después registra la aprobación del cliente y envía la invitación.</${Empty}></div>`}
     <${Modal} open=${!!assign} title="Asignar creador" onClose=${() => setAssign(null)}>
@@ -296,6 +301,7 @@ export function AdminCampaignDetail({ id }) {
 export function AdminPayments() {
   const { data, error, reload } = useLoad(() => rpc('admin_payments'));
   const [filter, setFilter] = useState('todo');
+  const [csv, setCsv] = useState(null);
   const [busy, run] = useAction();
   if (error) return html`<${ErrorBox} message=${error} retry=${reload} />`;
   if (!data) return html`<${Loading} />`;
@@ -304,6 +310,7 @@ export function AdminPayments() {
   const list = data.filter(groups[filter][1]);
   const exportCsv = () => run(async () => {
     const csv = await rpc('admin_export_payments_csv');
+    if (config.demo) { setCsv(csv); return; }
     const url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a'); a.href = url; a.download = `pagos-vocera-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
   }, { success: 'Reporte exportado.' });
@@ -317,6 +324,10 @@ export function AdminPayments() {
         <td data-l="Condiciones">${p.ready === null || p.ready === undefined ? '-' : p.ready ? html`<span class="badge tone-ok">Cumplidas</span>` : html`<span class="badge tone-wait">Pendientes</span>`}</td>
         <td class="r"><a class="btn btn-sm" href=${href('/admin/asignaciones/' + p.assignment_id + '?tab=pago')}>Abrir</a></td></tr>`)}</tbody></table></div>`
       : html`<div class="panel"><${Empty} title="Nada en esta bandeja" /></div>`}
+    <${Modal} open=${csv !== null} title="Reporte de pagos (CSV)" onClose=${() => setCsv(null)} footer=${html`<${Button} variant="primary" onClick=${() => {
+        navigator.clipboard?.writeText(csv).then(() => toast('Copiado.'), () => toast('Selecciona el texto y cópialo.', 'error')); }}>Copiar</${Button}>`}>
+      <textarea class="textarea mono" rows="10" readonly aria-label="Contenido CSV" value=${csv || ''}></textarea>
+    </${Modal}>
   </div>`;
 }
 

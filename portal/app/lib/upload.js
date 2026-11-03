@@ -91,6 +91,17 @@ export async function uploadFile({ file, kind, ownerId, folder, onProgress }) {
     return { bucket, path, mime, size: file.size, name: file.name };
   }
 
+  if (config.demo) {
+    // Demo: misma petición de Storage, servida por el backend local; progreso simulado
+    for (const p of [0.25, 0.6, 0.9]) { onProgress && onProgress(p); await new Promise(r => setTimeout(r, 120)); }
+    const fd = new FormData(); fd.append('cacheControl', '3600'); fd.append('', new File([file], file.name, { type: mime }));
+    const res = await window.VOCERA_DEMO.fetch(`${config.supabaseUrl}/storage/v1/object/${bucket}/${path.split('/').map(encodeURIComponent).join('/')}`,
+      { method: 'POST', headers: { authorization: `Bearer ${session.access_token}` }, body: fd });
+    if (!res.ok) throw new Error(res.status === 413 ? 'El archivo supera el tamaño máximo permitido.' : res.status === 415 ? 'Ese formato de archivo no está permitido.' : 'No se pudo subir el archivo.');
+    onProgress && onProgress(1);
+    return { bucket, path, mime, size: file.size, name: file.name };
+  }
+
   await new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `${config.supabaseUrl}/storage/v1/object/${bucket}/${path.split('/').map(encodeURIComponent).join('/')}`);

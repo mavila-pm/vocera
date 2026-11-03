@@ -2,7 +2,7 @@
 import { html, useState, useEffect, useRef, useCallback, cloneElement } from '../../vendor/preact.js';
 import { label, tone, initials, bytes } from '../lib/format.js';
 import { uploadFile, RULES } from '../lib/upload.js';
-import { signedUrl } from '../lib/sb.js';
+import { signedUrl, config } from '../lib/sb.js';
 
 // ---------- Íconos (trazo 1.75, un solo set dibujado a mano) ----------
 const P = {
@@ -85,7 +85,7 @@ export function PasswordInput(props) {
 }
 
 // ---------- Estados ----------
-export const Badge = ({ map, value, toneOverride }) => html`<span class=${'badge tone-' + (toneOverride || tone(map, value))}>${label(map, value)}</span>`;
+export const Badge = ({ map, value, toneOverride, text }) => html`<span class=${'badge tone-' + (toneOverride || tone(map, value))}>${text || label(map, value)}</span>`;
 
 export function Empty({ title, children, action }) {
   return html`<div class="empty"><${Iso} /><strong>${title}</strong>${children && html`<p>${children}</p>`}${action}</div>`;
@@ -169,14 +169,25 @@ export function FileDrop({ kind, ownerId, folder, onUploaded, label: lab, hint, 
   </div>`;
 }
 
-// Abre un archivo privado con URL firmada temporal
+// Abre un archivo privado con una URL firmada temporal (enlace real, no window.open).
+// En la demo se muestra una vista previa: ahí las descargas y pestañas nuevas están bloqueadas.
 export function FileLink({ bucket, path, children, download }) {
   const [busy, run] = useAction();
+  const [preview, setPreview] = useState(null);
   if (!path) return null;
-  return html`<button type="button" class="link-btn" disabled=${busy} onClick=${() => run(async () => {
-      const u = await signedUrl(bucket, path, { expires: 120, download: download ? path.split('/').pop() : undefined });
-      window.open(u, '_blank', 'noopener');
-    })}>${children || 'Ver archivo'}</button>`;
+  const name = path.split('/').pop();
+  const open = () => run(async () => {
+    const u = await signedUrl(bucket, path, { expires: 120, download: download ? name : undefined });
+    if (config.demo) return setPreview(u);
+    const a = document.createElement('a'); a.href = u; a.target = '_blank'; a.rel = 'noopener'; a.click();
+  });
+  const ext = (name.split('.').pop() || '').toLowerCase();
+  return html`<button type="button" class="link-btn" disabled=${busy} onClick=${open}>${children || 'Ver archivo'}</button>
+    ${preview && html`<${Modal} open title=${name.replace(/^\d+-/, '')} onClose=${() => setPreview(null)}>
+      ${['png', 'jpg', 'jpeg', 'webp'].includes(ext) ? html`<img src=${preview} alt=${'Vista previa de ' + name} style="max-width:100%;border-radius:6px" />`
+        : ['mp4', 'mov', 'webm', 'm4v'].includes(ext) ? html`<div class="video-frame"><video controls src=${preview}></video></div>`
+        : html`<p class="muted">El archivo está guardado de forma privada. En el portal real se abre o descarga desde aquí; en esta demo solo se confirma que existe.</p>`}
+    </${Modal}>`}`;
 }
 
 export function VideoPreview({ path }) {
@@ -203,4 +214,42 @@ export function Confirm({ open, title, children, confirmLabel = 'Confirmar', dan
   return html`<${Modal} open=${open} title=${title} onClose=${onClose} footer=${html`
     <${Button} onClick=${onClose}>Cancelar</${Button}>
     <${Button} variant=${danger ? 'dark' : 'primary'} loading=${busy} onClick=${onConfirm}>${confirmLabel}</${Button}>`}>${children}</${Modal}>`;
+}
+
+// ---------- Pregunta con formulario propio (reemplaza a window.prompt) ----------
+// ask('Motivo del cierre') → Promise<string|null>. Misma forma de uso que
+// prompt(), pero con modal accesible, validación y estilo de la marca.
+// (Además, prompt() no funciona en todos los entornos: algunos lo bloquean.)
+let pushAsk = null;
+export function ask(label, opts = {}) {
+  if (typeof opts === 'string') opts = { defaultValue: opts };
+  return new Promise(resolve => {
+    if (!pushAsk) return resolve(null);
+    pushAsk({ label, ...opts, resolve });
+  });
+}
+export function AskHost() {
+  const [q, setQ] = useState(null);
+  const [value, setValue] = useState('');
+  const [err, setErr] = useState(null);
+  useEffect(() => { pushAsk = req => { setQ(req); setValue(req.defaultValue || ''); setErr(null); }; return () => { pushAsk = null; }; }, []);
+  const close = v => { if (q) q.resolve(v); setQ(null); };
+  const submit = e => {
+    e && e.preventDefault();
+    const v = value.trim();
+    if (!q.optional && !v) return setErr('Completa este campo para continuar.');
+    if (q.minLength && v.length < q.minLength) return setErr(`Escribe al menos ${q.minLength} caracteres.`);
+    if (q.type === 'number' && v && !(Number(v) > 0)) return setErr('Ingresa un monto mayor que cero.');
+    close(v);
+  };
+  const long = !q?.type || q.type === 'textarea';
+  return html`<${Modal} open=${!!q} title=${q?.title || 'Confirma la acción'} onClose=${() => close(null)} footer=${html`
+      <${Button} onClick=${() => close(null)}>Cancelar</${Button}>
+      <${Button} variant="primary" onClick=${submit}>${q?.confirmLabel || 'Continuar'}</${Button}>`}>
+    ${q && html`<form onSubmit=${submit} novalidate>
+      <${Field} label=${q.label} hint=${q.hint} error=${err} optional=${q.optional}>
+        ${long ? html`<${Textarea} rows="3" value=${value} onInput=${e => setValue(e.target.value)} autofocus />`
+          : html`<${Input} type=${q.type} value=${value} onInput=${e => setValue(e.target.value)} autofocus step=${q.type === 'number' ? '0.01' : undefined} />`}
+      </${Field}></form>`}
+  </${Modal}>`;
 }

@@ -8,6 +8,16 @@ export let supabase = null;
 export let config = { ...cfg };
 
 export async function initClient() {
+  const demo = window.VOCERA_DEMO;
+  if (demo) {
+    // Demo en el navegador: mismo cliente, con un fetch que responde PGlite local
+    config = { ...cfg, supabaseUrl: demo.url, supabaseAnonKey: 'demo', demo: true };
+    supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+      auth: { persistSession: false, autoRefreshToken: true, detectSessionInUrl: false },
+      global: { fetch: demo.fetch }
+    });
+    return true;
+  }
   if (isLocal && !cfg.supabaseUrl) {
     // Desarrollo: emulador local (dev/local-supabase/server.mjs)
     const base = `http://${location.hostname}:54321`;
@@ -64,6 +74,10 @@ export async function q(promise) {
 
 export async function signedUrl(bucket, path, opts = {}) {
   if (!path) return null;
+  if (config.demo) {
+    const { data } = await supabase.auth.getSession();
+    return window.VOCERA_DEMO.objectUrl(bucket, path, data.session?.access_token || '');
+  }
   const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, opts.expires || 300, opts.download ? { download: opts.download } : undefined);
   if (error) throw new Error(friendlyError(error));
   return data.signedUrl;

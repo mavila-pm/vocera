@@ -6,9 +6,9 @@ import { html, useState } from '../../vendor/preact.js';
 import { rpc } from '../lib/sb.js';
 import { href, query, navigate } from '../lib/router.js';
 import { ASSIGNMENT_STATUS, CONTRACT_STATUS, SHIPMENT_STATUS, SCRIPT_STATUS, DELIVERABLE_STATUS, PUBLICATION_STATUS, AD_STATUS,
-  PAYMENT_STATUS, PLATFORMS, ADMIN_TONE, money, date, dateTime, relDays, mask, bytes, label } from '../lib/format.js';
+  PAYMENT_STATUS, PLATFORMS, ADMIN_TONE, ADMIN_LABEL, money, date, dateTime, relDays, mask, bytes, label } from '../lib/format.js';
 import { Badge, Button, Empty, Loading, ErrorBox, Icon, Field, Input, Select, Textarea, FileDrop, FileLink, VideoPreview, Modal,
-  Confirm, toast, useAction } from '../ui/kit.js';
+  Confirm, toast, useAction, ask } from '../ui/kit.js';
 import { useLoad, CampaignRows } from './home.js';
 
 export const ORDER = Object.keys(ASSIGNMENT_STATUS);
@@ -69,7 +69,7 @@ export function CampaignDetail({ id, admin, session }) {
     <div class="page-head">
       <div><h1>${c.name}</h1>
         <p>${admin ? html`<strong>${b.creator.full_name}</strong> · ` : ''}${b.brand || 'Marca confidencial'} · Honorario ${money(a.fee_amount, a.currency)}</p></div>
-      <${Badge} map=${ASSIGNMENT_STATUS} value=${a.status} toneOverride=${admin ? ADMIN_TONE[a.status] : undefined} />
+      <${Badge} map=${ASSIGNMENT_STATUS} value=${a.status} toneOverride=${admin ? ADMIN_TONE[a.status] : undefined} text=${admin ? ADMIN_LABEL[a.status] : undefined} />
     </div>
     ${CLOSED.includes(a.status) && html`<div class="notice error" style="margin-bottom:20px"><div><strong>${label(ASSIGNMENT_STATUS, a.status)}</strong>${a.closed_reason || ''}</div></div>`}
     ${b.next_action && !admin && html`<div class=${'notice' + (b.next_action.kind === 'action' ? '' : ' ok')} style="margin-bottom:20px">
@@ -195,7 +195,7 @@ function Contracts({ b, a, admin, reload, creatorId }) {
           ${k.document_path && html`<${FileLink} bucket="documents" path=${k.document_path} download>Descargar contrato (PDF)</${FileLink}>`}
           ${!admin && k.status === 'sent' && !k.acknowledged_at && html`<${Button} loading=${busy} onClick=${() => run(async () => { await rpc('acknowledge_contract', { p_contract: k.id, p_user_agent: navigator.userAgent }); await reload(); }, { success: 'Registramos que leíste el contrato.' })}>Confirmar que lo leí</${Button}>`}
           ${admin && k.status === 'sent' && html`<${Button} variant="primary" onClick=${() => setSign({ contract: k.id, method: 'signed_document_upload', signed_on: new Date().toISOString().slice(0, 10) })}>Registrar firma</${Button}>`}
-          ${admin && k.status !== 'void' && html`<${Button} variant="danger" size="sm" onClick=${() => { const r = prompt('Motivo de la anulación'); if (r) run(async () => { await rpc('admin_void_contract', { p_contract: k.id, p_reason: r }); await reload(); }, { success: 'Contrato anulado.' }); }}>Anular</${Button}>`}
+          ${admin && k.status !== 'void' && html`<${Button} variant="danger" size="sm" onClick=${async () => { const r = await ask('Motivo de la anulación', { title: 'Anular contrato', confirmLabel: 'Anular contrato' }); if (r) run(async () => { await rpc('admin_void_contract', { p_contract: k.id, p_reason: r }); await reload(); }, { success: 'Contrato anulado.' }); }}>Anular</${Button}>`}
         </div>
       </div></div>`)}
     ${canCreate && (form ? html`<div class="panel panel-pad form">
@@ -252,12 +252,12 @@ function Products({ b, a, admin, reload, uid, creatorId }) {
         </dl>
         ${s.issues.length > 0 && html`<div><strong class="small">Incidencias</strong>${s.issues.map(i => html`<div class="notice ${i.status === 'open' ? 'warn' : 'ok'}" style="margin-top:8px"><div>
           <strong>${i.status === 'open' ? 'Abierta' : 'Resuelta'} · ${dateTime(i.created_at)}</strong>${i.description}${i.resolution ? html`<br/><em>Resolución: ${i.resolution}</em>` : ''}
-          ${admin && i.status === 'open' && html`<div style="margin-top:8px"><${Button} size="sm" onClick=${() => { const r = prompt('Resolución'); if (r) run(async () => { await rpc('admin_resolve_shipment_issue', { p_issue: i.id, p_resolution: r }); await reload(); }, { success: 'Incidencia resuelta.' }); }}>Marcar resuelta</${Button}></div>`}
+          ${admin && i.status === 'open' && html`<div style="margin-top:8px"><${Button} size="sm" onClick=${async () => { const r = await ask('Resolución'); if (r) run(async () => { await rpc('admin_resolve_shipment_issue', { p_issue: i.id, p_resolution: r }); await reload(); }, { success: 'Incidencia resuelta.' }); }}>Marcar resuelta</${Button}></div>`}
         </div></div>`)}</div>`}
         <div class="row">
           ${!admin && s.status !== 'received' && html`<${Button} variant="primary" onClick=${() => setReceipt({ shipment: s.id, date: new Date().toISOString().slice(0, 10) })}>Confirmar recepción</${Button}>`}
           ${!admin && html`<${Button} onClick=${() => setIssue({ shipment: s.id, text: '' })}>Reportar un problema</${Button}>`}
-          ${admin && s.status !== 'received' && html`<${Button} size="sm" onClick=${() => { const t = prompt('Número de seguimiento', s.tracking_number || ''); if (t !== null) run(async () => {
+          ${admin && s.status !== 'received' && html`<${Button} size="sm" onClick=${async () => { const t = await ask('Número de seguimiento', { type: 'text', optional: true, defaultValue: s.tracking_number || '', title: 'Actualizar envío' }); if (t !== null) run(async () => {
             await rpc('admin_update_shipment', { p_shipment: s.id, p_status: t ? 'shipped' : s.status, p_carrier: s.carrier, p_tracking: t || null, p_expected: s.expected_on }); await reload(); }, { success: 'Envío actualizado.' }); }}>Actualizar seguimiento</${Button}>`}
         </div>
       </div></div>`)}
@@ -338,8 +338,8 @@ function Scripts({ b, a, admin, reload, uid }) {
           <${Button} onClick=${() => setReview({ id: s.id, decision: 'changes_requested', comments: '' })}>Solicitar cambios</${Button}>
           <${Button} variant="danger" onClick=${() => setReview({ id: s.id, decision: 'rejected', comments: '' })}>Rechazar</${Button}></div>`}
       </div></div>`)}
-    ${admin && between(a.status, 'script_pending', 'script_in_review') && !a.script_exception_reason && html`<div><${Button} size="sm" variant="ghost" onClick=${() => {
-      const r = prompt('Motivo documentado para autorizar la producción sin guion aprobado (mín. 10 caracteres)');
+    ${admin && between(a.status, 'script_pending', 'script_in_review') && !a.script_exception_reason && html`<div><${Button} size="sm" variant="ghost" onClick=${async () => {
+      const r = await ask('Motivo documentado', { minLength: 10, title: 'Producción sin guion aprobado', hint: 'Queda registrado en la auditoría.', confirmLabel: 'Autorizar excepción' });
       if (r) run(async () => { await rpc('admin_authorize_production_exception', { p_id: a.id, p_reason: r }); await reload(); }, { success: 'Excepción registrada.' }); }}>Autorizar producción sin guion (excepción)</${Button}></div>`}
     <${Modal} open=${!!review} title=${review && label(SCRIPT_STATUS, review.decision)} onClose=${() => setReview(null)} footer=${html`<${Button} onClick=${() => setReview(null)}>Cancelar</${Button}>
       <${Button} variant="primary" loading=${busy} onClick=${() => run(async () => { await rpc('admin_review_script', { p_script: review.id, p_decision: review.decision, p_comments: review.comments || null }); setReview(null); await reload(); }, { success: 'Revisión registrada.' })}>Confirmar</${Button}>`}>
@@ -427,9 +427,9 @@ function Publications({ b, a, admin, reload, uid }) {
           ${p.issue_note && html`<dt>Observación</dt><dd class="err">${p.issue_note}</dd>`}</dl>
         <div class="row">
           ${!admin && ['scheduled', 'issue'].includes(p.status) && html`<${Button} variant="primary" onClick=${() => setDone({ id: p.id, url: '', evidence: null })}>Marcar como publicada</${Button}>
-            <${Button} onClick=${() => { const n = prompt('Describe el problema'); if (n) run(async () => { await rpc('report_publication_issue', { p_publication: p.id, p_note: n }); await reload(); }, { success: 'Reportamos el problema a Vocera.' }); }}>Reportar un problema</${Button}>`}
+            <${Button} onClick=${async () => { const n = await ask('Describe el problema'); if (n) run(async () => { await rpc('report_publication_issue', { p_publication: p.id, p_note: n }); await reload(); }, { success: 'Reportamos el problema a Vocera.' }); }}>Reportar un problema</${Button}>`}
           ${admin && p.status === 'published' && html`<${Button} variant="primary" loading=${busy} onClick=${() => run(async () => { await rpc('admin_validate_publication', { p_publication: p.id, p_valid: true }); await reload(); }, { success: 'Publicación validada.' })}>Validar</${Button}>
-            <${Button} onClick=${() => { const n = prompt('¿Qué no cumple lo pactado?'); if (n) run(async () => { await rpc('admin_validate_publication', { p_publication: p.id, p_valid: false, p_note: n }); await reload(); }); }}>Observar</${Button}>`}
+            <${Button} onClick=${async () => { const n = await ask('¿Qué no cumple lo pactado?'); if (n) run(async () => { await rpc('admin_validate_publication', { p_publication: p.id, p_valid: false, p_note: n }); await reload(); }); }}>Observar</${Button}>`}
         </div></div></div>`)}
     ${admin && between(a.status, 'video_approved', 'publication_confirmed') && (form ? html`<div class="panel panel-pad form"><h2>Programar publicación</h2>
       <div class="form-grid">
@@ -469,7 +469,7 @@ function AdCodes({ b, a, c, admin, reload }) {
         <div class="row">
           ${can && html`<${Button} size="sm" onClick=${() => setForm({ ...x, code: x.auth_code })}>Actualizar</${Button}>`}
           ${admin && x.status === 'submitted' && html`<${Button} variant="primary" loading=${busy} onClick=${() => run(async () => { await rpc('admin_validate_ad_authorization', { p_id: x.id, p_valid: true }); await reload(); }, { success: 'Código validado.' })}>Validar</${Button}>
-            <${Button} onClick=${() => { const o = prompt('¿Por qué no es válido?'); if (o) run(async () => { await rpc('admin_validate_ad_authorization', { p_id: x.id, p_valid: false, p_observations: o }); await reload(); }); }}>No es válido</${Button}>`}
+            <${Button} onClick=${async () => { const o = await ask('¿Por qué no es válido?'); if (o) run(async () => { await rpc('admin_validate_ad_authorization', { p_id: x.id, p_valid: false, p_observations: o }); await reload(); }); }}>No es válido</${Button}>`}
         </div></div></div>`)}
     ${can && !form && html`<div><${Button} variant="primary" onClick=${() => setForm({ id: null, platform: c.platforms[0] || 'tiktok', code: '', content_url: '', publication_id: b.publications[0]?.id || '', issued_on: new Date().toISOString().slice(0, 10), expires_on: '' })}><${Icon} name="plus" size="18" />Registrar código</${Button}></div>`}
     ${form && html`<div class="panel panel-pad form"><h2>${form.id ? 'Actualizar código' : 'Registrar código'}</h2>
@@ -515,7 +515,7 @@ function Payment({ b, a, admin, reload, creatorId }) {
           <td data-l="Transferencia">${p.transferred_at ? date(p.transferred_at) + (p.transfer_reference ? ' · Op. ' + p.transfer_reference : '') : p.scheduled_for ? 'Programado ' + date(p.scheduled_for) : '-'}</td>
           <td class="r">${p.receipt_path && html`<${FileLink} bucket="documents" path=${p.receipt_path} download>Comprobante</${FileLink}>`}
             ${!admin && p.status === 'transferred' && html` <${Button} size="sm" variant="primary" loading=${busy} onClick=${() => run(async () => { await rpc('confirm_payment_received', { p_payment: p.id }); await reload(); }, { success: '¡Gracias! Pago confirmado.' })}>Confirmar recepción</${Button}>`}
-            ${!admin && ['transferred', 'scheduled', 'approved'].includes(p.status) && html` <button class="link-btn small" onClick=${() => { const n = prompt('Describe la incidencia'); if (n) run(async () => { await rpc('report_payment_incident', { p_payment: p.id, p_note: n }); await reload(); }, { success: 'Reportamos la incidencia.' }); }}>Reportar incidencia</button>`}
+            ${!admin && ['transferred', 'scheduled', 'approved'].includes(p.status) && html` <button class="link-btn small" onClick=${async () => { const n = await ask('Describe la incidencia'); if (n) run(async () => { await rpc('report_payment_incident', { p_payment: p.id, p_note: n }); await reload(); }, { success: 'Reportamos la incidencia.' }); }}>Reportar incidencia</button>`}
             ${admin && ['approved', 'scheduled'].includes(p.status) && html`<${Button} size="sm" variant="primary" onClick=${() => setTransfer({ id: p.id, at: new Date().toISOString().slice(0, 16), ref: '', receipt: null })}>Registrar transferencia</${Button}>`}
           </td></tr>`)}
       </tbody></table></div></div>
@@ -527,9 +527,9 @@ function Payment({ b, a, admin, reload, creatorId }) {
       <div class="row">
         ${a.status === 'final_validation' && html`<${Button} variant="primary" loading=${busy} onClick=${() => run(async () => { await rpc('admin_final_validate', { p_id: a.id }); await reload(); }, { success: 'Validación final registrada.' })}>Registrar validación final</${Button}>`}
         ${fee && ['requirements_pending', 'in_review', 'incident'].includes(fee.status) && html`<${Button} variant="primary" disabled=${!ready} onClick=${() => setAuth({ breach: false, note: '' })}>Autorizar pago</${Button}>`}
-        ${fee && ['approved', 'scheduled'].includes(fee.status) && html`<${Button} onClick=${() => { const d = prompt('Fecha programada (AAAA-MM-DD)', new Date().toISOString().slice(0, 10)); if (d) run(async () => { await rpc('admin_schedule_payment', { p_payment: fee.id, p_date: d }); await reload(); }, { success: 'Pago programado.' }); }}>Programar</${Button}>`}
-        ${b.checklist && b.checklist.items.find(i => i.key === 'on_time' && !i.met) && html`<${Button} size="sm" onClick=${() => { const r = prompt('Motivo para aceptar la entrega fuera de plazo'); if (r) run(async () => { await rpc('admin_set_on_time_override', { p_id: a.id, p_reason: r }); await reload(); }); }}>Aceptar entrega fuera de plazo</${Button}>`}
-        ${a.accepted_at && html`<${Button} size="sm" onClick=${() => { const amt = prompt('Monto de la bonificación'); const r = amt && prompt('Motivo'); if (amt && r) run(async () => { await rpc('admin_propose_bonus', { p_id: a.id, p_amount: Number(amt), p_reason: r }); await reload(); }, { success: 'Bonificación propuesta.' }); }}>Proponer bonificación</${Button}>`}
+        ${fee && ['approved', 'scheduled'].includes(fee.status) && html`<${Button} onClick=${async () => { const d = await ask('Fecha programada del pago', { type: 'date', defaultValue: new Date().toISOString().slice(0, 10), title: 'Programar pago' }); if (d) run(async () => { await rpc('admin_schedule_payment', { p_payment: fee.id, p_date: d }); await reload(); }, { success: 'Pago programado.' }); }}>Programar</${Button}>`}
+        ${b.checklist && b.checklist.items.find(i => i.key === 'on_time' && !i.met) && html`<${Button} size="sm" onClick=${async () => { const r = await ask('Motivo para aceptar la entrega fuera de plazo'); if (r) run(async () => { await rpc('admin_set_on_time_override', { p_id: a.id, p_reason: r }); await reload(); }); }}>Aceptar entrega fuera de plazo</${Button}>`}
+        ${a.accepted_at && html`<${Button} size="sm" onClick=${async () => { const amt = await ask('Monto de la bonificación', { type: 'number', title: 'Proponer bonificación' }); const r = amt && await ask('Motivo de la bonificación', { title: 'Proponer bonificación', hint: 'El creador verá este motivo si la bonificación se aprueba.' }); if (amt && r) run(async () => { await rpc('admin_propose_bonus', { p_id: a.id, p_amount: Number(amt), p_reason: r }); await reload(); }, { success: 'Bonificación propuesta.' }); }}>Proponer bonificación</${Button}>`}
       </div>
       ${b.bonuses.filter(x => x.status === 'proposed').map(x => html`<div class="notice"><div><strong>Bonificación propuesta: ${money(x.amount, x.currency)}</strong>${x.reason}
         <div class="row" style="margin-top:8px"><${Button} size="sm" variant="primary" onClick=${() => run(async () => { await rpc('admin_decide_bonus', { p_bonus: x.id, p_approve: true }); await reload(); }, { success: 'Bonificación aprobada.' })}>Aprobar</${Button}>
@@ -574,12 +574,12 @@ function Manage({ b, a, c, reload }) {
       <div class="row">
         ${a.status === 'preselected' && c.requires_client_approval && html`<${Button} loading=${busy} onClick=${() => run(async () => { await rpc('admin_request_client_approval', { p_id: a.id }); await reload(); }, { success: 'Marcado como pendiente del cliente.' })}>Enviar a aprobación del cliente</${Button}>`}
         ${['preselected', 'pending_client_approval'].includes(a.status) && c.requires_client_approval && html`
-          <${Button} variant="primary" onClick=${() => { const n = prompt('¿Cómo aprobó el cliente? (correo, reunión, fecha…)'); if (n !== null) run(async () => { await rpc('admin_record_client_approval', { p_id: a.id, p_approved: true, p_note: n || null }); await reload(); }, { success: 'Aprobación del cliente registrada.' }); }}>Registrar aprobación del cliente</${Button}>
-          <${Button} onClick=${() => { const n = prompt('Motivo del rechazo del cliente'); if (n) run(async () => { await rpc('admin_record_client_approval', { p_id: a.id, p_approved: false, p_note: n }); await reload(); }); }}>El cliente no lo aprobó</${Button}>`}
+          <${Button} variant="primary" onClick=${async () => { const n = await ask('¿Cómo aprobó el cliente?', { optional: true, title: 'Aprobación del cliente', hint: 'Por ejemplo: correo del 12/10 de la gerente de marca.', confirmLabel: 'Registrar aprobación' }); if (n !== null) run(async () => { await rpc('admin_record_client_approval', { p_id: a.id, p_approved: true, p_note: n || null }); await reload(); }, { success: 'Aprobación del cliente registrada.' }); }}>Registrar aprobación del cliente</${Button}>
+          <${Button} onClick=${async () => { const n = await ask('Motivo del rechazo del cliente'); if (n) run(async () => { await rpc('admin_record_client_approval', { p_id: a.id, p_approved: false, p_note: n }); await reload(); }); }}>El cliente no lo aprobó</${Button}>`}
         ${(a.status === 'client_approved' || (a.status === 'preselected' && !c.requires_client_approval)) && html`<${Button} variant="primary" loading=${busy} onClick=${() => run(async () => { await rpc('admin_send_invitation', { p_id: a.id }); await reload(); }, { success: 'Invitación enviada.' })}>Enviar invitación</${Button}>`}
         ${!CLOSED.includes(a.status) && a.status !== 'payment_confirmed' && html`<${Button} size="sm" onClick=${() => setTerms({ fee: a.fee_amount, script: a.script_due_on || '', video: a.video_due_on || '', publish: a.publish_on || '' })}>Editar honorario y fechas</${Button}>
           <${Button} size="sm" variant="danger" onClick=${() => setClose({ status: 'cancelled', reason: '' })}>Cerrar participación</${Button}>`}
-        ${['suspended', 'expired'].includes(a.status) && html`<${Button} size="sm" onClick=${() => { const r = prompt('Motivo para reabrir'); if (r) run(async () => { await rpc('admin_reopen_assignment', { p_id: a.id, p_reason: r }); await reload(); }); }}>Reabrir</${Button}>`}
+        ${['suspended', 'expired'].includes(a.status) && html`<${Button} size="sm" onClick=${async () => { const r = await ask('Motivo para reabrir'); if (r) run(async () => { await rpc('admin_reopen_assignment', { p_id: a.id, p_reason: r }); await reload(); }); }}>Reabrir</${Button}>`}
       </div>
       ${b.client_approvals.length > 0 && html`<div><strong class="small">Aprobaciones del cliente</strong>${b.client_approvals.map(x => html`<p class="small muted">${dateTime(x.created_at)} · ${x.approved ? 'Aprobado' : 'No aprobado'}${x.note ? ' · ' + x.note : ''}</p>`)}</div>`}
     </div>

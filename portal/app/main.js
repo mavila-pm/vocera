@@ -3,7 +3,7 @@ import { html, render, useEffect, useState } from '../vendor/preact.js';
 import { initClient, supabase, config } from './lib/sb.js';
 import { startSession, useSession } from './lib/session.js';
 import { usePath, match, href, navigate } from './lib/router.js';
-import { Icon, Iso, Toasts, Avatar, Loading, Empty } from './ui/kit.js';
+import { Icon, Iso, Toasts, AskHost, Avatar, Loading, Empty } from './ui/kit.js';
 import { Login, Register, Forgot, ResetPassword, Legal } from './pages/auth.js';
 import { Welcome, Profile } from './pages/profile.js';
 import { CreatorHome, Notifications, Account } from './pages/home.js';
@@ -139,5 +139,5 @@ function ConfigMissing() {
     history.replaceState(null, '', location.pathname + '#/');
     if (err) setTimeout(() => import('./ui/kit.js').then(k => k.toast('El enlace no es válido o ya venció. Pide uno nuevo.', 'error')), 300);
   }
-  render(html`<${App} /><${Toasts} />`, root);
+  render(html`<${App} /><${AskHost} /><${Toasts} />`, root);
 })();

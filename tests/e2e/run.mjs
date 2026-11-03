@@ -124,7 +124,7 @@ try {
     await C.click('text=Ir a mi inicio');
     await C.getByRole('heading', { name: 'Hola, Lucía' }).waitFor();
     await C.getByText('Perfil en revisión').first().waitFor();
-    await C.getByText('Campañas activas').waitFor();
+    await C.getByRole('heading', { name: 'Mis próximas acciones' }).waitFor();
     await C.screenshot({ path: OUT + '/04-dashboard-creador.png', fullPage: true });
   });
 
@@ -166,8 +166,9 @@ try {
     await A.getByText('Lucía Fernández').click();
     assignmentId = A.url().split('/asignaciones/')[1].split('?')[0];
     await tab(A, 'Gestión');
-    answers.push('Aprobado por correo del cliente');
-    await A.click('text=Registrar aprobación del cliente'); await toastSeen(A, 'Aprobación del cliente registrada');
+    await A.click('text=Registrar aprobación del cliente');
+    await A.locator('dialog textarea').fill('Aprobado por correo del cliente');
+    await A.click('dialog >> button:has-text("Registrar aprobación")'); await toastSeen(A, 'Aprobación del cliente registrada');
     await A.click('text=Enviar invitación'); await toastSeen(A, 'Invitación enviada');
   });
   await step('8. Se registra su aceptación', async () => {

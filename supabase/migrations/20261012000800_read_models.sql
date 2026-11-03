@@ -215,7 +215,7 @@ language sql stable security definer set search_path = '' as $$
     union all select s.id, 'Llega el producto', sh.expected_on, 'product' from scope s join public.product_shipments sh on sh.assignment_id = s.id where sh.status <> 'received'
     union all select s.id, 'Entrega del guion', a.script_due_on, 'script' from scope s join public.campaign_assignments a on a.id = s.id where s.status <= 'script_in_review'
     union all select s.id, 'Entrega: ' || d.title, d.due_on, 'deliverable' from scope s join public.deliverables d on d.assignment_id = s.id where d.status in ('pending', 'revisions_requested')
-    union all select s.id, 'Publicación en ' || p.platform, p.scheduled_at::date, 'publication' from scope s join public.publications p on p.assignment_id = s.id where p.status in ('scheduled', 'issue')
+    union all select s.id, 'Publicación en ' || case p.platform when 'tiktok' then 'TikTok' when 'youtube' then 'YouTube' when 'linkedin' then 'LinkedIn' when 'x' then 'X' else initcap(p.platform::text) end, p.scheduled_at::date, 'publication' from scope s join public.publications p on p.assignment_id = s.id where p.status in ('scheduled', 'issue')
     union all select s.id, 'Pago programado', pay.scheduled_for, 'payment' from scope s join public.payments pay on pay.assignment_id = s.id where pay.status = 'scheduled'
   )
   select coalesce(jsonb_agg(jsonb_build_object('assignment_id', ev.id, 'campaign', c.name, 'label', ev.label, 'day', ev.day, 'kind', ev.kind) order by ev.day), '[]'::jsonb)

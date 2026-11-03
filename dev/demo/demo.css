@@ -1,0 +1,23 @@
+/* Solo para la demo: barra superior, pantalla de arranque y página sin skeleton propio */
+html, body { background: var(--papel-2); }
+body { margin: 0; }
+.demo-bar { background: #FFF4DB; color: #3D2A00; border-bottom: 1px solid #F0D9A0; font-size: .85rem; position: relative; z-index: 40; }
+.demo-bar-in { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding-block: 8px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.demo-tag { font-weight: 700; background: #3D2A00; color: #FFF4DB; border-radius: 4px; padding: 1px 7px; font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
+.demo-note { flex: 1 1 260px; min-width: 0; }
+.demo-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.demo-btn { font: inherit; font-weight: 600; font-size: .8rem; min-height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid #C9A64F; background: #FFFBEF; color: #3D2A00; cursor: pointer; }
+.demo-btn:hover { background: #fff; border-color: #3D2A00; }
+.demo-btn:focus-visible { outline: 2px solid #3D2A00; outline-offset: 2px; }
+.demo-mail { border-top: 1px solid #F0D9A0; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.demo-mail ul { display: grid; gap: 6px; margin-top: 8px; }
+.demo-mail li { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; background: #FFFBEF; border: 1px solid #F0D9A0; border-radius: 6px; padding: 6px 10px; }
+.demo-mail code { font-family: var(--mono); background: #fff; padding: 0 4px; border-radius: 3px; }
+.demo-boot { max-width: 520px; margin: 18vh auto 0; padding: 0 16px; text-align: center; color: var(--texto-2); display: grid; gap: 12px; justify-items: center; }
+.demo-boot .spin { width: 28px; height: 28px; border: 3px solid var(--senal); border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+/* En la demo la barra lateral comienza bajo la barra de la demo */
+.sidebar { height: 100dvh; }
+
+.demo-lbl { font-weight: 600; align-self: center; }
+@media (max-width: 600px) { .demo-bar-in { padding-block: 6px; gap: 6px 10px; } .demo-note { flex-basis: 100%; font-size: .78rem; } .demo-btn { min-height: 30px; padding: 0 8px; } }

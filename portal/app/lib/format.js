@@ -41,6 +41,9 @@ export const ADMIN_TONE = {
   ad_codes_pending: 'wait', payment_sent: 'wait', revisions_requested: 'wait', video_approved: 'action'
 };
 
+// Cómo se nombra el mismo estado desde el lado de Vocera
+export const ADMIN_LABEL = { invited: 'Invitación enviada', payment_sent: 'Transferencia registrada' };
+
 export const PROFILE_STATUS = {
   incomplete: ['Perfil incompleto', 'action'], in_review: ['Perfil en revisión', 'wait'], approved: ['Perfil aprobado', 'ok'],
   rejected: ['Requiere cambios', 'warn'], suspended: ['Suspendido', 'error']

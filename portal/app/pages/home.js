@@ -27,42 +27,58 @@ export function CreatorHome({ session }) {
     actions.unshift({ label: data.completion.percent < 100 ? `Completar perfil (${data.completion.percent} %)` : 'Enviar perfil a revisión', href: '/perfil', priority: 0 });
   const needsPayout = !data.has_payout && data.actions.some(a => a.label === 'Completar datos de cobro');
 
+  const money0 = data.money.length ? data.money : [{ currency: 'PEN', to_collect: 0, received: 0 }];
+  const comp = data.completion;
+  // Orden por prioridad de uso: lo que pide acción, luego campañas, luego dinero y fechas.
   return html`<div>
     <div class="page-head">
       <div class="row" style="gap:16px">
         <${Avatar} lg name=${p.full_name} path=${p.avatar_path} />
         <div><h1>Hola, ${first}</h1><p style="margin-top:4px"><${Badge} map=${PROFILE_STATUS} value=${p.status} /></p></div>
       </div>
+      ${comp.percent < 100 && html`<a class="profile-meter" href=${href('/perfil')}>
+        <span class="small"><strong>Perfil ${comp.percent} %</strong> · ${comp.total - comp.done} ${comp.total - comp.done === 1 ? 'dato pendiente' : 'datos pendientes'}</span>
+        <${Progress} label="Perfil completado" value=${comp.percent} /></a>`}
     </div>
 
-    <div class="kpis" role="list">
-      <a class="kpi" role="listitem" href=${href('/campanas?f=active')}><span class="v">${k.active}</span><span class="l">Campañas activas</span></a>
-      <a class="kpi" role="listitem" href=${href('/campanas?f=invitations')}><span class="v">${k.invitations}</span><span class="l">Invitaciones nuevas</span></a>
-      <a class="kpi" role="listitem" href=${href('/campanas?f=active')}><span class="v">${k.pending_deliverables}</span><span class="l">Entregables pendientes</span></a>
-      <a class="kpi" role="listitem" href=${href('/campanas?f=finished')}><span class="v">${k.completed}</span><span class="l">Campañas completadas</span></a>
-      ${(data.money.length ? data.money : [{ currency: 'PEN', to_collect: 0, received: 0 }]).map(m => html`
-        <a class="kpi" role="listitem" href=${href('/pagos')}><span class="v">${money(m.to_collect || 0, m.currency)}</span><span class="l">Honorarios por cobrar</span></a>
-        <a class="kpi" role="listitem" href=${href('/pagos')}><span class="v">${money(m.received || 0, m.currency)}</span><span class="l">Pagos recibidos</span></a>`)}
-    </div>
+    ${(p.status === 'in_review' || needsPayout || p.status === 'rejected') && html`<div class="stack" style="--stack:10px;margin-bottom:24px">
+      ${p.status === 'in_review' && html`<div class="notice"><div><strong>Perfil en revisión</strong>Te avisaremos cuando Vocera lo apruebe para empezar a recibir invitaciones.</div></div>`}
+      ${p.status === 'rejected' && html`<div class="notice warn"><div><strong>Vocera te pidió cambios en tu perfil</strong>${p.status_reason || ''} <a href=${href('/perfil')}>Revisar</a></div></div>`}
+      ${needsPayout && html`<div class="notice warn"><div><strong>Falta tu dato de cobro</strong>Sin él no podemos autorizar tus pagos. <a href=${href('/pagos/datos')}>Completar</a></div></div>`}
+    </div>`}
 
-    <div class="cols section">
-      <div>
-        <div class="section-head"><h2>Mis próximas acciones</h2></div>
-        ${actions.length ? html`<div class="list">${actions.map(a => html`
-          <a class="list-row action-row" href=${href(a.href || `/campanas/${a.assignment_id}?tab=${a.tab}`)}>
-            <span class="ico"><${Icon} name="arrow" /></span>
-            <span><span class="t">${a.label}</span>${a.campaign && html`<span class="s" style="display:block">${a.campaign}</span>`}</span>
-            ${a.deadline ? html`<span class="small nowrap ${new Date(a.deadline) < new Date() ? 'err' : 'muted'}">${relDays(a.deadline)}</span>` : html`<span></span>`}
-          </a>`)}</div>`
-        : html`<div class="panel"><${Empty} title="Estás al día">Cuando tengas algo por hacer en una campaña, aparecerá aquí ordenado por prioridad.</${Empty}></div>`}
-
-        <div class="section"><${RecentCampaigns} /></div>
+    <div class="cols">
+      <div class="stack" style="--stack:32px">
+        <section aria-labelledby="h-actions">
+          <div class="section-head"><h2 id="h-actions">Mis próximas acciones</h2>${actions.length > 0 && html`<span class="small muted">${actions.length} pendiente${actions.length === 1 ? '' : 's'}</span>`}</div>
+          ${actions.length ? html`<div class="list">${actions.map(a => html`
+            <a class="list-row action-row" href=${href(a.href || `/campanas/${a.assignment_id}?tab=${a.tab}`)}>
+              <span class="ico"><${Icon} name="arrow" /></span>
+              <span><span class="t">${a.label}</span>${a.campaign && html`<span class="s" style="display:block">${a.campaign}</span>`}</span>
+              ${a.deadline ? html`<span class="small nowrap ${new Date(a.deadline) < new Date() ? 'err' : 'muted'}">${relDays(a.deadline)}</span>` : html`<span></span>`}
+            </a>`)}</div>`
+          : html`<div class="panel"><${Empty} title="Estás al día">Cuando tengas algo por hacer en una campaña, aparecerá aquí ordenado por prioridad.</${Empty}></div>`}
+        </section>
+        <section aria-labelledby="h-camp">
+          <div class="section-head"><h2 id="h-camp">Campañas</h2><a href=${href('/campanas')} class="small">Ver todas</a></div>
+          <div class="kpis cols-4" role="list" style="margin-bottom:12px">
+            <a class="kpi" role="listitem" href=${href('/campanas?f=invitations')}><span class="v">${k.invitations}</span><span class="l">Invitaciones nuevas</span></a>
+            <a class="kpi" role="listitem" href=${href('/campanas?f=active')}><span class="v">${k.active}</span><span class="l">Activas</span></a>
+            <a class="kpi" role="listitem" href=${href('/campanas?f=active')}><span class="v">${k.pending_deliverables}</span><span class="l">Entregables pendientes</span></a>
+            <a class="kpi" role="listitem" href=${href('/campanas?f=finished')}><span class="v">${k.completed}</span><span class="l">Completadas</span></a>
+          </div>
+          <${RecentCampaigns} />
+        </section>
       </div>
-      <div>
-        ${p.status === 'in_review' && html`<div class="notice" style="margin-bottom:16px"><div><strong>Perfil en revisión</strong>Te avisaremos cuando Vocera lo apruebe para empezar a recibir invitaciones.</div></div>`}
-        ${needsPayout && html`<div class="notice warn" style="margin-bottom:16px"><div><strong>Falta tu dato de cobro</strong>Sin él no podemos autorizar tus pagos. <a href=${href('/pagos/datos')}>Completar</a></div></div>`}
-        <div class="section-head"><h2>Calendario</h2></div>
-        <${Calendar} />
+      <div class="stack" style="--stack:32px">
+        <section aria-labelledby="h-money">
+          <div class="section-head"><h2 id="h-money">Pagos</h2><a href=${href('/pagos')} class="small">Ver detalle</a></div>
+          ${money0.map(m => html`<div class="kpis" role="list">
+            <a class="kpi" role="listitem" href=${href('/pagos')}><span class="v">${money(m.to_collect || 0, m.currency)}</span><span class="l">Por cobrar</span></a>
+            <a class="kpi" role="listitem" href=${href('/pagos')}><span class="v">${money(m.received || 0, m.currency)}</span><span class="l">Recibido</span></a></div>`)}
+          <p class="small muted" style="margin-top:8px">"Por cobrar" son honorarios acordados que aún no se transfieren.</p>
+        </section>
+        <section aria-labelledby="h-cal"><div class="section-head"><h2 id="h-cal">Calendario</h2></div><${Calendar} /></section>
       </div>
     </div>
   </div>`;
@@ -73,8 +89,7 @@ function RecentCampaigns() {
   if (error) return html`<p class="err">${error}</p>`;
   if (!data) return html`<${Loading} rows=${2} />`;
   const list = data.filter(c => c.group !== 'history').slice(0, 5);
-  return html`<div class="section-head"><h2>Mis campañas recientes</h2><a href=${href('/campanas')} class="small">Ver todas</a></div>
-    ${list.length ? html`<${CampaignRows} items=${list} />`
+  return html`${list.length ? html`<${CampaignRows} items=${list} />`
       : html`<div class="panel"><${Empty} title="Todavía no tienes campañas">Cuando Vocera te invite a una campaña, la verás aquí con su brief, fechas y honorario.</${Empty}></div>`}`;
 }
 
