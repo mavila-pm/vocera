@@ -50,8 +50,10 @@
         gsap.from(el,{y:80,rotation:i?9:-9,opacity:0,scrollTrigger:{trigger:el,start:'top 95%',end:'top 55%',scrub:1}});
       });
       const track = document.querySelector('.ribbon-track');
-      marquee = gsap.to(track,{xPercent:-50,duration:26,repeat:-1,ease:'none'});
-      ScrollTrigger.create({trigger:'.ribbon',start:'top bottom',end:'bottom top',onToggle:self=>marquee && (self.isActive ? marquee.play() : marquee.pause())});
+      if (track) {
+        marquee = gsap.to(track,{xPercent:-50,duration:26,repeat:-1,ease:'none'});
+        ScrollTrigger.create({trigger:'.ribbon',start:'top bottom',end:'bottom top',onToggle:self=>marquee && (self.isActive ? marquee.play() : marquee.pause())});
+      }
       gsap.from('.footer-wordmark',{yPercent:35,opacity:.2,scrollTrigger:{trigger:'.site-footer',start:'top bottom',end:'top 40%',scrub:1}});
       return ()=>mm.revert();
     });
