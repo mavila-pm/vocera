@@ -7,9 +7,17 @@
 // Los tokens son de demo (sin firma) y los correos van a una bandeja local.
 // =====================================================================
 import { PGlite } from '@electric-sql/pglite';
-import { pgcrypto } from '@electric-sql/pglite/contrib/pgcrypto';
-import { citext } from '@electric-sql/pglite/contrib/citext';
 import seedSql from './seed.sql';
+
+// Los binarios se publican con extensión .wasm (tipo que el hosting sirve);
+// por eso se entregan a PGlite de forma explícita y no por su nombre original.
+const asset = name => new URL('./pglite/' + name, location.href);
+const extension = (name, file) => ({ name, setup: async () => ({ bundlePath: asset(file) }) });
+async function wasm(name) {
+  const url = asset(name);
+  try { return await WebAssembly.compileStreaming(fetch(url)); }
+  catch { return WebAssembly.compile(await (await fetch(url)).arrayBuffer()); }
+}
 
 export const DEMO_URL = 'https://demo.vocera.local';
 let db;
@@ -19,8 +27,16 @@ const emit = () => listeners.forEach(f => f());
 // ---------- arranque ----------
 export async function start(onProgress = () => {}) {
   onProgress('Cargando la base de datos…');
-  const blob = await (await fetch('./demo-db.tar.gz')).blob();
-  db = await PGlite.create({ loadDataDir: blob, extensions: { pgcrypto, citext } });
+  const [wasmModule, initdbWasmModule, fsBundle, dump] = await Promise.all([
+    wasm('pglite.wasm'), wasm('initdb.wasm'),
+    fetch(asset('pglite-data.wasm')).then(r => r.blob()),
+    fetch(new URL('./demo-db.wasm', location.href)).then(r => r.arrayBuffer())
+  ]);
+  db = await PGlite.create({
+    wasmModule, initdbWasmModule, fsBundle,
+    loadDataDir: new Blob([dump], { type: 'application/x-gzip' }),
+    extensions: { pgcrypto: extension('pgcrypto', 'pgcrypto-bundle.wasm'), citext: extension('citext', 'citext-bundle.wasm') }
+  });
   onProgress('Preparando datos de ejemplo…');
   await db.exec(seedSql);
   onProgress('Listo');
