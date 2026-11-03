@@ -21,6 +21,19 @@ async function wasm(name) {
   catch { return WebAssembly.compile(await (await fetch(url)).arrayBuffer()); }
 }
 
+// Los paquetes .tar.gz pueden llegar con o sin compresión de transporte
+// (Content-Encoding: gzip) según el hosting. Se normalizan siempre a tar plano
+// leyendo los bytes ("magic number" 1f 8b = gzip), sin depender de cabeceras.
+const isGzip = b => b.length > 2 && b[0] === 0x1f && b[1] === 0x8b;
+async function gunzip(bytes) {
+  return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
+}
+async function plainTar(url) {
+  let b = new Uint8Array(await (await fetch(url)).arrayBuffer());
+  while (isGzip(b)) b = await gunzip(b);
+  return b;
+}
+
 export const DEMO_URL = 'https://demo.vocera.local';
 let db;
 const listeners = new Set();
@@ -29,16 +42,30 @@ const emit = () => listeners.forEach(f => f());
 // ---------- arranque ----------
 export async function start(onProgress = () => {}) {
   onProgress('Cargando la base de datos…');
-  const [wasmModule, initdbWasmModule, fsBundle, dump] = await Promise.all([
+  const BUNDLES = ['pgcrypto-bundle.wasm', 'citext-bundle.wasm'];
+  const [wasmModule, initdbWasmModule, fsBundle, dumpTar, ...bundleTars] = await Promise.all([
     wasm('pglite.wasm'), wasm('initdb.wasm'),
     fetch(asset('pglite-data.wasm')).then(r => r.blob()),
-    fetch(new URL('./demo-db.wasm', base())).then(r => r.arrayBuffer())
+    plainTar(new URL('./demo-db.wasm', base())),
+    ...BUNDLES.map(f => plainTar(asset(f)))
   ]);
-  db = await PGlite.create({
-    wasmModule, initdbWasmModule, fsBundle,
-    loadDataDir: new Blob([dump], { type: 'application/x-gzip' }),
-    extensions: { pgcrypto: extension('pgcrypto', 'pgcrypto-bundle.wasm'), citext: extension('citext', 'citext-bundle.wasm') }
-  });
+  // PGlite descarga cada extensión con fetch(); mientras arranca se le entregan
+  // los tar ya normalizados (la cabecera indica que no debe descomprimir otra vez).
+  const realFetch = window.fetch;
+  window.fetch = (input, init) => {
+    const u = typeof input === 'string' ? input : input && input.url || String(input);
+    const i = BUNDLES.findIndex(f => u.endsWith(f));
+    return i >= 0 ? Promise.resolve(new Response(bundleTars[i], { headers: { 'Content-Encoding': 'gzip' } })) : realFetch(input, init);
+  };
+  try {
+    db = await PGlite.create({
+      wasmModule, initdbWasmModule, fsBundle,
+      loadDataDir: new Blob([dumpTar], { type: 'application/x-tar' }),
+      extensions: { pgcrypto: extension('pgcrypto', BUNDLES[0]), citext: extension('citext', BUNDLES[1]) }
+    });
+  } finally {
+    window.fetch = realFetch;
+  }
   onProgress('Preparando datos de ejemplo…');
   await db.exec(seedSql);
   onProgress('Listo');
