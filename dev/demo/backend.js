@@ -11,7 +11,9 @@ import seedSql from './seed.sql';
 
 // Los binarios se publican con extensión .wasm (tipo que el hosting sirve);
 // por eso se entregan a PGlite de forma explícita y no por su nombre original.
-const asset = name => new URL('./pglite/' + name, location.href);
+// document.baseURI y no location.href: dentro del artifact la página es un iframe 'about:srcdoc'
+const base = () => document.baseURI;
+const asset = name => new URL('./pglite/' + name, base());
 const extension = (name, file) => ({ name, setup: async () => ({ bundlePath: asset(file) }) });
 async function wasm(name) {
   const url = asset(name);
@@ -30,7 +32,7 @@ export async function start(onProgress = () => {}) {
   const [wasmModule, initdbWasmModule, fsBundle, dump] = await Promise.all([
     wasm('pglite.wasm'), wasm('initdb.wasm'),
     fetch(asset('pglite-data.wasm')).then(r => r.blob()),
-    fetch(new URL('./demo-db.wasm', location.href)).then(r => r.arrayBuffer())
+    fetch(new URL('./demo-db.wasm', base())).then(r => r.arrayBuffer())
   ]);
   db = await PGlite.create({
     wasmModule, initdbWasmModule, fsBundle,

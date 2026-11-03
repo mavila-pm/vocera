@@ -2,7 +2,7 @@
 import { html, render, useEffect, useState } from '../vendor/preact.js';
 import { initClient, supabase, config } from './lib/sb.js';
 import { startSession, useSession } from './lib/session.js';
-import { usePath, match, href, navigate } from './lib/router.js';
+import { usePath, match, href, navigate, replaceHash } from './lib/router.js';
 import { Icon, Iso, Toasts, AskHost, Avatar, Loading, Empty } from './ui/kit.js';
 import { Login, Register, Forgot, ResetPassword, Legal } from './pages/auth.js';
 import { Welcome, Profile } from './pages/profile.js';
@@ -128,6 +128,17 @@ function ConfigMissing() {
   </div>`;
 }
 
+// Enlaces internos (#/ruta): se resuelven en este documento. Con un <base> distinto
+// (por ejemplo, dentro de un iframe) el navegador los trataría como otra página.
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('a[href^="#"]');
+  if (!a || a.target || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+  const h = a.getAttribute('href');
+  e.preventDefault();
+  if (h.startsWith('#/')) { if (location.hash !== h) location.hash = h; else window.dispatchEvent(new HashChangeEvent('hashchange')); }
+  else if (h.length > 1) { const t = document.getElementById(h.slice(1)); if (t) { t.focus({ preventScroll: false }); t.scrollIntoView(); } }
+});
+
 (async () => {
   const root = document.getElementById('app');
   const ok = await initClient();
@@ -136,7 +147,7 @@ function ConfigMissing() {
   // Tras abrir un enlace de correo, el hash con tokens ya fue procesado por supabase-js
   if (location.hash && !location.hash.startsWith('#/')) {
     const err = new URLSearchParams(location.hash.slice(1)).get('error_description');
-    history.replaceState(null, '', location.pathname + '#/');
+    replaceHash('#/');
     if (err) setTimeout(() => import('./ui/kit.js').then(k => k.toast('El enlace no es válido o ya venció. Pide uno nuevo.', 'error')), 300);
   }
   render(html`<${App} /><${AskHost} /><${Toasts} />`, root);

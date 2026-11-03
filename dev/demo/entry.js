@@ -8,7 +8,7 @@ try {
   say('Iniciando la demo…');
   await backend.start(say);
 } catch (e) {
-  app.innerHTML = `<div class="demo-boot"><h1>No se pudo iniciar la demo</h1><p>Este navegador no permitió cargar la base de datos local (WebAssembly). Prueba en Chrome, Edge, Safari o Firefox actualizados.</p><p class="muted small">${String(e && e.message || e).slice(0, 200)}</p></div>`;
+  app.innerHTML = `<div class="demo-boot"><h1>No se pudo iniciar la demo</h1><p>La base de datos de la demo no terminó de cargar. Recarga la página; si se repite, comparte el detalle técnico de abajo.</p><p class="muted small" style="user-select:all">Detalle: ${String(e && (e.stack || e.message) || e).slice(0, 400).replace(/</g, '&lt;')}</p></div>`;
   throw e;
 }
 window.VOCERA_DEMO = { url: backend.DEMO_URL, fetch: backend.demoFetch, objectUrl: backend.objectUrl };

@@ -12,10 +12,18 @@ export function query() {
 }
 export function navigate(path, { replace = false } = {}) {
   const target = '#' + (path.startsWith('/') ? path : '/' + path);
-  if (replace) history.replaceState(null, '', target); else location.hash = target;
+  if (replace) replaceHash(target); else location.hash = target;
   if (replace) window.dispatchEvent(new HashChangeEvent('hashchange'));
 }
 export function href(path) { return '#' + path; }
+
+// Reemplaza el hash sin crear entrada de historial. Usa la URL completa del
+// documento (no una relativa): dentro de un iframe 'about:srcdoc' una URL
+// relativa se resolvería contra otra dirección y el navegador la rechaza.
+export function replaceHash(target) {
+  try { history.replaceState(history.state, '', location.href.split('#')[0] + target); }
+  catch { location.hash = target; }
+}
 
 export function usePath() {
   const [path, setPath] = useState(currentPath());
