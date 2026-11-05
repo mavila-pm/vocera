@@ -57,7 +57,6 @@ function Shell({ session, path }) {
   const isAdmin = session.profile?.role === 'admin';
   const [unread, refreshUnread] = useUnread(session, path);
   const nav = isAdmin ? ADMIN_NAV : CREATOR_NAV;
-  const extra = isAdmin ? ADMIN_EXTRA : CREATOR_EXTRA;
   const table = routes(isAdmin);
   let page = null; let title = 'Vocera';
   for (const [pattern, t, view] of table) {
@@ -70,24 +69,19 @@ function Shell({ session, path }) {
   const p = session.profile;
   return html`<div class="app">
     <a href="#main" class="sr-only" onFocus=${e => e.target.classList.remove('sr-only')} onBlur=${e => e.target.classList.add('sr-only')}>Saltar al contenido</a>
-    <aside class="sidebar" aria-label="Navegación principal">
-      <a class="brand" href=${href(isAdmin ? '/admin' : '/')}><${Iso} /><span>VOCERA</span><small>${isAdmin ? 'Panel' : 'Creadores'}</small></a>
-      <nav class="nav">${nav.map(([to, l, ic]) => html`<a href=${href(to)} aria-current=${active(to)}><${Icon} name=${ic} />${l}</a>`)}</nav>
-      <div class="sidebar-foot nav">
-        ${extra.map(([to, l, ic]) => html`<a href=${href(to)} aria-current=${active(to)}><${Icon} name=${ic} />${l}${to === '/notificaciones' && unread > 0 && html`<span class="count">${unread}</span>`}</a>`)}
-        <a href="#" onClick=${e => { e.preventDefault(); signOut(); }}><${Icon} name="logout" />Cerrar sesión</a>
-        <div class="who"><${Avatar} name=${p?.full_name} /><span>${p?.full_name}</span></div>
+    <header class="pill-wrap">
+      <div class="pill-nav">
+        <a class="brand" href=${href(isAdmin ? '/admin' : '/')} aria-label="Vocera, inicio"><${Iso} /><span>VOCERA</span><small>${isAdmin ? 'Panel' : 'Creadores'}</small></a>
+        <nav class="pill-links" aria-label="Navegación principal">${nav.map(([to, l]) => html`<a href=${href(to)} aria-current=${active(to)}>${l}</a>`)}</nav>
+        <div class="pill-tools">
+          <a class="icon-btn bell" href=${href('/notificaciones')} aria-current=${active('/notificaciones')} aria-label=${unread ? `Notificaciones (${unread} sin leer)` : 'Notificaciones'}><${Icon} name="bell" />${unread > 0 && html`<span class="dot">${unread > 99 ? '99+' : unread}</span>`}</a>
+          <a class="icon-btn" href=${href('/cuenta')} aria-current=${active('/cuenta')} aria-label="Cuenta y seguridad"><${Icon} name="shield" /></a>
+          <span class="who hide-mobile" title=${p?.full_name}><${Avatar} name=${p?.full_name} /></span>
+          <button class="icon-btn" type="button" onClick=${signOut} aria-label="Cerrar sesión" title="Cerrar sesión"><${Icon} name="logout" /></button>
+        </div>
       </div>
-    </aside>
-    <div class="main">
-      <header class="topbar">
-        <a class="brand hide-desktop" href=${href(isAdmin ? '/admin' : '/')} style="padding:0;color:var(--tinta)" aria-label="Inicio"><${Iso} /></a>
-        <span class="title">${title}</span>
-        <a class="btn btn-ghost bell" href=${href('/notificaciones')} aria-label=${unread ? `Notificaciones (${unread} sin leer)` : 'Notificaciones'}><${Icon} name="bell" />${unread > 0 && html`<span class="dot">${unread > 99 ? '99+' : unread}</span>`}</a>
-        <a class="btn btn-ghost" href=${href('/cuenta')} aria-label="Cuenta y seguridad"><${Icon} name="shield" /></a>
-      </header>
-      <main class="content" id="main" tabindex="-1"><div class="page-enter" key=${path}>${page || html`<${Empty} title="Página no encontrada" action=${html`<a class="btn" href=${href(isAdmin ? '/admin' : '/')}>Ir al inicio</a>`}>Revisa el enlace o vuelve al inicio.</${Empty}>`}</div></main>
-    </div>
+    </header>
+    <main class="content" id="main" tabindex="-1"><div class="page-enter" key=${path}>${page || html`<${Empty} title="Página no encontrada" action=${html`<a class="btn" href=${href(isAdmin ? '/admin' : '/')}>Ir al inicio</a>`}>Revisa el enlace o vuelve al inicio.</${Empty}>`}</div></main>
     <nav class="tabbar" aria-label="Navegación">
       ${nav.map(([to, l, ic]) => html`<a href=${href(to)} aria-current=${active(to)}><${Icon} name=${ic} />${SHORT[l] || l}</a>`)}
     </nav>

@@ -140,7 +140,7 @@ try {
     await A.click('button[type=submit]');
     await A.getByRole('heading', { name: 'Resumen' }).waitFor();
     await A.screenshot({ path: OUT + '/05-admin-resumen.png', fullPage: true });
-    await A.click('nav.nav >> text=Creadores');
+    await A.click('nav.pill-links >> text=Creadores');
     await A.getByText('Lucía Fernández').first().click();
     await A.getByText('Perfil enviado a revisión').waitFor();
     await A.click('text=Aprobar perfil'); await toastSeen(A, 'Perfil aprobado');

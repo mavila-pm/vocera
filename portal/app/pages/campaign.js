@@ -128,7 +128,7 @@ function TabBar({ tabs, current, onSelect, pip }) {
   useLayoutEffect(() => {
     const bar = ref.current, btn = bar && bar.querySelector('[aria-selected="true"]');
     if (!btn || !ind.current) return;
-    ind.current.style.transform = `translateX(${btn.offsetLeft}px) scaleX(${btn.offsetWidth / 100})`;
+    ind.current.style.transform = `translateX(${btn.offsetLeft}px)`; ind.current.style.width = btn.offsetWidth + 'px';
     const l = btn.offsetLeft - 24, r = btn.offsetLeft + btn.offsetWidth + 24;
     if (l < bar.scrollLeft || r > bar.scrollLeft + bar.clientWidth) bar.scrollTo({ left: Math.max(0, l), behavior: reducedMotion() ? 'auto' : 'smooth' });
   }, [current, tabs.length]);
