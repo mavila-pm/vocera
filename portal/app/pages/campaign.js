@@ -8,8 +8,9 @@ import { href, query, navigate } from '../lib/router.js';
 import { ASSIGNMENT_STATUS, CONTRACT_STATUS, SHIPMENT_STATUS, SCRIPT_STATUS, DELIVERABLE_STATUS, PUBLICATION_STATUS, AD_STATUS,
   PAYMENT_STATUS, PLATFORMS, ADMIN_TONE, ADMIN_LABEL, money, date, dateTime, relDays, mask, bytes, label } from '../lib/format.js';
 import { Badge, Button, Empty, Loading, ErrorBox, Icon, Field, Input, Select, Textarea, FileDrop, FileLink, VideoPreview, Modal,
-  Confirm, toast, useAction, ask, reducedMotion } from '../ui/kit.js';
+  Confirm, toast, useAction, ask, reducedMotion, Wave } from '../ui/kit.js';
 import { useLoad, CampaignRows } from './home.js';
+import { stageTrack, reqOf } from '../lib/progress.js';
 
 export const ORDER = Object.keys(ASSIGNMENT_STATUS);
 const idx = s => ORDER.indexOf(s);
@@ -63,18 +64,22 @@ export function CampaignDetail({ id, admin, session }) {
   ].filter(t => t[2]);
   const current = tabs.find(t => t[0] === tab) ? tab : 'resumen';
   const actionTab = b.next_action?.kind === 'action' ? b.next_action.tab : null;
+  const track = stageTrack(a.status, reqOf(c));
 
   return html`<div>
     <a class="small" href=${href(admin ? '/admin/campanas/' + c.id : '/campanas')} style="display:inline-flex;gap:6px;align-items:center;margin-bottom:12px"><${Icon} name="back" size="16" />${admin ? 'Volver a la campaña' : 'Mis campañas'}</a>
     <div class="page-head">
       <div><h1>${c.name}</h1>
         <p>${admin ? html`<strong>${b.creator.full_name}</strong> · ` : ''}${b.brand || 'Marca confidencial'} · Honorario ${money(a.fee_amount, a.currency)}</p></div>
-      <${Badge} map=${ASSIGNMENT_STATUS} value=${a.status} toneOverride=${admin ? ADMIN_TONE[a.status] : undefined} text=${admin ? ADMIN_LABEL[a.status] : undefined} />
+      <div class="page-track">
+        <${Badge} map=${ASSIGNMENT_STATUS} value=${a.status} toneOverride=${admin ? ADMIN_TONE[a.status] : undefined} text=${admin ? ADMIN_LABEL[a.status] : undefined} />
+        ${!track.closed && html`<span class="pt-wave"><${Wave} track=${track} size="lg" /><span class="small muted">${track.finished ? 'Campaña completada' : track.current ? `Etapa ${track.position} de ${track.total}` : ''}</span></span>`}
+      </div>
     </div>
     ${CLOSED.includes(a.status) && html`<div class="notice error" style="margin-bottom:20px"><div><strong>${label(ASSIGNMENT_STATUS, a.status)}</strong>${a.closed_reason || ''}</div></div>`}
-    ${b.next_action && !admin && html`<div class=${'notice' + (b.next_action.kind === 'action' ? '' : ' ok')} style="margin-bottom:20px">
-      <div><strong>${b.next_action.kind === 'action' ? 'Tu próxima acción: ' : 'Estado: '}${b.next_action.label}</strong>
-      ${b.next_action.kind === 'action' && b.next_action.tab !== current && html`<button class="link-btn" onClick=${() => { if (b.next_action.href) return navigate(b.next_action.href); setTab(b.next_action.tab); goToTab(b.next_action.tab); }}>Ir ahora</button>`}</div></div>`}
+    ${b.next_action && !admin && html`<div class=${'notice next-inline' + (b.next_action.kind === 'action' ? '' : ' ok')} style="margin-bottom:24px">
+      <div><span class="small">${b.next_action.kind === 'action' ? 'Tu siguiente paso' : 'Estado'}</span><strong>${b.next_action.label}</strong></div>
+      ${b.next_action.kind === 'action' && b.next_action.tab !== current && html`<button class="btn btn-primary" onClick=${() => { if (b.next_action.href) return navigate(b.next_action.href); setTab(b.next_action.tab); goToTab(b.next_action.tab); }}>Ir ahora</button>`}</div>`}
 
     <div class="cols">
       <div style="min-width:0">
@@ -108,24 +113,9 @@ export function CampaignDetail({ id, admin, session }) {
 
 // Etapas aplicables a la campaña (no todos los estados se muestran a la vez)
 function Flow({ a, c }) {
-  const stages = [
-    ['Invitación', 'invited', 'invited', true],
-    ['Contrato', 'availability_confirmed', 'contract_signed', c.requires_contract],
-    ['Producto', 'product_pending', 'product_received', c.requires_product],
-    ['Guion', 'script_pending', 'script_approved', c.requires_script],
-    // Al entregar el video, la producción queda hecha y la revisión pasa a ser la etapa actual.
-    ['Producción', 'in_production', 'in_production', true],
-    ['Revisión del video', 'video_delivered', 'video_approved', true],
-    ['Publicación', 'publication_scheduled', 'publication_confirmed', c.requires_publication],
-    ['Códigos publicitarios', 'ad_codes_pending', 'ad_codes_pending', c.requires_ad_code],
-    ['Validación final', 'final_validation', 'final_validation', true],
-    ['Pago', 'payment_pending_authorization', 'payment_confirmed', true]
-  ].filter(s => s[3]);
-  const closed = CLOSED.includes(a.status);
-  return html`<ol class="flow">${stages.map(([l, from, to]) => {
-    const st = closed ? 'todo' : a.status === 'payment_confirmed' && to === 'payment_confirmed' ? 'done' : idx(a.status) > idx(to) ? 'done' : between(a.status, from, to) ? 'current' : 'todo';
-    return html`<li data-state=${st}><span class="mk">${st === 'done' && html`<${Icon} name="check" />`}</span><span class="lb">${l}</span></li>`;
-  })}</ol>`;
+  const t = stageTrack(a.status, reqOf(c));
+  return html`<ol class="flow">${t.list.map(({ label: l, state: st }) =>
+    html`<li data-state=${st} aria-current=${st === 'current' ? 'step' : undefined}><span class="mk">${st === 'done' && html`<${Icon} name="check" />`}</span><span class="lb">${l}</span></li>`)}</ol>`;
 }
 
 const Text = ({ v }) => v ? v : html`<span class="muted">-</span>`;

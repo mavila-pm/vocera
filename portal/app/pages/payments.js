@@ -15,15 +15,18 @@ export function MyPayments() {
     <div class="page-head"><div><h1>Mis pagos</h1><p>Lo acordado, lo aprobado y lo que ya recibiste, por separado.</p></div>
       <a class="btn" href=${href('/pagos/datos')}><${Icon} name="wallet" size="18" />Datos bancarios</a></div>
     ${!data.payout_method && html`<div class="notice warn" style="margin-bottom:20px"><div><strong>Aún no registras tus datos de cobro</strong>Los necesitamos para autorizar cualquier pago. <a href=${href('/pagos/datos')}>Registrarlos</a></div></div>`}
-    ${sums.map(s => html`<div class="kpis" style="margin-bottom:12px" role="list" aria-label=${'Resumen en ' + s.currency}>
-      <div class=${'kpi' + (Number(s.earned) ? '' : ' zero')} role="listitem"><span class="v">${money(s.earned, s.currency)}</span><span class="l">Total ganado (transferido)</span></div>
-      <div class=${'kpi' + (Number(s.pending_validation) ? '' : ' zero')} role="listitem"><span class="v">${money(s.pending_validation, s.currency)}</span><span class="l">Pendiente de validación</span></div>
-      <div class=${'kpi' + (Number(s.approved) ? '' : ' zero')} role="listitem"><span class="v">${money(s.approved, s.currency)}</span><span class="l">Pagos aprobados</span></div>
-      <div class=${'kpi' + (Number(s.in_process) ? '' : ' zero')} role="listitem"><span class="v">${money(s.in_process, s.currency)}</span><span class="l">En proceso</span></div>
-      <div class=${'kpi' + (Number(s.received) ? '' : ' zero')} role="listitem"><span class="v">${money(s.received, s.currency)}</span><span class="l">Recibidos</span></div>
-      <div class=${'kpi' + (Number(s.bonuses) ? '' : ' zero')} role="listitem"><span class="v">${money(s.bonuses, s.currency)}</span><span class="l">Bonificaciones aprobadas</span></div>
-    </div>`)}
-    <p class="small muted" style="margin-bottom:24px">"Pendiente de validación" son honorarios acordados que aún no cumplen todas las condiciones de pago. Solo cuentan como ganados cuando se transfieren.</p>
+    ${sums.map(s => html`<section class="pay-summary" aria-label=${'Resumen en ' + s.currency}>
+      <div class="money-card is-static"><span class="l">Por validar</span><span class="v num">${money(s.pending_validation, s.currency)}</span>
+        <span class="s">Honorarios acordados que aún no cumplen todas las condiciones de pago.</span></div>
+      <div class="money-card is-static"><span class="l">Ganado</span><span class="v num ok">${money(s.earned, s.currency)}</span>
+        <span class="s">Lo que Vocera ya te transfirió.</span></div>
+      <dl class="pay-steps">
+        <div><dt>Aprobados</dt><dd class="num">${money(s.approved, s.currency)}</dd></div>
+        <div><dt>En proceso</dt><dd class="num">${money(s.in_process, s.currency)}</dd></div>
+        <div><dt>Confirmaste que recibiste</dt><dd class="num">${money(s.received, s.currency)}</dd></div>
+        <div><dt>Bonificaciones</dt><dd class="num">${money(s.bonuses, s.currency)}</dd></div>
+      </dl>
+    </section>`)}
 
     <div class="section-head"><h2>Historial</h2></div>
     ${data.items.length ? html`<div class="table-wrap"><table class="table stackable">

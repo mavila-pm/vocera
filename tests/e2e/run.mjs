@@ -124,7 +124,7 @@ try {
     await C.click('text=Ir a mi inicio');
     await C.getByRole('heading', { name: 'Hola, Lucía' }).waitFor();
     await C.getByText('Perfil en revisión').first().waitFor();
-    await C.getByRole('heading', { name: 'Mis próximas acciones' }).waitFor();
+    await C.locator('section.next-step h2').waitFor(); // siguiente paso (o "Estás al día")
     await C.screenshot({ path: OUT + '/04-dashboard-creador.png', fullPage: true });
   });
 

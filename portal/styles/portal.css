@@ -414,3 +414,98 @@ a.list-row, button.list-row { transition: background-color var(--t-fast) ease-ou
 .up-state.ok { color: var(--ok); font-weight: 600; animation: rise var(--t-base) var(--ease-out) both; }
 .upload-item.is-done .progress > span { background: var(--ok); }
 .drop > svg { margin: 0 auto; }
+
+/* =====================================================================
+   Rediseño editorial (2026-11)
+   Una sola pieza protagonista por pantalla: el siguiente paso en señal.
+   El avance se dibuja como la onda de voz de Vocera (una barra por etapa).
+   Tipografía: solo Archivo; el eje de ancho expandido marca los titulares.
+   ===================================================================== */
+:root { --r-panel: 14px; --r-ctl: 8px; --senal-ink: #0E2A86; }
+h1 { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); font-stretch: 118%; font-weight: 760; letter-spacing: -.028em; line-height: 1.05; }
+h2 { font-stretch: 108%; font-weight: 700; letter-spacing: -.015em; }
+.kpis-label { text-transform: none; letter-spacing: 0; font-size: .9rem; font-weight: 600; color: var(--texto-2); }
+.btn-lg { min-height: 50px; padding: 0 24px; font-size: 1rem; }
+.btn-invert { background: #fff; color: var(--senal-ink); border-color: #fff; }
+.btn-invert:hover { background: var(--senal-50); border-color: var(--senal-50); }
+.btn-invert:focus-visible { outline-color: #fff; outline-offset: 3px; }
+
+/* Siguiente paso */
+.next-step { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 24px 40px;
+  background: var(--senal); color: #fff; border-radius: 20px; padding: clamp(22px, 3.2vw, 36px); margin-bottom: 40px; overflow: hidden; isolation: isolate; }
+.next-step::after { content: ''; position: absolute; right: -6%; top: -30%; width: 46%; aspect-ratio: 1; z-index: -1;
+  background: radial-gradient(closest-side, rgba(125, 152, 240, .55), transparent); pointer-events: none; }
+.ns-kicker { font-size: .95rem; font-weight: 600; color: rgba(255, 255, 255, .78); }
+.next-step h2 { font-size: clamp(1.7rem, 1.1rem + 2.4vw, 2.9rem); font-stretch: 122%; font-weight: 780; letter-spacing: -.035em; line-height: 1;
+  margin: 10px 0 12px; max-width: 18ch; color: #fff; }
+.ns-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; color: rgba(255, 255, 255, .85); margin-bottom: 22px; }
+.ns-late { color: #FFD9D4; font-weight: 600; }
+.ns-track { display: grid; justify-items: end; gap: 10px; color: rgba(255, 255, 255, .85); text-align: right; }
+.next-step.is-clear { background: var(--blanco); color: var(--texto); border: 1px solid var(--linea-2); grid-template-columns: 1fr; }
+.next-step.is-clear::after { display: none; }
+.next-step.is-clear h2 { color: var(--texto); font-size: 1.6rem; margin: 0 0 6px; }
+.next-step.is-clear p { color: var(--texto-2); }
+@media (max-width: 760px) { .next-step { grid-template-columns: 1fr; border-radius: 16px; margin-bottom: 32px; } .ns-track { justify-items: start; text-align: left; order: -1; } .next-step .btn { width: 100%; } }
+.home-cols { gap: 40px; }
+
+/* Onda de etapas */
+.wave { display: inline-flex; align-items: flex-end; gap: 3px; height: 18px; flex: none; }
+.wave i { width: 4px; height: calc(var(--h) * 100%); border-radius: 2px; background: var(--linea); transform-origin: bottom; }
+.wave i[data-state="done"] { background: var(--tinta); }
+.wave i[data-state="current"] { background: var(--senal); }
+.wave.is-closed i { background: var(--linea-2); }
+.wave-lg { height: 56px; gap: 6px; }
+.wave-lg i { width: 9px; border-radius: 5px; animation: grow .5s var(--ease-out) both; animation-delay: calc(var(--i) * 35ms + 120ms); }
+@keyframes grow { from { transform: scaleY(.15); opacity: .4; } }
+.next-step .wave i { background: rgba(255, 255, 255, .28); }
+.next-step .wave i[data-state="done"] { background: #fff; }
+.next-step .wave i[data-state="current"] { background: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, .28); }
+.page-track .wave-lg { height: 40px; gap: 5px; }
+.page-track .wave-lg i { width: 7px; }
+
+/* Filas de campaña: nombre y estado arriba; avance y cifras abajo */
+.campaign-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "main status" "track fig"; gap: 10px 20px; padding: 16px 20px; }
+.cr-main { grid-area: main; min-width: 0; } .cr-main .s, .cr-fig .s { display: block; }
+.cr-status { grid-area: status; justify-self: end; }
+.cr-track { grid-area: track; display: flex; align-items: center; gap: 12px; min-width: 0; }
+.cr-track .s { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cr-fig { grid-area: fig; text-align: right; font-weight: 600; }
+.cr-fig .s { font-weight: 400; }
+.campaign-row .t { font-size: 1.02rem; }
+@media (max-width: 760px) { .campaign-row { grid-template-columns: 1fr auto; grid-template-areas: "main fig" "status status" "track track"; } .cr-status { justify-self: start; } .campaign-row .c3 { display: initial; } }
+
+/* Dinero */
+.money-card { display: grid; gap: 4px; padding: 22px; background: var(--blanco); border: 1px solid var(--linea-2); border-radius: var(--r-panel);
+  color: inherit; text-decoration: none; transition: border-color var(--t-fast) ease-out; }
+.money-card:hover { border-color: var(--texto-3); }
+.money-card .l { font-weight: 600; color: var(--texto-2); }
+.money-card .v { font-size: clamp(2rem, 1.6rem + 1.2vw, 2.6rem); font-weight: 760; font-stretch: 112%; letter-spacing: -.03em; line-height: 1.05; }
+.money-card .s { font-size: .85rem; color: var(--texto-2); max-width: 32ch; }
+.money-card .received { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--linea-2); color: var(--texto-2); }
+.money-card .received strong { color: var(--ok); font-size: 1.05rem; }
+.page-track { display: grid; justify-items: end; gap: 10px; }
+.pt-wave { display: inline-flex; align-items: flex-end; gap: 12px; }
+@media (max-width: 760px) { .page-track { justify-items: start; } }
+.sidebar { overflow-y: auto; }
+.next-inline { align-items: center; justify-content: space-between; padding: 16px 20px; border-radius: var(--r-panel); border-left: 4px solid var(--senal); }
+.next-inline.ok { border-left-color: var(--ok); }
+.next-inline strong { font-size: 1.1rem; font-stretch: 108%; margin-top: 2px; }
+.next-inline .small { color: var(--texto-2); font-weight: 600; }
+@media (max-width: 560px) { .next-inline { flex-direction: column; align-items: stretch; } }
+
+/* Pagos: dos cifras protagonistas y el detalle en una línea */
+.pay-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+.money-card.is-static:hover { border-color: var(--linea-2); }
+.money-card .v.ok { color: var(--ok); }
+.pay-steps { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--linea); padding-top: 14px; gap: 12px; }
+.pay-steps dt { font-size: .85rem; color: var(--texto-2); }
+.pay-steps dd { font-weight: 650; font-size: 1.05rem; }
+@media (max-width: 760px) { .pay-summary { grid-template-columns: 1fr; } .pay-steps { grid-template-columns: 1fr 1fr; } }
+
+/* Ingreso en móvil: la marca en una franja corta con su frase, sin bloque vacío */
+@media (max-width: 900px) {
+  .auth { grid-template-rows: auto 1fr; }
+  .auth-side { gap: 14px; }
+  .auth-side h2 { display: block; font-size: 1.45rem; max-width: 22ch; }
+  .auth-side > p.small { display: none; }
+}

@@ -54,6 +54,19 @@ export function CountUp({ value, ms = 400 }) {
   return html`<span aria-hidden="true">${shown}</span><span class="sr-only">${n}</span>`;
 }
 
+// ---------- Onda de etapas ----------
+// El avance de una campaña dibujado como la onda de voz de Vocera: una barra por etapa.
+// Hecha = tinta, actual = señal, pendiente = gris. El texto equivalente va en aria-label.
+const WAVE = [.55, .8, .66, 1, .74, .92, .6, .84, .7, .5];
+export function Wave({ track, size = 'sm', label: lab }) {
+  if (!track || !track.total) return null;
+  const desc = track.closed ? 'Participación cerrada'
+    : track.finished ? `Completada: ${track.total} de ${track.total} etapas`
+    : `Etapa ${track.position} de ${track.total}${track.current ? ': ' + track.current.label : ''}`;
+  return html`<span class=${'wave wave-' + size + (track.closed ? ' is-closed' : '')} role="img" aria-label=${lab ? lab + '. ' + desc : desc} title=${desc}>
+    ${track.list.map((st, i) => html`<i data-state=${st.state} style=${{ '--h': WAVE[i % WAVE.length], '--i': i }}></i>`)}</span>`;
+}
+
 // ---------- Botón con estado de carga ----------
 export function Button({ variant = '', size = '', loading, children, block, ...rest }) {
   const cls = ['btn', variant && `btn-${variant}`, size && `btn-${size}`, block && 'btn-block', rest.class].filter(Boolean).join(' ');

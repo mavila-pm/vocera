@@ -3,8 +3,9 @@ import { html, useState, useEffect } from '../../vendor/preact.js';
 import { supabase, rpc, q, friendlyError } from '../lib/sb.js';
 import { href, navigate } from '../lib/router.js';
 import { ASSIGNMENT_STATUS, PROFILE_STATUS, money, date, relDays, dateTime } from '../lib/format.js';
-import { CountUp, Badge, Button, Empty, Loading, ErrorBox, Icon, Avatar, Progress, Field, PasswordInput, toast, useAction, Confirm } from '../ui/kit.js';
+import { Wave, CountUp, Badge, Button, Empty, Loading, ErrorBox, Icon, Avatar, Progress, Field, PasswordInput, toast, useAction, Confirm } from '../ui/kit.js';
 import { passwordError } from './auth.js';
+import { stageTrack } from '../lib/progress.js';
 
 export function useLoad(fn, deps = []) {
   const [state, set] = useState({ data: null, error: null, loading: true });
@@ -18,9 +19,10 @@ export function useLoad(fn, deps = []) {
 
 export function CreatorHome({ session }) {
   const { data, error, reload } = useLoad(() => rpc('creator_dashboard'));
+  const camps = useLoad(() => rpc('my_campaigns'));
   if (error) return html`<${ErrorBox} message=${error} retry=${reload} />`;
   if (!data) return html`<${Loading} rows=${4} />`;
-  const p = data.profile; const k = data.kpis;
+  const p = data.profile;
   const first = (p.full_name || '').split(' ')[0];
   const actions = [...data.actions];
   if (p.status === 'incomplete' || p.status === 'rejected')
@@ -29,15 +31,16 @@ export function CreatorHome({ session }) {
 
   const money0 = data.money.length ? data.money : [{ currency: 'PEN', to_collect: 0, received: 0 }];
   const comp = data.completion;
-  // Orden por prioridad de uso: lo que pide acción, luego campañas, luego dinero y fechas.
-  return html`<div>
-    <div class="page-head">
+  const [next, ...later] = actions;
+  // Jerarquía: un único siguiente paso protagonista; luego campañas; dinero y fechas al costado.
+  return html`<div class="home">
+    <div class="page-head home-head">
       <div class="row" style="gap:16px">
         <${Avatar} lg name=${p.full_name} path=${p.avatar_path} />
-        <div><h1>Hola, ${first}</h1><p style="margin-top:4px"><${Badge} map=${PROFILE_STATUS} value=${p.status} /></p></div>
+        <div><h1>Hola, ${first}</h1><p style="margin-top:6px"><${Badge} map=${PROFILE_STATUS} value=${p.status} /></p></div>
       </div>
       ${comp.percent < 100 && html`<a class="profile-meter" href=${href('/perfil')}>
-        <span class="small"><strong>Perfil ${comp.percent} %</strong> · ${comp.total - comp.done} ${comp.total - comp.done === 1 ? 'dato pendiente' : 'datos pendientes'}</span>
+        <span class="small"><strong>Tu perfil está al ${comp.percent} %</strong>. ${comp.total - comp.done === 1 ? 'Falta 1 dato' : `Faltan ${comp.total - comp.done} datos`}</span>
         <${Progress} label="Perfil completado" value=${comp.percent} /></a>`}
     </div>
 
@@ -47,45 +50,63 @@ export function CreatorHome({ session }) {
       ${needsPayout && html`<div class="notice warn"><div><strong>Falta tu dato de cobro</strong>Sin él no podemos autorizar tus pagos. <a href=${href('/pagos/datos')}>Completar</a></div></div>`}
     </div>`}
 
-    <div class="cols">
-      <div class="stack" style="--stack:32px">
-        <section aria-labelledby="h-actions">
-          <div class="section-head"><h2 id="h-actions">Mis próximas acciones</h2>${actions.length > 0 && html`<span class="small muted">${actions.length} pendiente${actions.length === 1 ? '' : 's'}</span>`}</div>
-          ${actions.length ? html`<div class="list">${actions.map(a => html`
-            <a class="list-row action-row" href=${href(a.href || `/campanas/${a.assignment_id}?tab=${a.tab}`)}>
-              <span class="ico"><${Icon} name="arrow" /></span>
+    <${NextStep} action=${next} campaigns=${camps.data} />
+
+    <div class="cols home-cols">
+      <div class="stack" style="--stack:36px">
+        ${later.length > 0 && html`<section aria-labelledby="h-actions">
+          <div class="section-head"><h2 id="h-actions">Después</h2><span class="small muted">${later.length === 1 ? '1 pendiente' : later.length + ' pendientes'}</span></div>
+          <div class="list">${later.map(a => html`
+            <a class="list-row action-row" href=${actionHref(a)}>
+              <span class="ico" aria-hidden="true"><${Icon} name="arrow" /></span>
               <span><span class="t">${a.label}</span>${a.campaign && html`<span class="s" style="display:block">${a.campaign}</span>`}</span>
               ${a.deadline ? html`<span class="small nowrap ${new Date(a.deadline) < new Date() ? 'err' : 'muted'}">${relDays(a.deadline)}</span>` : html`<span></span>`}
-            </a>`)}</div>`
-          : html`<div class="panel"><${Empty} title="Estás al día">Cuando tengas algo por hacer en una campaña, aparecerá aquí ordenado por prioridad.</${Empty}></div>`}
-        </section>
+            </a>`)}</div>
+        </section>`}
         <section aria-labelledby="h-camp">
-          <div class="section-head"><h2 id="h-camp">Campañas</h2><a href=${href('/campanas')} class="small">Ver todas</a></div>
-          <div class="kpis cols-4" role="list" style="margin-bottom:12px">
-            <a class=${'kpi' + (k.invitations ? '' : ' zero')} role="listitem" href=${href('/campanas?f=invitations')}><span class="v"><${CountUp} value=${k.invitations} /></span><span class="l">Invitaciones nuevas</span></a>
-            <a class=${'kpi' + (k.active ? '' : ' zero')} role="listitem" href=${href('/campanas?f=active')}><span class="v"><${CountUp} value=${k.active} /></span><span class="l">Activas</span></a>
-            <a class=${'kpi' + (k.pending_deliverables ? '' : ' zero')} role="listitem" href=${href('/campanas?f=active')}><span class="v"><${CountUp} value=${k.pending_deliverables} /></span><span class="l">Entregables pendientes</span></a>
-            <a class=${'kpi' + (k.completed ? '' : ' zero')} role="listitem" href=${href('/campanas?f=finished')}><span class="v"><${CountUp} value=${k.completed} /></span><span class="l">Completadas</span></a>
-          </div>
-          <${RecentCampaigns} />
+          <div class="section-head"><h2 id="h-camp">Tus campañas</h2><a href=${href('/campanas')} class="small">Ver todas</a></div>
+          <${RecentCampaigns} state=${camps} />
         </section>
       </div>
-      <div class="stack" style="--stack:32px">
+      <div class="stack" style="--stack:36px">
         <section aria-labelledby="h-money">
-          <div class="section-head"><h2 id="h-money">Pagos</h2><a href=${href('/pagos')} class="small">Ver detalle</a></div>
-          ${money0.map(m => html`<div class="kpis" role="list">
-            <a class="kpi" role="listitem" href=${href('/pagos')}><span class="v">${money(m.to_collect || 0, m.currency)}</span><span class="l">Por cobrar</span></a>
-            <a class="kpi" role="listitem" href=${href('/pagos')}><span class="v">${money(m.received || 0, m.currency)}</span><span class="l">Recibido</span></a></div>`)}
-          <p class="small muted" style="margin-top:8px">"Por cobrar" son honorarios acordados que aún no se transfieren.</p>
+          <div class="section-head"><h2 id="h-money">Tus pagos</h2><a href=${href('/pagos')} class="small">Ver detalle</a></div>
+          ${money0.map(m => html`<a class="money-card" href=${href('/pagos')}>
+            <span class="l">Por cobrar</span>
+            <span class="v num">${money(m.to_collect || 0, m.currency)}</span>
+            <span class="s">Honorarios acordados que aún no se transfieren.</span>
+            <span class="received"><span>Recibido</span><strong class="num">${money(m.received || 0, m.currency)}</strong></span>
+          </a>`)}
         </section>
-        <section aria-labelledby="h-cal"><div class="section-head"><h2 id="h-cal">Calendario</h2></div><${Calendar} /></section>
+        <section aria-labelledby="h-cal"><div class="section-head"><h2 id="h-cal">Próximas fechas</h2></div><${Calendar} /></section>
       </div>
     </div>
   </div>`;
 }
 
-function RecentCampaigns() {
-  const { data, error } = useLoad(() => rpc('my_campaigns'));
+const actionHref = a => href(a.href || `/campanas/${a.assignment_id}?tab=${a.tab}`);
+
+// El siguiente paso: un solo bloque en señal con una sola acción. Si no hay nada, se dice con calma.
+function NextStep({ action, campaigns }) {
+  if (!action) return html`<section class="next-step is-clear" aria-labelledby="h-next">
+    <div><h2 id="h-next">Estás al día</h2><p>Cuando una campaña necesite algo de ti, aparecerá aquí primero.</p></div></section>`;
+  const c = action.assignment_id && (campaigns || []).find(x => x.id === action.assignment_id);
+  const track = c && stageTrack(c.status, c.requires || {});
+  const late = action.deadline && new Date(action.deadline) < new Date();
+  return html`<section class="next-step" aria-labelledby="h-next">
+    <div class="ns-body">
+      <p class="ns-kicker">Tu siguiente paso</p>
+      <h2 id="h-next">${action.label}</h2>
+      <p class="ns-meta">${action.campaign || 'Tu perfil'}${action.deadline ? html`<span class=${late ? 'ns-late' : ''}>${late ? 'Venció ' : 'Vence '}${relDays(action.deadline)}</span>` : ''}</p>
+      <a class="btn btn-invert btn-lg" href=${actionHref(action)}>Ir ahora</a>
+    </div>
+    ${track && html`<div class="ns-track"><${Wave} track=${track} size="lg" label=${'Avance de ' + c.name} />
+      <span class="small">${track.current ? `Etapa ${track.position} de ${track.total}: ${track.current.label}` : ''}</span></div>`}
+  </section>`;
+}
+
+function RecentCampaigns({ state }) {
+  const { data, error } = state;
   if (error) return html`<p class="err">${error}</p>`;
   if (!data) return html`<${Loading} rows=${2} />`;
   const list = data.filter(c => c.group !== 'history').slice(0, 5);
@@ -94,12 +115,12 @@ function RecentCampaigns() {
 }
 
 export function CampaignRows({ items }) {
-  return html`<div class="list">${items.map(c => html`<a class="list-row campaign-row" href=${href('/campanas/' + c.id)}>
-    <span><span class="t">${c.name}</span><span class="s" style="display:block">${c.brand || 'Marca confidencial'}${c.next_action ? ' · ' + c.next_action.label : ''}</span></span>
-    <span class="c2"><${Badge} map=${ASSIGNMENT_STATUS} value=${c.status} /></span>
-    <span class="c3 num small">${money(c.fee, c.currency)}</span>
-    <span class="c3 small muted nowrap">${c.deadline ? date(c.deadline, { year: false }) : ''}</span>
-  </a>`)}</div>`;
+  return html`<div class="list">${items.map(c => { const t = stageTrack(c.status, c.requires || {}); return html`<a class="list-row campaign-row" href=${href('/campanas/' + c.id)}>
+    <span class="cr-main"><span class="t">${c.name}</span><span class="s">${c.brand || 'Marca confidencial'}</span></span>
+    <span class="cr-status"><${Badge} map=${ASSIGNMENT_STATUS} value=${c.status} /></span>
+    <span class="cr-track"><${Wave} track=${t} />${c.next_action && html`<span class="s">${c.next_action.label}</span>`}</span>
+    <span class="cr-fig"><span class="num">${money(c.fee, c.currency)}</span>${c.deadline && html`<span class="s nowrap">${date(c.deadline, { year: false })}</span>`}</span>
+  </a>`; })}</div>`;
 }
 
 export function Calendar({ admin }) {
