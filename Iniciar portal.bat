@@ -8,10 +8,10 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-if not exist node_modules (
-  echo Instalando dependencias por unica vez...
-  call npm install --no-audit --no-fund
-  if errorlevel 1 ( echo No se pudieron instalar las dependencias. & pause & exit /b 1 )
+rem La version construida (dist-demo) solo necesita Node: no instala nada en esta carpeta de OneDrive.
+if exist "dist-demo\index.html" (
+  node dev\serve-local.mjs --no-build
+) else (
+  echo No encuentro la carpeta dist-demo. Pidele a Claude que la vuelva a generar.
 )
-call npm run local
 pause
