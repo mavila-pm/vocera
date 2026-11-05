@@ -16,12 +16,12 @@ export function MyPayments() {
       <a class="btn" href=${href('/pagos/datos')}><${Icon} name="wallet" size="18" />Datos bancarios</a></div>
     ${!data.payout_method && html`<div class="notice warn" style="margin-bottom:20px"><div><strong>Aún no registras tus datos de cobro</strong>Los necesitamos para autorizar cualquier pago. <a href=${href('/pagos/datos')}>Registrarlos</a></div></div>`}
     ${sums.map(s => html`<div class="kpis" style="margin-bottom:12px" role="list" aria-label=${'Resumen en ' + s.currency}>
-      <div class="kpi" role="listitem"><span class="v">${money(s.earned, s.currency)}</span><span class="l">Total ganado (transferido)</span></div>
-      <div class="kpi" role="listitem"><span class="v">${money(s.pending_validation, s.currency)}</span><span class="l">Pendiente de validación</span></div>
-      <div class="kpi" role="listitem"><span class="v">${money(s.approved, s.currency)}</span><span class="l">Pagos aprobados</span></div>
-      <div class="kpi" role="listitem"><span class="v">${money(s.in_process, s.currency)}</span><span class="l">En proceso</span></div>
-      <div class="kpi" role="listitem"><span class="v">${money(s.received, s.currency)}</span><span class="l">Recibidos</span></div>
-      <div class="kpi" role="listitem"><span class="v">${money(s.bonuses, s.currency)}</span><span class="l">Bonificaciones aprobadas</span></div>
+      <div class=${'kpi' + (Number(s.earned) ? '' : ' zero')} role="listitem"><span class="v">${money(s.earned, s.currency)}</span><span class="l">Total ganado (transferido)</span></div>
+      <div class=${'kpi' + (Number(s.pending_validation) ? '' : ' zero')} role="listitem"><span class="v">${money(s.pending_validation, s.currency)}</span><span class="l">Pendiente de validación</span></div>
+      <div class=${'kpi' + (Number(s.approved) ? '' : ' zero')} role="listitem"><span class="v">${money(s.approved, s.currency)}</span><span class="l">Pagos aprobados</span></div>
+      <div class=${'kpi' + (Number(s.in_process) ? '' : ' zero')} role="listitem"><span class="v">${money(s.in_process, s.currency)}</span><span class="l">En proceso</span></div>
+      <div class=${'kpi' + (Number(s.received) ? '' : ' zero')} role="listitem"><span class="v">${money(s.received, s.currency)}</span><span class="l">Recibidos</span></div>
+      <div class=${'kpi' + (Number(s.bonuses) ? '' : ' zero')} role="listitem"><span class="v">${money(s.bonuses, s.currency)}</span><span class="l">Bonificaciones aprobadas</span></div>
     </div>`)}
     <p class="small muted" style="margin-bottom:24px">"Pendiente de validación" son honorarios acordados que aún no cumplen todas las condiciones de pago. Solo cuentan como ganados cuando se transfieren.</p>
 

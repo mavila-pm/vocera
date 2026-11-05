@@ -2,13 +2,13 @@
 // La misma pantalla sirve al creador y al admin: cada pestaña muestra las
 // acciones del rol. TODA regla se valida en el servidor (RPC); la interfaz
 // solo evita ofrecer botones que el servidor rechazaría.
-import { html, useState } from '../../vendor/preact.js';
+import { html, useState, useRef, useLayoutEffect } from '../../vendor/preact.js';
 import { rpc } from '../lib/sb.js';
 import { href, query, navigate } from '../lib/router.js';
 import { ASSIGNMENT_STATUS, CONTRACT_STATUS, SHIPMENT_STATUS, SCRIPT_STATUS, DELIVERABLE_STATUS, PUBLICATION_STATUS, AD_STATUS,
   PAYMENT_STATUS, PLATFORMS, ADMIN_TONE, ADMIN_LABEL, money, date, dateTime, relDays, mask, bytes, label } from '../lib/format.js';
 import { Badge, Button, Empty, Loading, ErrorBox, Icon, Field, Input, Select, Textarea, FileDrop, FileLink, VideoPreview, Modal,
-  Confirm, toast, useAction, ask } from '../ui/kit.js';
+  Confirm, toast, useAction, ask, reducedMotion } from '../ui/kit.js';
 import { useLoad, CampaignRows } from './home.js';
 
 export const ORDER = Object.keys(ASSIGNMENT_STATUS);
@@ -74,12 +74,12 @@ export function CampaignDetail({ id, admin, session }) {
     ${CLOSED.includes(a.status) && html`<div class="notice error" style="margin-bottom:20px"><div><strong>${label(ASSIGNMENT_STATUS, a.status)}</strong>${a.closed_reason || ''}</div></div>`}
     ${b.next_action && !admin && html`<div class=${'notice' + (b.next_action.kind === 'action' ? '' : ' ok')} style="margin-bottom:20px">
       <div><strong>${b.next_action.kind === 'action' ? 'Tu próxima acción: ' : 'Estado: '}${b.next_action.label}</strong>
-      ${b.next_action.kind === 'action' && b.next_action.tab !== current && html`<button class="link-btn" onClick=${() => b.next_action.href ? navigate(b.next_action.href) : setTab(b.next_action.tab)}>Ir ahora</button>`}</div></div>`}
+      ${b.next_action.kind === 'action' && b.next_action.tab !== current && html`<button class="link-btn" onClick=${() => { if (b.next_action.href) return navigate(b.next_action.href); setTab(b.next_action.tab); goToTab(b.next_action.tab); }}>Ir ahora</button>`}</div></div>`}
 
     <div class="cols">
       <div style="min-width:0">
-        <div class="tabs" role="tablist">${tabs.map(([k, l]) => html`<button role="tab" aria-selected=${current === k} onClick=${() => setTab(k)}>${l}${!admin && actionTab === k ? html`<span class="pip" aria-label="Acción pendiente"></span>` : ''}</button>`)}</div>
-        <div role="tabpanel">
+        <${TabBar} tabs=${tabs} current=${current} onSelect=${setTab} pip=${!admin && actionTab} />
+        <div role="tabpanel" id="campaign-panel" class="tab-panel" key=${current} aria-labelledby=${'tab-' + current}>
           ${current === 'resumen' && html`<${Summary} ...${ctx} />`}
           ${current === 'contrato' && html`<${Contracts} ...${ctx} />`}
           ${current === 'producto' && html`<${Products} ...${ctx} />`}
@@ -99,7 +99,7 @@ export function CampaignDetail({ id, admin, session }) {
             ${a.script_due_on && c.requires_script && html`<dt>Guion</dt><dd>${date(a.script_due_on)}</dd>`}
             ${a.video_due_on && html`<dt>Video</dt><dd>${date(a.video_due_on)}</dd>`}
             ${a.publish_on && c.requires_publication && html`<dt>Publicación</dt><dd>${date(a.publish_on)}</dd>`}
-            <dt>Campaña</dt><dd>${date(c.starts_on)}${c.ends_on ? ' al ' + date(c.ends_on) : ''}</dd>
+            <dt>${c.ends_on ? 'Vigencia de la campaña' : 'Inicio de la campaña'}</dt><dd>${date(c.starts_on)}${c.ends_on ? ' al ' + date(c.ends_on) : ''}</dd>
           </dl></div>
       </aside>
     </div>
@@ -113,8 +113,9 @@ function Flow({ a, c }) {
     ['Contrato', 'availability_confirmed', 'contract_signed', c.requires_contract],
     ['Producto', 'product_pending', 'product_received', c.requires_product],
     ['Guion', 'script_pending', 'script_approved', c.requires_script],
-    ['Producción', 'in_production', 'video_delivered', true],
-    ['Revisión del video', 'video_in_review', 'video_approved', true],
+    // Al entregar el video, la producción queda hecha y la revisión pasa a ser la etapa actual.
+    ['Producción', 'in_production', 'in_production', true],
+    ['Revisión del video', 'video_delivered', 'video_approved', true],
     ['Publicación', 'publication_scheduled', 'publication_confirmed', c.requires_publication],
     ['Códigos publicitarios', 'ad_codes_pending', 'ad_codes_pending', c.requires_ad_code],
     ['Validación final', 'final_validation', 'final_validation', true],
@@ -128,6 +129,34 @@ function Flow({ a, c }) {
 }
 
 const Text = ({ v }) => v ? v : html`<span class="muted">-</span>`;
+// Fila de definición: para la creadora se omiten los campos vacíos; el admin los ve con "-" para saber qué falta.
+const Row = ({ t, v, admin, cls }) => (v || admin) ? html`<dt>${t}</dt><dd class=${cls}>${v || html`<span class="muted">-</span>`}</dd>` : null;
+
+// Pestañas con indicador deslizante (transform), flechas de teclado y la activa siempre visible.
+function TabBar({ tabs, current, onSelect, pip }) {
+  const ref = useRef(null), ind = useRef(null);
+  useLayoutEffect(() => {
+    const bar = ref.current, btn = bar && bar.querySelector('[aria-selected="true"]');
+    if (!btn || !ind.current) return;
+    ind.current.style.transform = `translateX(${btn.offsetLeft}px) scaleX(${btn.offsetWidth / 100})`;
+    const l = btn.offsetLeft - 24, r = btn.offsetLeft + btn.offsetWidth + 24;
+    if (l < bar.scrollLeft || r > bar.scrollLeft + bar.clientWidth) bar.scrollTo({ left: Math.max(0, l), behavior: reducedMotion() ? 'auto' : 'smooth' });
+  }, [current, tabs.length]);
+  function key(e) {
+    const i = tabs.findIndex(t => t[0] === current);
+    const j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -2;
+    if (j === -2) return; e.preventDefault();
+    const k = tabs[(j + tabs.length) % tabs.length][0]; onSelect(k);
+    requestAnimationFrame(() => document.getElementById('tab-' + k)?.focus());
+  }
+  return html`<div class="tabs-wrap"><div class="tabs" role="tablist" ref=${ref} onKeyDown=${key}>
+    ${tabs.map(([k, l]) => html`<button role="tab" id=${'tab-' + k} aria-controls="campaign-panel" aria-selected=${current === k} tabindex=${current === k ? 0 : -1} onClick=${() => onSelect(k)}>${l}${pip === k ? html`<span class="pip" aria-label="Acción pendiente"></span>` : ''}</button>`)}
+    <span class="tab-ind" ref=${ind} aria-hidden="true"></span></div></div>`;
+}
+function goToTab(k) {
+  requestAnimationFrame(() => { const t = document.getElementById('tab-' + k); if (!t) return;
+    t.closest('.tabs-wrap').scrollIntoView({ block: 'start', behavior: reducedMotion() ? 'auto' : 'smooth' }); t.focus({ preventScroll: true }); });
+}
 
 function Summary({ b, a, c, admin, reload }) {
   const br = b.brief || {};
@@ -143,25 +172,25 @@ function Summary({ b, a, c, admin, reload }) {
       <div class="row"><${Button} variant="primary" loading=${busy} onClick=${() => respond(true)}>Confirmar disponibilidad</${Button}><${Button} onClick=${() => setDecline(true)}>No puedo participar</${Button}></div>
     </div>`}
     <div class="panel"><div class="panel-head"><h2>Campaña</h2></div><div class="panel-pad"><dl class="dl">
-      <dt>Objetivo</dt><dd><${Text} v=${c.objective} /></dd>
-      <dt>Descripción</dt><dd><${Text} v=${c.description} /></dd>
-      <dt>Plataformas</dt><dd>${(c.platforms || []).map(p => PLATFORMS[p]).join(', ') || '-'}</dd>
+      <${Row} admin=${admin} t="Objetivo" v=${c.objective} />
+      <${Row} admin=${admin} t="Descripción" v=${c.description} />
+      <${Row} admin=${admin} t="Plataformas" v=${(c.platforms || []).map(p => PLATFORMS[p]).join(', ')} />
     </dl></div></div>
     <div class="panel"><div class="panel-head"><h2>Brief</h2></div><div class="panel-pad"><dl class="dl">
-      <dt>Brief completo</dt><dd><${Text} v=${br.brief} /></dd>
-      <dt>Formatos exigidos</dt><dd><${Text} v=${br.formats} /></dd>
-      <dt>Duración del contenido</dt><dd><${Text} v=${br.content_duration} /></dd>
-      <dt>Requisitos técnicos</dt><dd><${Text} v=${br.technical_requirements} /></dd>
-      <dt>Mensajes obligatorios</dt><dd><${Text} v=${br.mandatory_messages} /></dd>
-      <dt>Palabras o afirmaciones prohibidas</dt><dd><${Text} v=${br.forbidden_claims} /></dd>
-      <dt>Entregables solicitados</dt><dd><${Text} v=${br.deliverables_summary} /></dd>
+      <${Row} admin=${admin} t="Brief completo" v=${br.brief} />
+      <${Row} admin=${admin} t="Formatos exigidos" v=${br.formats} />
+      <${Row} admin=${admin} t="Duración del contenido" v=${br.content_duration} />
+      <${Row} admin=${admin} t="Requisitos técnicos" v=${br.technical_requirements} />
+      <${Row} admin=${admin} t="Mensajes obligatorios" v=${br.mandatory_messages} />
+      <${Row} admin=${admin} t="Palabras o afirmaciones prohibidas" v=${br.forbidden_claims} />
+      <${Row} admin=${admin} t="Entregables solicitados" v=${br.deliverables_summary} />
       <dt>Rondas de corrección</dt><dd>Hasta ${c.max_revision_rounds} por entregable</dd>
     </dl></div></div>
     <div class="panel"><div class="panel-head"><h2>Condiciones comerciales</h2></div><div class="panel-pad"><dl class="dl">
       <dt>Honorario acordado</dt><dd class="num"><strong>${money(a.fee_amount, a.currency)}</strong></dd>
-      <dt>Condiciones de pago</dt><dd><${Text} v=${c.payment_terms} /></dd>
-      <dt>Derechos de uso</dt><dd><${Text} v=${c.usage_rights} /></dd>
-      <dt>Vigencia de autorizaciones publicitarias</dt><dd>${c.ad_authorization_days ? c.ad_authorization_days + ' días' : '-'}</dd>
+      <${Row} admin=${admin} t="Condiciones de pago" v=${c.payment_terms} />
+      <${Row} admin=${admin} t="Derechos de uso" v=${c.usage_rights} />
+      <${Row} admin=${admin} t="Vigencia de autorizaciones publicitarias" v=${c.ad_authorization_days ? c.ad_authorization_days + ' días' : ''} />
       <dt>Requisitos de la campaña</dt><dd>${[c.requires_contract && 'Contrato', c.requires_product && 'Envío de producto', c.requires_script && 'Guion previo',
         c.requires_publication && 'Publicación en tus redes', c.requires_ad_code && 'Código publicitario'].filter(Boolean).join(' · ')}</dd>
     </dl></div></div>

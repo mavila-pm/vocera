@@ -38,7 +38,9 @@ for (const f of readdirSync(P)) {
 
 // 4) Página
 const css = readFileSync('portal/styles/portal.css', 'utf8') + '\n' + readFileSync('dev/demo/demo.css', 'utf8');
-writeFileSync(join(OUT, 'index.html'), `<title>Portal Vocera</title>
+writeFileSync(join(OUT, 'index.html'), `<!DOCTYPE html><html lang="es"><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Portal Vocera</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

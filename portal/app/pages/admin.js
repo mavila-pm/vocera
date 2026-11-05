@@ -4,7 +4,7 @@ import { supabase, rpc, q, config } from '../lib/sb.js';
 import { href, navigate } from '../lib/router.js';
 import { ASSIGNMENT_STATUS, ADMIN_TONE, ADMIN_LABEL, PROFILE_STATUS, CAMPAIGN_STATUS, PAYMENT_STATUS, PLATFORMS, RATE_TYPES, AVAILABILITY,
   CATEGORIES, COUNTRIES, CURRENCIES, money, date, dateTime, compact, label } from '../lib/format.js';
-import { Badge, Button, Empty, Loading, ErrorBox, Field, Input, Select, Textarea, ChipSelect, Avatar, Icon, FileLink, Modal, Progress, useAction, toast, ask } from '../ui/kit.js';
+import { CountUp, Badge, Button, Empty, Loading, ErrorBox, Field, Input, Select, Textarea, ChipSelect, Avatar, Icon, FileLink, Modal, Progress, useAction, toast, ask } from '../ui/kit.js';
 import { useLoad, Calendar } from './home.js';
 
 // ===================== Resumen ejecutivo =====================
@@ -12,10 +12,10 @@ export function AdminHome() {
   const { data, error, reload } = useLoad(() => rpc('admin_overview'));
   if (error) return html`<${ErrorBox} message=${error} retry=${reload} />`;
   if (!data) return html`<${Loading} rows=${4} />`;
-  const K = (v, l, to, attn) => html`<a class=${'kpi' + (attn && v > 0 ? ' attn' : '')} role="listitem" href=${href(to)}><span class="v">${v}</span><span class="l">${l}</span></a>`;
+  const K = (v, l, to, attn) => html`<a class=${'kpi' + (attn && v > 0 ? ' attn' : '') + (v ? '' : ' zero')} role="listitem" href=${href(to)}><span class="v"><${CountUp} value=${v} /></span><span class="l">${l}</span></a>`;
   const toDecide = data.profiles_in_review + data.pending_deliverables + data.pending_scripts + data.payments_to_authorize + data.incidents;
   return html`<div>
-    <div class="page-head"><div><h1>Resumen</h1><p>${toDecide ? `Hay ${toDecide} decisiones esperando al equipo.` : 'No hay decisiones pendientes del equipo.'}</p></div>
+    <div class="page-head"><div><h1>Resumen</h1><p>${toDecide ? (toDecide === 1 ? 'Hay 1 decisión esperando al equipo.' : `Hay ${toDecide} decisiones esperando al equipo.`) : 'No hay decisiones pendientes del equipo.'}</p></div>
       <a class="btn btn-primary" href=${href('/admin/campanas/nueva')}><${Icon} name="plus" size="18" />Nueva campaña</a></div>
     <p class="kpis-label">Por decidir</p>
     <div class="kpis cols-4" role="list" style="margin-bottom:20px">
@@ -37,7 +37,7 @@ export function AdminHome() {
           <span><span class="t">${x.creator}</span><span class="s" style="display:block">${x.campaign}</span></span>
           <span><${Badge} map=${ASSIGNMENT_STATUS} value=${x.status} toneOverride=${ADMIN_TONE[x.status]} text=${ADMIN_LABEL[x.status]} /></span>
           <span class="c3 small muted">${dateTime(x.updated_at)}</span><span class="c3"></span></a>`)}</div>`
-        : html`<div class="panel"><${Empty} title="Nada pendiente de revisión">Guiones, videos, publicaciones y pagos por decidir aparecerán aquí.</${Empty}></div>`}</div>
+        : html`<div class="panel"><${Empty} title="Nada pendiente en campañas" action=${data.profiles_in_review > 0 && html`<a class="btn btn-sm" href=${href('/admin/creadores?status=in_review')}>Revisar ${data.profiles_in_review === 1 ? '1 perfil' : data.profiles_in_review + ' perfiles'}</a>`}>Guiones, videos, publicaciones y pagos por decidir aparecerán aquí.</${Empty}></div>`}</div>
       <div><div class="section-head"><h2>Vencimientos (14 días)</h2></div><${Calendar} admin /></div>
     </div>
   </div>`;

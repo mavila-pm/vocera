@@ -200,7 +200,7 @@ try {
   });
   await step('10. El creador envía un guion', async () => {
     await C.reload(); await tab(C, 'Guion');
-    await C.getByLabel('Guion', { exact: true }).fill('Escena 1: digo el nombre de la salsa. Escena 2: preparo tacos en 30 segundos.');
+    await C.getByRole('textbox', { name: 'Guion', exact: true }).fill('Escena 1: digo el nombre de la salsa. Escena 2: preparo tacos en 30 segundos.');
     await C.click('text=Guardar borrador'); await toastSeen(C, 'Borrador guardado');
     await C.click('text=Enviar a revisión'); await toastSeen(C, 'Enviamos tu guion');
   });

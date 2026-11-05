@@ -354,3 +354,63 @@ dialog.modal[open] { animation: modal-in .2s var(--ease-out); }
 .profile-meter:hover { border-color: var(--senal); }
 .kpi.attn .v { color: var(--senal-600); }
 .kpis-label { font-size: .78rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--texto-3); margin-bottom: 8px; }
+
+/* =====================================================================
+   Movimiento funcional (auditoría 2026-11)
+   Regla: el movimiento solo explica un cambio — entrar a una vista,
+   cambiar de pestaña, una cifra que se actualiza, una acción confirmada.
+   Solo transform y opacity. Todo se anula con prefers-reduced-motion.
+   Tokens: rápido 120–160 ms (hover/press) · base 200–240 ms (vistas,
+   pestañas) · datos 400 ms (cifras). Curva única: --ease-out.
+   ===================================================================== */
+:root { --t-fast: .14s; --t-base: .22s; --t-data: .4s; }
+
+/* Entrada de vista: 6 px + fundido; las listas siguen con desfase de 30 ms (máx. 8 filas) */
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+.page-enter { animation: rise var(--t-base) var(--ease-out) both; }
+.page-enter :is(.kpis > *, .list > .list-row) { animation: rise var(--t-base) var(--ease-out) both; }
+.page-enter :is(.kpis > *, .list > .list-row):nth-child(2) { animation-delay: 30ms; }
+.page-enter :is(.kpis > *, .list > .list-row):nth-child(3) { animation-delay: 60ms; }
+.page-enter :is(.kpis > *, .list > .list-row):nth-child(4) { animation-delay: 90ms; }
+.page-enter :is(.kpis > *, .list > .list-row):nth-child(5) { animation-delay: 120ms; }
+.page-enter :is(.kpis > *, .list > .list-row):nth-child(6) { animation-delay: 150ms; }
+.page-enter :is(.kpis > *, .list > .list-row):nth-child(n+7) { animation-delay: 180ms; }
+
+/* Pestañas: indicador que se desliza (transform) y bordes que avisan que hay más a la derecha */
+.tabs-wrap { position: relative; margin-bottom: 20px; scroll-margin-top: 72px; }
+.tabs-wrap .tabs { position: relative; margin-bottom: 0; scroll-snap-type: x proximity;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+@media (min-width: 900px) { .tabs-wrap .tabs { -webkit-mask-image: none; mask-image: none; } }
+.tabs-wrap .tabs button { scroll-snap-align: start; border-bottom-color: transparent !important; transition: color var(--t-fast) ease-out; }
+.tabs-wrap .tabs button:hover { color: var(--texto); }
+.tab-ind { position: absolute; left: 0; bottom: 0; width: 100px; height: 2px; background: var(--senal); transform-origin: 0 0;
+  transition: transform var(--t-base) var(--ease-out); pointer-events: none; }
+.tab-panel { animation: fade var(--t-base) var(--ease-out) both; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } }
+
+/* KPIs: los ceros pierden peso para que destaque lo que sí requiere atención */
+.kpi { transition: background-color var(--t-fast) ease-out; }
+a.kpi:hover { background: var(--papel-2); }
+.kpi.zero .v { color: var(--texto-3); font-weight: 600; }
+a.list-row, button.list-row { transition: background-color var(--t-fast) ease-out; }
+
+/* Avance: la etapa actual se anuncia con dos pulsos al entrar y luego queda quieta */
+@keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(31,75,216,.35); } 100% { box-shadow: 0 0 0 10px rgba(31,75,216,0); } }
+.flow li[data-state="current"] .mk { animation: ring 1.2s var(--ease-out) .3s 2; }
+.flow li[data-state="current"] .mk { box-shadow: 0 0 0 4px var(--senal-50); }
+
+/* Notificaciones: contador sin tapar la campana */
+.bell .dot { top: 2px; right: 0; transform: translate(25%, -10%); box-shadow: 0 0 0 2px var(--papel-2); }
+@keyframes pop { from { transform: translate(25%, -10%) scale(.6); opacity: 0; } }
+.bell .dot { animation: pop var(--t-base) var(--ease-out) both; }
+
+/* Botones: respuesta inmediata al presionar */
+.btn:active { transform: scale(.98); transition-duration: 80ms; }
+
+/* Subida: estado legible, confirmación breve y sin saltos de diseño */
+.drop.over { transform: scale(1.01); transition: transform var(--t-fast) var(--ease-out), border-color var(--t-fast) ease-out, background-color var(--t-fast) ease-out; }
+.drop.busy { cursor: progress; }
+.up-state { display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
+.up-state.ok { color: var(--ok); font-weight: 600; animation: rise var(--t-base) var(--ease-out) both; }
+.upload-item.is-done .progress > span { background: var(--ok); }
+.drop > svg { margin: 0 auto; }

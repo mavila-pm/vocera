@@ -3,7 +3,7 @@ import { html, useState, useEffect } from '../../vendor/preact.js';
 import { supabase, rpc, q, friendlyError } from '../lib/sb.js';
 import { href, navigate } from '../lib/router.js';
 import { ASSIGNMENT_STATUS, PROFILE_STATUS, money, date, relDays, dateTime } from '../lib/format.js';
-import { Badge, Button, Empty, Loading, ErrorBox, Icon, Avatar, Progress, Field, PasswordInput, toast, useAction, Confirm } from '../ui/kit.js';
+import { CountUp, Badge, Button, Empty, Loading, ErrorBox, Icon, Avatar, Progress, Field, PasswordInput, toast, useAction, Confirm } from '../ui/kit.js';
 import { passwordError } from './auth.js';
 
 export function useLoad(fn, deps = []) {
@@ -62,10 +62,10 @@ export function CreatorHome({ session }) {
         <section aria-labelledby="h-camp">
           <div class="section-head"><h2 id="h-camp">Campañas</h2><a href=${href('/campanas')} class="small">Ver todas</a></div>
           <div class="kpis cols-4" role="list" style="margin-bottom:12px">
-            <a class="kpi" role="listitem" href=${href('/campanas?f=invitations')}><span class="v">${k.invitations}</span><span class="l">Invitaciones nuevas</span></a>
-            <a class="kpi" role="listitem" href=${href('/campanas?f=active')}><span class="v">${k.active}</span><span class="l">Activas</span></a>
-            <a class="kpi" role="listitem" href=${href('/campanas?f=active')}><span class="v">${k.pending_deliverables}</span><span class="l">Entregables pendientes</span></a>
-            <a class="kpi" role="listitem" href=${href('/campanas?f=finished')}><span class="v">${k.completed}</span><span class="l">Completadas</span></a>
+            <a class=${'kpi' + (k.invitations ? '' : ' zero')} role="listitem" href=${href('/campanas?f=invitations')}><span class="v"><${CountUp} value=${k.invitations} /></span><span class="l">Invitaciones nuevas</span></a>
+            <a class=${'kpi' + (k.active ? '' : ' zero')} role="listitem" href=${href('/campanas?f=active')}><span class="v"><${CountUp} value=${k.active} /></span><span class="l">Activas</span></a>
+            <a class=${'kpi' + (k.pending_deliverables ? '' : ' zero')} role="listitem" href=${href('/campanas?f=active')}><span class="v"><${CountUp} value=${k.pending_deliverables} /></span><span class="l">Entregables pendientes</span></a>
+            <a class=${'kpi' + (k.completed ? '' : ' zero')} role="listitem" href=${href('/campanas?f=finished')}><span class="v"><${CountUp} value=${k.completed} /></span><span class="l">Completadas</span></a>
           </div>
           <${RecentCampaigns} />
         </section>

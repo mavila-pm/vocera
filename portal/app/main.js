@@ -83,10 +83,10 @@ function Shell({ session, path }) {
       <header class="topbar">
         <a class="brand hide-desktop" href=${href(isAdmin ? '/admin' : '/')} style="padding:0;color:var(--tinta)" aria-label="Inicio"><${Iso} /></a>
         <span class="title">${title}</span>
-        <a class="btn btn-ghost bell" href=${href('/notificaciones')} aria-label=${unread ? `Notificaciones (${unread} sin leer)` : 'Notificaciones'}><${Icon} name="bell" />${unread > 0 && html`<span class="dot">${unread > 9 ? '9+' : unread}</span>`}</a>
+        <a class="btn btn-ghost bell" href=${href('/notificaciones')} aria-label=${unread ? `Notificaciones (${unread} sin leer)` : 'Notificaciones'}><${Icon} name="bell" />${unread > 0 && html`<span class="dot">${unread > 99 ? '99+' : unread}</span>`}</a>
         <a class="btn btn-ghost" href=${href('/cuenta')} aria-label="Cuenta y seguridad"><${Icon} name="shield" /></a>
       </header>
-      <main class="content" id="main" tabindex="-1">${page || html`<${Empty} title="Página no encontrada" action=${html`<a class="btn" href=${href(isAdmin ? '/admin' : '/')}>Ir al inicio</a>`}>Revisa el enlace o vuelve al inicio.</${Empty}>`}</main>
+      <main class="content" id="main" tabindex="-1"><div class="page-enter" key=${path}>${page || html`<${Empty} title="Página no encontrada" action=${html`<a class="btn" href=${href(isAdmin ? '/admin' : '/')}>Ir al inicio</a>`}>Revisa el enlace o vuelve al inicio.</${Empty}>`}</div></main>
     </div>
     <nav class="tabbar" aria-label="Navegación">
       ${nav.map(([to, l, ic]) => html`<a href=${href(to)} aria-current=${active(to)}><${Icon} name=${ic} />${SHORT[l] || l}</a>`)}

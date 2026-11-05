@@ -34,6 +34,26 @@ export const Icon = ({ name, size }) => html`<svg viewBox="0 0 24 24" width=${si
   stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d=${P[name]} /></svg>`;
 export const Iso = ({ cls }) => html`<svg class=${cls} viewBox="0 0 121 100" aria-hidden="true" focusable="false"><polygon fill="currentColor" points="36,0 68,0 32,100 0,100"/><polygon fill="currentColor" points="89,0 121,0 85,100 53,100"/></svg>`;
 
+// ---------- Movimiento ----------
+export const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Cifra que interpola desde su valor anterior (0 en la primera carga). 400 ms, ease-out, sin rebote.
+// Lectores de pantalla y movimiento reducido reciben el valor final de inmediato.
+export function CountUp({ value, ms = 400 }) {
+  const n = Number(value) || 0;
+  const prev = useRef(0);
+  const [shown, setShown] = useState(reducedMotion() ? n : prev.current);
+  useEffect(() => {
+    const from = prev.current; prev.current = n;
+    if (reducedMotion() || from === n) { setShown(n); return; }
+    let raf, t0;
+    const step = t => { t0 ??= t; const k = Math.min(1, (t - t0) / ms); const e = 1 - Math.pow(1 - k, 3);
+      setShown(Math.round(from + (n - from) * e)); if (k < 1) raf = requestAnimationFrame(step); };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [n]);
+  return html`<span aria-hidden="true">${shown}</span><span class="sr-only">${n}</span>`;
+}
+
 // ---------- Botón con estado de carga ----------
 export function Button({ variant = '', size = '', loading, children, block, ...rest }) {
   const cls = ['btn', variant && `btn-${variant}`, size && `btn-${size}`, block && 'btn-block', rest.class].filter(Boolean).join(' ');
@@ -139,32 +159,38 @@ export function Modal({ open, title, onClose, children, footer }) {
 // ---------- Subida de archivos con arrastrar y soltar ----------
 export function FileDrop({ kind, ownerId, folder, onUploaded, label: lab, hint, disabled }) {
   const [over, setOver] = useState(false);
-  const [state, setState] = useState(null); // { name, size, progress, error, done }
+  const [state, setState] = useState(null); // { name, size, progress, error, done, file }
   const input = useRef();
   async function handle(file) {
     if (!file || disabled) return;
-    setState({ name: file.name, size: file.size, progress: 0 });
+    setState({ name: file.name, size: file.size, progress: 0, file });
     try {
       const res = await uploadFile({ file, kind, ownerId, folder, onProgress: p => setState(s => ({ ...s, progress: p * 100 })) });
       setState(s => ({ ...s, progress: 100, done: true }));
       await onUploaded(res);
     } catch (e) { setState(s => ({ ...s, error: e.message })); }
   }
+  const busy = state && !state.done && !state.error;
+  const sent = state ? Math.round(state.size * state.progress / 100) : 0;
+  // Estado visible siempre; el lector de pantalla solo escucha inicio, fin y error (no cada porcentaje).
+  const status = !state ? '' : state.error ? 'No se pudo subir el archivo.' : state.done ? 'Archivo recibido.' : 'Subiendo archivo…';
   return html`<div>
-    <label class=${'drop' + (over ? ' over' : '')} style=${{ display: 'block', position: 'relative', opacity: disabled ? .6 : 1 }}
+    <label class=${'drop' + (over ? ' over' : '') + (busy ? ' busy' : '')} style=${{ display: 'block', position: 'relative', opacity: disabled ? .6 : 1 }}
       onDragOver=${e => { e.preventDefault(); setOver(true); }} onDragLeave=${() => setOver(false)}
       onDrop=${e => { e.preventDefault(); setOver(false); handle(e.dataTransfer.files[0]); }}>
-      <input type="file" ref=${input} disabled=${disabled} accept=${Object.keys(RULES[kind].types).join(',')}
+      <input type="file" ref=${input} disabled=${disabled || busy} accept=${Object.keys(RULES[kind].types).join(',')}
         onChange=${e => { handle(e.target.files[0]); e.target.value = ''; }} />
       <${Icon} name="upload" size="22" />
-      <strong style="margin-top:8px">${lab || 'Arrastra tu archivo aquí o selecciónalo'}</strong>
+      <strong style="margin-top:8px">${over ? 'Suelta el archivo para subirlo' : (lab || 'Arrastra tu archivo aquí o selecciónalo')}</strong>
       <span class="hint">${hint || RULES[kind].label}</span>
     </label>
-    ${state && html`<div class="upload-item" aria-live="polite">
-      <span class="small"><strong>${state.name}</strong> · ${bytes(state.size)}</span>
-      <span class="small ${state.error ? 'err' : 'muted'}">${state.error ? 'Error' : state.done ? 'Listo' : Math.round(state.progress) + ' %'}</span>
+    <p class="sr-only" aria-live="polite">${status}</p>
+    ${state && html`<div class=${'upload-item' + (state.done ? ' is-done' : '') + (state.error ? ' is-error' : '')}>
+      <span class="small"><strong>${state.name}</strong> · ${state.done || state.error ? bytes(state.size) : `${bytes(sent)} de ${bytes(state.size)}`}</span>
+      <span class=${'small up-state ' + (state.error ? 'err' : state.done ? 'ok' : 'muted')}>${state.error ? 'No se subió' : state.done ? html`<${Icon} name="check" size="14" /> Recibido` : Math.round(state.progress) + ' %'}</span>
       <${Progress} value=${state.progress} ok=${state.done} />
-      ${state.error && html`<p class="err" role="alert" style="grid-column:1/-1">${state.error}</p>`}
+      ${state.error && html`<p class="err" role="alert" style="grid-column:1/-1">${state.error}
+        <button type="button" class="link-btn" style="margin-left:8px" onClick=${() => handle(state.file)}>Reintentar</button></p>`}
     </div>`}
   </div>`;
 }
