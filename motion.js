@@ -62,7 +62,9 @@
   function sync() {
     if(paused) stopMotion(); else startMotion();
     threePaused(paused);
-    toggle.textContent = paused ? 'Activar movimiento' : 'Pausar movimiento';
+    const label = paused ? 'Activar movimiento' : 'Pausar movimiento';
+    toggle.innerHTML = '<span class="mc-icon" aria-hidden="true">' + (paused ? '▶' : '❚❚') + '</span><span class="mc-label">' + label + '</span>';
+    toggle.setAttribute('aria-label', label); toggle.title = label;
     toggle.setAttribute('aria-pressed',String(paused));
   }
   toggle.hidden = false;
@@ -74,10 +76,20 @@
   });
   // A sculpted sound wave: actual geometry, light, perspective and pointer response.
   // A CSS sculpture is visible until WebGL has successfully rendered.
+  // WebGL is decorative: only capable desktops download it (~690 KB min, ~175 KB gzip).
+  // Phones, data saver, low-end CPUs and reduced motion keep the CSS sculpture.
+  function canUseWebGL() {
+    const c = navigator.connection;
+    if (reduced.matches) return false;
+    if (c && (c.saveData || /2g/.test(c.effectiveType || ''))) return false;
+    if ((navigator.hardwareConcurrency || 4) < 4) return false;
+    return matchMedia('(min-width: 1000px) and (pointer: fine)').matches;
+  }
   async function initScene() {
     const host=document.querySelector('#voice-scene');
+    if (!host || !canUseWebGL()) return;
     let THREE;
-    try { THREE=await import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js'); }
+    try { THREE=await import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js'); }
     catch { return; }
     let renderer;
     try { renderer=new THREE.WebGLRenderer({alpha:true,antialias:devicePixelRatio<2,powerPreference:'low-power'}); }
@@ -121,5 +133,15 @@
     window.addEventListener('pagehide',suspend);
     window.addEventListener('pageshow',resume);
   }
-  initScene();
+  const idle = window.requestIdleCallback || (fn => setTimeout(fn, 600));
+  if (document.readyState === 'complete') idle(initScene, {timeout: 2000});
+  else window.addEventListener('load', () => idle(initScene, {timeout: 2000}), {once: true});
+
+  // Fixed controls step aside while the contact form is on screen,
+  // so they never cover fields or the submit button (mainly on phones).
+  const contact = document.querySelector('#contacto .voice-form')?.closest('section');
+  if (contact && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => document.body.classList.toggle('form-in-view', e.isIntersecting),
+      {rootMargin: '0px 0px -35% 0px'}).observe(contact);
+  }
 })();

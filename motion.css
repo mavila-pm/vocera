@@ -33,3 +33,20 @@ html,body{overflow-x:clip}
 .hero-title .outline{font-size:.72em;margin-top:.1em;white-space:nowrap}
 @media(max-width:760px){.hero-title{font-size:17vw}.hero-title .outline{font-size:.73em}}
 
+
+/* Audit 2026-11: fixed controls, compact motion toggle, tactile feedback */
+.motion-control{display:inline-flex;align-items:center;gap:8px;transition:opacity .2s ease-out,transform .2s ease-out,background .15s ease-out}
+.motion-control:hover{background:#fff}
+.mc-icon{font-size:9px;line-height:1;letter-spacing:-.1em}
+.wa-fab{transition:opacity .2s ease-out,transform .2s cubic-bezier(.22,1,.36,1)}
+body.form-in-view .wa-fab,body.form-in-view .motion-control{opacity:0;pointer-events:none;transform:translateY(12px)}
+@media (max-width:760px){
+  .motion-control{width:36px;height:36px;padding:0;justify-content:center;border-radius:50%}
+  .motion-control .mc-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+.btn{transition:background .16s ease-out,color .16s ease-out,transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s ease-out}
+.btn:active{transform:scale(.98);transition-duration:.09s}
+.voice-form[aria-busy="true"] button[type="submit"]{opacity:.75}
+@media (prefers-reduced-motion:reduce){
+  .btn,.btn:hover,.btn:active,.wa-fab,.motion-control{transform:none!important;transition:opacity .15s linear,background .15s linear!important}
+}
