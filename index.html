@@ -67,7 +67,7 @@
     "url": "https://vocera.lat/",
     "logo": "https://vocera.lat/assets/favicon-512x512.png",
     "slogan": "Conectar para crecer",
-    "email": "hola@vocera.lat",
+    "email": "mavila@vocera.lat",
     "telephone": "+51 928 088 048",
     "areaServed": "PE",
     "sameAs": [
@@ -474,7 +474,7 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
 }
 
 /* =====================================================================
-   La Triple C: tres fases en secuencia, con sus métricas
+   Servicios: tres fases en secuencia, con sus métricas
    ===================================================================== */
 .triple-c .container { position: relative; }
 .phases {
@@ -705,6 +705,7 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
 }
   </style>
+  <link rel="stylesheet" href="motion.css" />
 </head>
 <body>
   <!-- Meta Pixel (sin JavaScript) -->
@@ -722,7 +723,7 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
 
   <!-- WhatsApp flotante (contacto directo) -->
   <aside aria-label="Contacto rápido">
-  <a href="https://wa.me/51928088048?text=Hola%20Vocera%2C%20me%20gustar%C3%ADa%20conocer%20el%20sistema%20Voice."
+  <a href="https://wa.me/51928088048?text=Hola%2C%20vengo%20de%20su%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20conocer%20un%20poco%20m%C3%A1s%20sobre%20sus%20servicios."
      target="_blank" rel="noopener" class="wa-fab" aria-label="Escríbenos por WhatsApp (se abre en una nueva pestaña)">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
   </a>
@@ -738,13 +739,13 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
 
       <nav class="nav-links" aria-label="Navegación principal">
         <a href="#sistema-voice">Sistema Voice</a>
-        <a href="#triple-c">La Triple C</a>
+        <a href="#triple-c">Servicios</a>
         <a href="#para-marcas">Para marcas</a>
         <a href="#para-creadores">Para creadores</a>
         <a href="#contacto">Contacto</a>
       </nav>
 
-      <a href="#contacto" class="btn btn-primary btn-sm header-cta" data-open-form="marca">Hablemos de tu marca</a>
+      <a href="#contacto" class="btn btn-primary btn-sm header-cta" data-open-form="marca"><span class="btn-content">Hablemos ↗</span></a>
 
       <button class="hamburger" id="hamburger" type="button" aria-label="Abrir menú" aria-controls="mobile-nav" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -755,218 +756,66 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
   <!-- Navegación móvil -->
   <nav class="mobile-nav" id="mobile-nav" aria-label="Menú móvil">
     <a href="#sistema-voice" data-close-nav>Sistema Voice</a>
-    <a href="#triple-c" data-close-nav>La Triple C</a>
+    <a href="#triple-c" data-close-nav>Servicios</a>
     <a href="#diferenciales" data-close-nav>Por qué Vocera</a>
     <a href="#para-marcas" data-close-nav>Para marcas</a>
     <a href="#para-creadores" data-close-nav>Para creadores</a>
     <a href="#contacto" data-close-nav>Contacto</a>
     <div class="mobile-ctas">
-      <a href="#contacto" class="btn btn-primary btn-lg" data-close-nav data-open-form="marca">Hablemos de tu marca</a>
-      <a href="#contacto" class="btn btn-line btn-lg" data-close-nav data-open-form="creador">Postula como creador</a>
+      <a href="#contacto" class="btn btn-primary btn-lg" data-close-nav data-open-form="marca"><span class="btn-content">Hablemos ↗</span></a>
+      <a href="#contacto" class="btn btn-line btn-lg" data-close-nav data-open-form="creador"><span class="btn-content">Postula como creador</span></a>
     </div>
   </nav>
 
+  <div class="scroll-meter" aria-hidden="true"></div><button class="motion-control" id="motion-toggle" type="button" aria-pressed="false" hidden>Pausar movimiento</button>
   <main id="main">
 
     <!-- ============ HERO ============ -->
     <section id="inicio" class="hero on-dark" aria-labelledby="hero-title">
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <h1 class="hero-title" id="hero-title">Le damos voz a tu marca con <span class="hl">creadores reales.</span></h1>
-          <p class="hero-body">Elegimos creadores alineados a tu mensaje, llevamos su contenido a tu público y medimos cada resultado en tiempo real.</p>
-          <div class="hero-ctas">
-            <a href="#contacto" class="btn btn-primary btn-lg" data-open-form="marca">Hablemos de tu marca<svg class="arrow" aria-hidden="true"><use href="#arrow"/></svg></a>
-            <a href="#contacto" class="btn btn-line btn-lg" data-open-form="creador">Postula como creador</a>
-          </div>
-        </div>
-
-        <div class="hero-visual" aria-hidden="true">
-          <div class="voice" id="voice">
-            <svg viewBox="0 0 620 420" role="presentation" focusable="false">
-              <g transform="translate(76 0) skewX(-19.8)">
-                <rect class="bar" style="--i:0" x="60" y="174" width="22" height="72" rx="1"/>
-                <rect class="bar" style="--i:1" x="96" y="152" width="22" height="115" rx="1"/>
-                <rect class="bar" style="--i:2" x="132" y="124" width="22" height="173" rx="1"/>
-                <rect class="bar" style="--i:3" x="168" y="142" width="22" height="137" rx="1"/>
-                <rect class="bar bar-senal" style="--i:4" x="204" y="98" width="22" height="223" rx="1"/>
-                <rect class="bar" style="--i:5" x="240" y="66" width="22" height="288" rx="1"/>
-                <rect class="bar bar-iso" style="--i:6" x="276" y="30" width="22" height="360" rx="1"/>
-                <rect class="bar bar-iso" style="--i:7" x="312" y="30" width="22" height="360" rx="1"/>
-                <rect class="bar" style="--i:8" x="348" y="84" width="22" height="252" rx="1"/>
-                <rect class="bar bar-senal" style="--i:9" x="384" y="113" width="22" height="194" rx="1"/>
-                <rect class="bar" style="--i:10" x="420" y="102" width="22" height="216" rx="1"/>
-                <rect class="bar" style="--i:11" x="456" y="138" width="22" height="144" rx="1"/>
-                <rect class="bar" style="--i:12" x="492" y="161" width="22" height="97" rx="1"/>
-                <rect class="bar" style="--i:13" x="528" y="181" width="22" height="58" rx="1"/>
-              </g>
-            </svg>
-          </div>
-          <p class="voice-caption">comunica <span class="sep">//</span> conecta <span class="sep">//</span> crece</p>
-        </div>
-      </div>
+      <h1 class="hero-title" id="hero-title"><span>Marketing</span><span class="outline">con creadores.</span></h1>
+      <div class="scene" id="voice-scene" aria-hidden="true"><div class="scene-fallback"><i style="--h:20%"></i><i style="--h:35%"></i><i style="--h:55%"></i><i style="--h:80%"></i><i style="--h:100%"></i><i style="--h:100%"></i><i style="--h:80%"></i><i style="--h:55%"></i><i style="--h:35%"></i><i style="--h:20%"></i></div></div>
+      <div class="hero-bottom"><div><p class="hero-body">Contenido con creadores que conecta con tu público. Estrategia y pauta para convertir esa atención en oportunidades de negocio.</p><div class="hero-ctas"><a href="#contacto" class="btn btn-primary btn-lg" data-open-form="marca"><span class="btn-content">Impulsa tu marca ↗</span></a><a href="#sistema-voice" class="btn btn-line btn-lg"><span class="btn-content">Descubre cómo ↓</span></a></div></div></div>
     </section>
 
-    <!-- ============ SISTEMA VOICE ============ -->
     <section id="sistema-voice" class="section voice-system" aria-labelledby="vs-title">
-      <div class="container">
-        <div class="vs-head">
-          <h2 class="h2" id="vs-title">Mensaje, voces y datos en un solo sistema.</h2>
-          <p class="lead">Vocera es un partner comunicativo para empresas. Con nuestro sistema Voice definimos qué debe decir tu marca, elegimos a los creadores que lo dirán con naturalidad y medimos qué funciona para escalarlo.</p>
-        </div>
-
-        <div class="equation">
-          <div class="eq-item">
-            <h3>Tu marca</h3>
-            <p>Trae el mensaje, la visión y la identidad que quiere proyectar al mercado.</p>
-          </div>
-          <span class="eq-op" aria-hidden="true">+</span>
-          <div class="eq-item">
-            <h3>Las voces</h3>
-            <p>Creadores reales que aportan criterio, naturalidad y capacidad de conectar.</p>
-          </div>
-          <span class="eq-op" aria-hidden="true">=</span>
-          <div class="eq-result on-dark">
-            <h3><svg class="slashes" aria-hidden="true"><use href="#iso"/></svg>Sistema Voice</h3>
-            <p>Vocera ordena, conecta y mide todo para que tu marca comunique, conecte y crezca.</p>
-          </div>
+      <div class="container studio-layout">
+        <div class="studio-copy"><span class="soft-label">El sistema Voice</span><h2 class="h2" id="vs-title">Estrategia de<br><em>marca.</em></h2><p class="lead">Conectamos tu marca con las voces correctas. Creamos contenido, activamos campañas y medimos lo que impulsa tu negocio.</p><a href="#contacto" class="btn btn-dark" data-open-form="marca"><span class="btn-content">Hablemos de tu objetivo <span aria-hidden="true">↗</span></span></a></div>
+        <div class="voice-collage" aria-label="Estrategia, contenido y resultados">
+          <div class="collage-orbit" aria-hidden="true"></div>
+          <article class="collage-card card-message"><span class="soft-label">Tu mensaje</span><p>Una buena historia<br><strong>mueve personas.</strong></p><div class="mini-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+          <article class="collage-card card-voice"><span class="soft-label">La voz correcta</span><span class="quote-mark" aria-hidden="true">“</span><p>Personas reales.<br>Contenido que<br><strong>se siente real.</strong></p></article>
+          <article class="collage-card card-growth"><span class="soft-label">Tu siguiente paso</span><span class="growth-arrow" aria-hidden="true">↗</span><p>Atención que se convierte en <strong>oportunidades.</strong></p></article>
         </div>
       </div>
+      <div id="diferenciales" class="value-notes container"><span>Una estrategia para tu marca.</span><span>Creadores alineados a tu público.</span><span>Decisiones respaldadas por datos.</span></div>
     </section>
 
-    <!-- ============ LA TRIPLE C ============ -->
     <section id="triple-c" class="section on-dark triple-c" aria-labelledby="triplec-title">
-      <div class="container">
-        <h2 class="h2" id="triplec-title">Comunica, conecta, crece.</h2>
-        <p class="lead">Las tres fases del sistema Voice, siempre en este orden. Cada una tiene sus propias métricas, y cada cifra se reporta junto a su meta, su objetivo o su promedio.</p>
-
+      <div class="method-stage"><div class="method-heading container"><span class="soft-label">Gestión de campañas</span><h2 id="triplec-title">Nuestros<br><em>servicios.</em></h2></div>
         <ol class="phases">
-          <li class="phase">
-            <span class="phase-code">C1</span>
-            <h3>Comunica</h3>
-            <p class="phase-claim">Le damos voz a tu marca.</p>
-            <p class="phase-text">Construimos el mensaje y lo expresamos con voces reales que el mercado reconoce como propias: qué se dice, quién lo dice y con qué tono. Tu marca suena igual de sólida en cada canal.</p>
-            <dl class="metrics">
-              <div><dt>Alcance</dt><dd>personas únicas</dd></div>
-              <div><dt>Impresiones</dt><dd>volumen de exposición</dd></div>
-              <div><dt>CPM</dt><dd>costo por mil</dd></div>
-            </dl>
-          </li>
-          <li class="phase">
-            <span class="phase-code">C2</span>
-            <h3>Conecta</h3>
-            <p class="phase-claim">Llegamos a las personas.</p>
-            <p class="phase-text">Diseñamos cómo y dónde tu voz encuentra a su público objetivo: el mensaje correcto, frente a las personas correctas, en el momento correcto.</p>
-            <dl class="metrics">
-              <div><dt>CTR</dt><dd>vs. promedio</dd></div>
-              <div><dt>Engagement</dt><dd>interacción real</dd></div>
-              <div><dt>Retención</dt><dd>atención sostenida</dd></div>
-            </dl>
-          </li>
-          <li class="phase">
-            <span class="phase-code">C3</span>
-            <h3>Crece</h3>
-            <p class="phase-claim">Escalamos lo que funciona.</p>
-            <p class="phase-text">Medimos cada señal con dashboards en tiempo real. Las decisiones se toman con información y la inversión crece sobre lo que ya da resultado.</p>
-            <dl class="metrics">
-              <div><dt>CPA</dt><dd>costo por adquisición</dd></div>
-              <div><dt>Conversión</dt><dd>contra objetivo</dd></div>
-              <div><dt>ROAS</dt><dd>retorno de la inversión publicitaria</dd></div>
-            </dl>
-          </li>
+          <li class="phase phase-communicate"><span class="phase-code">Comunica</span><div class="method-art art-voice" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>Estrategia y<br>contenido.</h3><p>Convertimos tu propuesta en contenido que se entiende, se recuerda y se comparte.</p><span class="method-tag">Estrategia + creadores + contenido</span></li>
+          <li class="phase phase-connect"><span class="phase-code">Conecta</span><div class="method-art art-connect" aria-hidden="true"><i></i><i></i><i></i></div><h3>Distribución<br>y pauta.</h3><p>Distribuimos el contenido y activamos pauta para llegar al público que buscas.</p><span class="method-tag">Audiencias + distribución + pauta</span></li>
+          <li class="phase phase-grow"><span class="phase-code">Crece</span><div class="method-art art-grow" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><h3>Medición y<br>optimización.</h3><p>Medimos la respuesta y optimizamos la campaña según tu objetivo de negocio.</p><span class="method-tag">Medición + aprendizaje + optimización</span></li>
         </ol>
-
-        <div class="triple-note">
-          <p>Recibes reportes claros y en tiempo real. Una cifra sin referencia no sirve para decidir, por eso cada número llega con su contexto.</p>
-          <a href="#contacto" class="btn btn-line" data-open-form="marca">Hablemos de tu marca<svg class="arrow" aria-hidden="true"><use href="#arrow"/></svg></a>
-        </div>
       </div>
     </section>
 
-    <!-- ============ DIFERENCIALES ============ -->
-    <section id="diferenciales" class="section diferenciales" aria-labelledby="dif-title">
-      <div class="container dif-layout">
-        <div class="dif-intro">
-          <h2 class="h2" id="dif-title">Nivel de agencia grande, a la medida de tu presupuesto.</h2>
-          <p class="lead">Accesible para una empresa mediana y con alto valor para las grandes. El mismo sistema, ajustado a lo que puedes invertir.</p>
-        </div>
-
-        <div class="dif-list">
-          <article class="dif-item">
-            <svg class="mark" aria-hidden="true"><use href="#iso"/></svg>
-            <h3>Un método propio, de punta a punta</h3>
-            <p>Voice es un sistema propietario. Se implementa completo, sin improvisar ni contratar por partes.</p>
-          </article>
-          <article class="dif-item">
-            <svg class="mark" aria-hidden="true"><use href="#iso"/></svg>
-            <h3>Decisiones con datos</h3>
-            <p>Análisis de datos avanzado y reportes en tiempo real. Cada decisión se sostiene en información, no en intuición.</p>
-          </article>
-          <article class="dif-item">
-            <svg class="mark" aria-hidden="true"><use href="#iso"/></svg>
-            <h3>Del mensaje al resultado, rápido</h3>
-            <p>Un proceso pulido que lleva tu comunicación al mercado en tiempo récord, sin sacrificar la calidad ni la lectura de datos.</p>
-          </article>
-          <article class="dif-item">
-            <svg class="mark" aria-hidden="true"><use href="#iso"/></svg>
-            <h3>Cercanía en cada etapa</h3>
-            <p>Hablamos como las personas, no como una corporación distante, y cada acción persigue un resultado que se puede medir.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ PÚBLICOS ============ -->
-    <div class="audiences">
-      <section class="aud aud-marcas" id="para-marcas" aria-labelledby="marcas-title">
-        <div class="aud-inner">
-          <h2 id="marcas-title">Para marcas: el sistema completo, trabajando para ti.</h2>
-          <p class="lead">Implementamos Voice de principio a fin para que comuniques con claridad, conectes con tu público y crezcas con datos.</p>
-          <p class="aud-list-title">Qué hacemos por tu marca</p>
-          <ul class="checks">
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Definimos qué quiere comunicar tu marca.</li>
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Identificamos a qué público quieres llegar.</li>
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Le damos voz con creadores alineados a tu mensaje.</li>
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Llevamos la comunicación al mercado con velocidad.</li>
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Medimos y crecemos sobre lo que da resultado.</li>
-          </ul>
-          <a href="#contacto" class="btn btn-primary btn-lg" data-open-form="marca">Hablemos de tu marca<svg class="arrow" aria-hidden="true"><use href="#arrow"/></svg></a>
-        </div>
-      </section>
-
-      <section class="aud aud-creadores on-dark" id="para-creadores" aria-labelledby="creadores-title">
-        <div class="aud-inner">
-          <h2 id="creadores-title">Tu voz puede ser la voz de una marca.</h2>
-          <p class="lead">Trabajamos con voces reales. Más que perfiles perfectos, buscamos criterio, voz propia y compromiso para comunicar con naturalidad.</p>
-          <p class="aud-list-title">Encajas si</p>
-          <ul class="checks">
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Comunicas con claridad y criterio.</li>
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Cuidas la calidad de cada pieza.</li>
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Entiendes el mensaje de una marca.</li>
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Eres responsable con tiempos y entregas.</li>
-            <li><svg aria-hidden="true"><use href="#check"/></svg>Adaptas tu voz a distintos públicos.</li>
-          </ul>
-          <a href="#contacto" class="btn btn-line btn-lg" data-open-form="creador">Postula como creador<svg class="arrow" aria-hidden="true"><use href="#arrow"/></svg></a>
-        </div>
-      </section>
+    <div class="audiences container">
+      <section class="aud aud-marcas" id="para-marcas" aria-labelledby="marcas-title"><div class="aud-inner"><span class="soft-label">Para marcas</span><h2 id="marcas-title">Campañas<br>para marcas.</h2><p class="lead">Lanza un producto, conecta con una nueva audiencia o impulsa tu campaña. Empecemos por lo que quieres lograr.</p><a href="#contacto" class="btn btn-dark btn-lg" data-open-form="marca"><span class="btn-content">Creemos tu campaña <span aria-hidden="true">↗</span></span></a></div><span class="aud-symbol" aria-hidden="true">↗</span></section>
+      <section class="aud aud-creadores on-dark" id="para-creadores" aria-labelledby="creadores-title"><div class="aud-inner"><span class="soft-label">Para creadores</span><h2 id="creadores-title">Red de<br>creadores.</h2><p class="lead">Crea contenido para marcas que conecten con tu estilo. Buscamos creatividad, criterio y compromiso.</p><a href="#contacto" class="btn btn-line btn-lg" data-open-form="creador"><span class="btn-content">Quiero ser parte <span aria-hidden="true">↗</span></span></a></div></section>
     </div>
 
     <!-- ============ CONTACTO ============ -->
     <section id="contacto" class="section contacto" aria-labelledby="contacto-title">
       <div class="container contact-layout">
         <div class="contact-aside">
-          <h2 class="h2" id="contacto-title">Cuéntanos qué quieres lograr.</h2>
-          <p class="lead">Elige tu perfil y completa el formulario. Toma unos dos minutos.</p>
-
-          <ol class="steps" aria-label="Qué pasa después de enviar">
-            <li><p><strong>Registramos tus datos</strong>Quedan guardados aunque WhatsApp no llegue a abrirse.</p></li>
-            <li><p><strong>Se abre WhatsApp</strong>Con tu mensaje ya redactado, listo para enviar.</p></li>
-            <li><p><strong>Te respondemos por WhatsApp</strong>Y seguimos la conversación desde ahí.</p></li>
-          </ol>
+          <h2 class="h2" id="contacto-title">Contacto<br><em>comercial.</em></h2>
+          <p class="lead">Cuéntanos qué buscas. Diseñemos el siguiente paso de tu marca.</p>
 
           <div class="direct">
             <p>¿Prefieres escribir directo?</p>
             <ul>
-              <li><a class="text-link" href="mailto:hola@vocera.lat">hola@vocera.lat</a></li>
+              <li><a class="text-link" href="mailto:mavila@vocera.lat">mavila@vocera.lat</a></li>
               <li><a class="text-link" href="https://wa.me/51928088048" target="_blank" rel="noopener">WhatsApp +51 928 088 048</a></li>
             </ul>
           </div>
@@ -1025,14 +874,14 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
   <!-- ============ FOOTER ============ -->
   <footer id="footer" class="site-footer on-dark">
     <div class="container">
-      <div class="footer-top">
+      <div class="footer-wordmark" aria-hidden="true">VOCERA//</div><div class="footer-top">
         <div class="footer-brand">
           <a href="#inicio" class="brand" aria-label="Vocera, ir al inicio">
             <svg class="iso" aria-hidden="true"><use href="#iso"/></svg>
             <span class="brand-name">VOCERA</span>
           </a>
           <p class="footer-claim">Conectar para crecer.</p>
-          <p class="footer-desc">Partner comunicativo. Convertimos voces reales en la voz de tu marca para comunicar, conectar y crecer con datos.</p>
+          <p class="footer-desc">Estrategia, creadores y contenido para que tu marca conecte y crezca.</p>
           <ul class="footer-social" aria-label="Redes sociales">
             <li><a href="https://www.instagram.com/vocera.peru?igsh=MWpydzRjOGtvMHBvZw%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 01-1.38-.9 3.72 3.72 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.5.01-4.74.07-1.14.05-1.76.24-2.17.4-.55.21-.94.47-1.35.88-.41.41-.67.8-.88 1.35-.16.41-.35 1.03-.4 2.17-.06 1.24-.07 1.59-.07 4.74s.01 3.5.07 4.74c.05 1.14.24 1.76.4 2.17.21.55.47.94.88 1.35.41.41.8.67 1.35.88.41.16 1.03.35 2.17.4 1.24.06 1.59.07 4.74.07s3.5-.01 4.74-.07c1.14-.05 1.76-.24 2.17-.4.55-.21.94-.47 1.35-.88.41-.41.67-.8.88-1.35.16-.41.35-1.03.4-2.17.06-1.24.07-1.59.07-4.74s-.01-3.5-.07-4.74c-.05-1.14-.24-1.76-.4-2.17a3.63 3.63 0 00-.88-1.35 3.63 3.63 0 00-1.35-.88c-.41-.16-1.03-.35-2.17-.4-1.24-.06-1.59-.07-4.74-.07zm0 2.76a5.3 5.3 0 110 10.6 5.3 5.3 0 010-10.6zm0 8.74a3.44 3.44 0 100-6.88 3.44 3.44 0 000 6.88zm6.75-8.94a1.24 1.24 0 11-2.48 0 1.24 1.24 0 012.48 0z"/></svg>
@@ -1054,7 +903,7 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
           <ul class="footer-links">
             <li><a href="#inicio">Inicio</a></li>
             <li><a href="#sistema-voice">Sistema Voice</a></li>
-            <li><a href="#triple-c">La Triple C</a></li>
+            <li><a href="#triple-c">Servicios</a></li>
             <li><a href="#para-marcas">Para marcas</a></li>
             <li><a href="#para-creadores">Para creadores</a></li>
             <li><a href="#contacto">Contacto</a></li>
@@ -1064,7 +913,7 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
         <div>
           <h2 class="footer-col-title">Contacto directo</h2>
           <ul class="footer-links">
-            <li><a href="mailto:hola@vocera.lat">hola@vocera.lat</a></li>
+            <li><a href="mailto:mavila@vocera.lat">mavila@vocera.lat</a></li>
             <li><a href="https://wa.me/51928088048" target="_blank" rel="noopener">WhatsApp +51 928 088 048</a></li>
             <li><a href="https://wa.me/51928088048?text=Hola%20Vocera%2C%20soy%20una%20marca%20y%20quiero%20conocer%20el%20sistema%20Voice." target="_blank" rel="noopener">Contacto de marcas</a></li>
             <li><a href="https://wa.me/51928088048?text=Hola%20Vocera%2C%20soy%20creador%20y%20quiero%20ser%20una%20voz%20Vocera." target="_blank" rel="noopener">Contacto de creadores</a></li>
@@ -1074,7 +923,6 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
 
       <div class="footer-bottom">
         <span>© 2026 Vocera. Todos los derechos reservados.</span>
-        <span class="mono">comunica // conecta // crece</span>
       </div>
     </div>
   </footer>
@@ -1132,6 +980,8 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
       }
       document.body.classList.toggle('nav-open', open);
       document.body.style.overflow = open ? 'hidden' : '';
+      mobileNav.inert = !open;
+      if (window.voceraLenis) { if (open) window.voceraLenis.stop(); else window.voceraLenis.start(); }
     }
     function closeNav() { setNav(false); }
 
@@ -1165,7 +1015,7 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
         e.preventDefault();
         if (mobileNav && mobileNav.classList.contains('open')) closeNav();
         var top = target.getBoundingClientRect().top + (window.scrollY || 0) - headerH() + 1;
-        try { window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' }); }
+        try { if (window.voceraLenis) window.voceraLenis.scrollTo(top); else window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' }); }
         catch (err) { window.scrollTo(0, top); }
         if (history.replaceState) history.replaceState(null, '', id);
         /* Foco al destino para lectores de pantalla y teclado */
@@ -1465,5 +1315,10 @@ body.nav-open .wa-fab { opacity: 0; pointer-events: none; }
     });
   })();
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
+  <script defer src="motion.js"></script>
 </body>
 </html>
+
