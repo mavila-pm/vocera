@@ -608,3 +608,4 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, tex
 .tab-ind { background: var(--papel); }
 .tabs-wrap .tabs button[aria-selected="true"] { color: var(--tinta); }
 .pill-nav .brand small { color: #AFC0F7; }
+.table-wrap:focus-visible { outline: 2px solid var(--senal); outline-offset: 3px; }

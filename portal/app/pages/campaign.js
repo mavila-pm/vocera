@@ -388,7 +388,7 @@ function Deliverables({ b, a, c, admin, reload, uid }) {
         ${canUpload && ['pending', 'revisions_requested'].includes(d.status) && html`<${FileDrop} kind=${d.kind === 'document' ? 'document' : 'video'} ownerId=${uid} folder=${'entregas/' + a.id + '/' + d.id}
           label=${d.status === 'revisions_requested' ? 'Sube la versión corregida' : 'Arrastra tu ' + (d.kind === 'document' ? 'documento' : 'video') + ' aquí o selecciónalo'}
           onUploaded=${f => run(async () => { await rpc('submit_deliverable_version', { p_deliverable: d.id, p_file_path: f.path, p_file_name: f.name, p_mime: f.mime, p_size: f.size }); await reload(); }, { success: 'Entrega registrada. Vocera la revisará.' })} />`}
-        ${d.versions.length > 0 && html`<div class="table-wrap"><table class="table stackable"><thead><tr><th>Versión</th><th>Archivo</th><th>Entregada</th><th></th></tr></thead><tbody>
+        ${d.versions.length > 0 && html`<div class="table-wrap" tabindex="0" role="region" aria-label="Tabla (desplázala si no entra completa)"><table class="table stackable"><thead><tr><th>Versión</th><th>Archivo</th><th>Entregada</th><th></th></tr></thead><tbody>
           ${d.versions.map(v => html`<tr><td data-l="Versión">v${v.version}</td><td data-l="Archivo">${v.file_name}<br/><span class="small muted">${bytes(v.size_bytes)}</span></td>
             <td data-l="Entregada">${dateTime(v.submitted_at)}</td>
             <td class="r">${v.mime_type.startsWith('video/') ? html`<${Button} size="sm" onClick=${() => setPreview(v.file_path)}><${Icon} name="eye" size="16" />Ver</${Button}>`
@@ -528,7 +528,7 @@ function Payment({ b, a, admin, reload, creatorId }) {
       <div class="panel-pad"><${Checklist} checklist=${b.checklist} />
       <p class="small muted" style="margin-top:12px">El sistema verifica las condiciones; la autorización final la da una persona autorizada de Vocera.</p></div></div>
     <div class="panel"><div class="panel-head"><h2>Pagos de esta campaña</h2></div>
-      <div class="table-wrap" style="border:0"><table class="table stackable"><thead><tr><th>Concepto</th><th class="r">Importe</th><th>Estado</th><th>Transferencia</th><th></th></tr></thead><tbody>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Tabla (desplázala si no entra completa)" style="border:0"><table class="table stackable"><thead><tr><th>Concepto</th><th class="r">Importe</th><th>Estado</th><th>Transferencia</th><th></th></tr></thead><tbody>
         ${b.payments.map(p => html`<tr><td data-l="Concepto">${p.concept === 'fee' ? 'Honorario' : 'Bonificación'}</td><td data-l="Importe" class="r num">${money(p.amount, p.currency)}</td>
           <td data-l="Estado"><${Badge} map=${PAYMENT_STATUS} value=${p.status} /></td>
           <td data-l="Transferencia">${p.transferred_at ? date(p.transferred_at) + (p.transfer_reference ? ' · Op. ' + p.transfer_reference : '') : p.scheduled_for ? 'Programado ' + date(p.scheduled_for) : '-'}</td>
@@ -603,7 +603,7 @@ function Manage({ b, a, c, reload }) {
       ${b.client_approvals.length > 0 && html`<div><strong class="small">Aprobaciones del cliente</strong>${b.client_approvals.map(x => html`<p class="small muted">${dateTime(x.created_at)} · ${x.approved ? 'Aprobado' : 'No aprobado'}${x.note ? ' · ' + x.note : ''}</p>`)}</div>`}
     </div>
     <div class="panel"><div class="panel-head"><h2>Trazabilidad</h2></div>
-      ${b.audit.length ? html`<div class="table-wrap" style="border:0"><table class="table stackable"><thead><tr><th>Fecha</th><th>Acción</th><th>Cambio</th><th>Quién</th><th>Motivo</th></tr></thead><tbody>
+      ${b.audit.length ? html`<div class="table-wrap" tabindex="0" role="region" aria-label="Tabla (desplázala si no entra completa)" style="border:0"><table class="table stackable"><thead><tr><th>Fecha</th><th>Acción</th><th>Cambio</th><th>Quién</th><th>Motivo</th></tr></thead><tbody>
         ${b.audit.map(l => html`<tr><td data-l="Fecha" class="nowrap">${dateTime(l.at)}</td><td data-l="Acción">${l.action.replace(/_/g, ' ')}</td>
           <td data-l="Cambio">${l.old || l.new ? html`${l.old ? label(ASSIGNMENT_STATUS, l.old) : '-'} → ${l.new ? label(ASSIGNMENT_STATUS, l.new) : '-'}` : ''}</td>
           <td data-l="Quién">${l.actor || 'Sistema'}</td><td data-l="Motivo">${l.reason || ''}</td></tr>`)}</tbody></table></div>` : html`<${Empty} title="Sin movimientos" />`}

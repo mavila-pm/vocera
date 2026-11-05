@@ -69,7 +69,7 @@ export function AdminCreators() {
       <div class="row" style="margin-top:14px"><${Button} type="submit" variant="dark"><${Icon} name="search" size="18" />Filtrar</${Button}>
         <${Button} variant="ghost" onClick=${() => { const e = { query: '', status: '', category: '', country: '', min_followers: '', min_engagement: '', max_rate: '', availability: '' }; setF(e); setApplied(e); }}>Limpiar</${Button}></div>
     </form>
-    ${error ? html`<${ErrorBox} message=${error} retry=${reload} />` : !data ? html`<${Loading} />` : data.length ? html`<div class="table-wrap"><table class="table stackable">
+    ${error ? html`<${ErrorBox} message=${error} retry=${reload} />` : !data ? html`<${Loading} />` : data.length ? html`<div class="table-wrap" tabindex="0" role="region" aria-label="Tabla (desplázala si no entra completa)"><table class="table stackable">
       <thead><tr><th>Creador</th><th>Categoría</th><th>Ubicación</th><th class="r">Seguidores</th><th class="r">Interacción</th><th class="r">Tarifa desde</th><th>Estado</th></tr></thead>
       <tbody>${data.map(c => html`<tr style="cursor:pointer" onClick=${() => navigate('/admin/creadores/' + c.user_id)}>
         <td data-l="Creador"><a href=${href('/admin/creadores/' + c.user_id)}><strong>${c.full_name}</strong></a>${c.artistic_name && html`<br/><span class="small muted">${c.artistic_name}</span>`}</td>
@@ -113,7 +113,7 @@ export function AdminCreatorDetail({ id }) {
           <dt>Campañas con producto</dt><dd>${c.accepts_product_campaigns ? 'Acepta' : 'No acepta'}${data.private?.shipping_address ? ' · ' + data.private.shipping_address + ', ' + (data.private.shipping_city || '') : ''}</dd>
         </dl></div></div>
         <div class="panel"><div class="panel-head"><h2>Redes y métricas</h2></div>
-          ${data.social.length ? html`<div class="table-wrap" style="border:0"><table class="table stackable"><thead><tr><th>Cuenta</th><th class="r">Seguidores</th><th class="r">Vistas prom.</th><th class="r">Interacción</th><th></th></tr></thead><tbody>
+          ${data.social.length ? html`<div class="table-wrap" tabindex="0" role="region" aria-label="Tabla (desplázala si no entra completa)" style="border:0"><table class="table stackable"><thead><tr><th>Cuenta</th><th class="r">Seguidores</th><th class="r">Vistas prom.</th><th class="r">Interacción</th><th></th></tr></thead><tbody>
             ${data.social.map(s => html`<tr><td data-l="Cuenta">${PLATFORMS[s.platform]} · ${s.url ? html`<a href=${s.url} target="_blank" rel="noopener noreferrer">${s.handle}</a>` : s.handle}
               ${s.evidence_path && html`<br/><${FileLink} bucket="documents" path=${s.evidence_path}>Captura de métricas</${FileLink}>`}${s.audience_notes && html`<br/><span class="small muted">${s.audience_notes}</span>`}</td>
               <td data-l="Seguidores" class="r num">${compact(s.followers_declared)}${s.followers_verified !== null ? html`<br/><span class="small" style="color:var(--ok)">✓ ${compact(s.followers_verified)}</span>` : ''}</td>
@@ -318,7 +318,7 @@ export function AdminPayments() {
     <div class="page-head"><div><h1>Pagos</h1><p>Autoriza solo cuando todas las condiciones se cumplen. Este portal no mueve dinero: registra decisiones y transferencias.</p></div>
       <${Button} loading=${busy} onClick=${exportCsv}><${Icon} name="download" size="18" />Exportar CSV</${Button}></div>
     <div class="tabs" role="tablist">${Object.entries(groups).map(([k, [l, fn]]) => html`<button role="tab" aria-selected=${filter === k} onClick=${() => setFilter(k)}>${l} (${data.filter(fn).length})</button>`)}</div>
-    ${list.length ? html`<div class="table-wrap"><table class="table stackable"><thead><tr><th>Creador</th><th>Campaña</th><th>Concepto</th><th class="r">Importe</th><th>Estado</th><th>Condiciones</th><th></th></tr></thead><tbody>
+    ${list.length ? html`<div class="table-wrap" tabindex="0" role="region" aria-label="Tabla (desplázala si no entra completa)"><table class="table stackable"><thead><tr><th>Creador</th><th>Campaña</th><th>Concepto</th><th class="r">Importe</th><th>Estado</th><th>Condiciones</th><th></th></tr></thead><tbody>
       ${list.map(p => html`<tr><td data-l="Creador">${p.creator}</td><td data-l="Campaña">${p.campaign}</td><td data-l="Concepto">${p.concept === 'fee' ? 'Honorario' : 'Bonificación'}</td>
         <td data-l="Importe" class="r num">${money(p.amount, p.currency)}</td><td data-l="Estado"><${Badge} map=${PAYMENT_STATUS} value=${p.status} />${p.incident_note && html`<br/><span class="small err">${p.incident_note}</span>`}</td>
         <td data-l="Condiciones">${p.ready === null || p.ready === undefined ? '-' : p.ready ? html`<span class="badge tone-ok">Cumplidas</span>` : html`<span class="badge tone-wait">Pendientes</span>`}</td>
@@ -338,7 +338,7 @@ export function AdminAudit() {
   if (!data) return html`<${Loading} />`;
   return html`<div>
     <div class="page-head"><div><h1>Auditoría</h1><p>Acciones sensibles: quién, cuándo, qué registro y qué cambió.</p></div></div>
-    <div class="table-wrap"><table class="table stackable"><thead><tr><th>Fecha</th><th>Quién</th><th>Acción</th><th>Registro</th><th>Cambio</th><th>Motivo</th></tr></thead><tbody>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Tabla (desplázala si no entra completa)"><table class="table stackable"><thead><tr><th>Fecha</th><th>Quién</th><th>Acción</th><th>Registro</th><th>Cambio</th><th>Motivo</th></tr></thead><tbody>
       ${data.map(l => html`<tr><td data-l="Fecha" class="nowrap">${dateTime(l.at)}</td><td data-l="Quién">${l.actor || 'Sistema'}${l.actor_role ? html`<br/><span class="small muted">${l.actor_role}</span>` : ''}</td>
         <td data-l="Acción">${l.action.replace(/_/g, ' ')}</td><td data-l="Registro" class="small"><span class="mono">${l.table}</span><br/><span class="muted">${(l.record_id || '').slice(0, 8)}</span></td>
         <td data-l="Cambio">${l.old || l.new ? html`${l.old || '-'} → ${l.new || '-'}` : ''}</td><td data-l="Motivo">${l.reason || ''}</td></tr>`)}

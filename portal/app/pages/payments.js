@@ -29,7 +29,7 @@ export function MyPayments() {
     </section>`)}
 
     <div class="section-head"><h2>Historial</h2></div>
-    ${data.items.length ? html`<div class="table-wrap"><table class="table stackable">
+    ${data.items.length ? html`<div class="table-wrap" tabindex="0" role="region" aria-label="Tabla (desplázala si no entra completa)"><table class="table stackable">
       <thead><tr><th>Campaña</th><th>Fecha</th><th class="r">Honorario</th><th class="r">Bonificación</th><th>Estado</th><th>Transferencia</th><th>Comprobante</th></tr></thead>
       <tbody>${data.items.map(p => html`<tr>
         <td data-l="Campaña"><a href=${href('/campanas/' + p.assignment_id + '?tab=pago')}>${p.campaign}</a></td>
