@@ -50,3 +50,7 @@ body.form-in-view .wa-fab,body.form-in-view .motion-control{opacity:0;pointer-ev
 @media (prefers-reduced-motion:reduce){
   .btn,.btn:hover,.btn:active,.wa-fab,.motion-control{transform:none!important;transition:opacity .15s linear,background .15s linear!important}
 }
+/* QA 2026-11: formulario completo en teléfonos de 320–380 px; contraste en la fase "Crece"; controles ocultos fuera del foco */
+@media (max-width:380px){.form-card{margin-inline:0}}
+.phase:nth-child(3) .phase-code,.phase:nth-child(3) .method-tag{opacity:1}
+body.form-in-view .wa-fab,body.form-in-view .motion-control{visibility:hidden;transition:opacity .2s ease-out,transform .2s ease-out,visibility 0s linear .2s}

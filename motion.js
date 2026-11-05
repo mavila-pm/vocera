@@ -54,7 +54,7 @@
         marquee = gsap.to(track,{xPercent:-50,duration:26,repeat:-1,ease:'none'});
         ScrollTrigger.create({trigger:'.ribbon',start:'top bottom',end:'bottom top',onToggle:self=>marquee && (self.isActive ? marquee.play() : marquee.pause())});
       }
-      gsap.from('.footer-wordmark',{yPercent:35,opacity:.2,scrollTrigger:{trigger:'.site-footer',start:'top bottom',end:'top 40%',scrub:1}});
+      gsap.from('.footer-wordmark',{yPercent:35,opacity:.2,scrollTrigger:{trigger:'.site-footer',start:'top bottom',end:'bottom bottom',scrub:1}});
       return ()=>mm.revert();
     });
     if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
