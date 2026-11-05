@@ -61,6 +61,17 @@ docs/BRIEF.md           Requerimiento original del proyecto
 
 ## 3. Desarrollo local
 
+### Opción rápida: sin Supabase ni PostgreSQL (recomendada para diseñar y probar)
+
+Requisito único: [Node.js LTS](https://nodejs.org).
+
+- **Windows:** doble clic en `Iniciar portal.bat`. La primera vez instala dependencias (unos minutos); después abre el portal en `http://localhost:5173`.
+- **Terminal:** `npm install` y luego `npm run local`.
+
+La base de datos es PostgreSQL real compilado a WebAssembly (PGlite) dentro del navegador: aplica las mismas migraciones y reglas de seguridad, con datos de ejemplo. Desde la barra amarilla se entra como creadora, admin o creador en revisión. **Los datos se reinician al recargar.** Cada cambio en `portal/` se ve al volver a ejecutar `npm run local`.
+
+### Opción completa: emulador de Supabase con PostgreSQL 16 (para pruebas E2E)
+
 Requisitos: Node 20+, PostgreSQL 16 y Chromium/Playwright para las pruebas.
 
 ```bash

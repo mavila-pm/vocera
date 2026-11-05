@@ -4,6 +4,7 @@
   "description": "Web pública de Vocera + Portal de creadores y Panel Vocera (Supabase).",
   "type": "module",
   "scripts": {
+    "local": "node dev/serve-local.mjs",
     "vendor": "node dev/build-vendor.mjs",
     "db:reset": "bash dev/local-supabase/reset-db.sh",
     "db:test": "bash dev/local-supabase/reset-db.sh && psql -h ${PGHOST:-/tmp} -p ${PGPORT:-54329} -U postgres -d vocera_dev -v ON_ERROR_STOP=1 -f supabase/tests/01_flow_and_security.sql",
