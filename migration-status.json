@@ -1,0 +1,12 @@
+{
+  "name": "vocera",
+  "project_id": "appgprj_6aea33bbdb1c81918c0d25cc9a5d8bf7",
+  "version_number": 14,
+  "source_commit_sha": "19e0b63291c473d633452268c91b5ea81952a88a",
+  "export_status": "blocked_sites_workspace_migration",
+  "verified_at": "2026-11-06",
+  "candidate_source": "GitHub vocera-motion-experience",
+  "candidate_commit": "7988c7d9b067bcdc78ae6e00a03e35b0e20a413c",
+  "matches_published_source": false,
+  "ready_for_current_production_migration": false
+}
